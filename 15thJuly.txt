@@ -1,0 +1,35 @@
+  30  yum install -y httpd; service httpd start
+   31  vi /var/www/html/index.html
+   32  curl ifconfig.co
+   33  yum install -y tomcat7 tomcat7-webapps; service tomcat7 start
+   34  cd /etc/httpd/conf
+   35  ll
+   36  vi httpd.conf
+   37  service httpd restart
+   38  vi httpd.conf
+   39  chkconfig httpd on
+   40  chkconfig tomcat7 on
+   41  service tomcat7 stop
+   42  service tomcat7 start
+   43  vi httpd.conf
+   44  service httpd restart
+   45  service tomcat7 stop
+   46  date
+   47  df -h
+   48  fdisk -l
+   49  fdisk /dev/xvdf
+   50  fdisk -l
+   51  df -h
+   52  fdisk -l
+   53  df -Th
+   54  fdisk -h
+   55  fdisk -l
+   56  mkfs.ext4 /dev/xvdf
+   57  df -h
+   58  mkdir /data
+   59  mount /dev/xvdf /data
+   60  df -h
+   61  cd /data
+   62  mkdir chef puppet ansible
+   63  ll
+   64  history

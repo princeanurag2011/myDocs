@@ -1,0 +1,62 @@
+cd/httpd/conf  - config filr for apache2
+
+
+to connect from web to app server..
+add these lines to apache config file.
+
+ProxyPass /examples http://ipaddr:8080
+ProxyPassReverse /examples http://ipaddr:8080
+
+ProxyPass /examples http://anurag-74965892.ap-south-1.elb.amazonaws.com:8080/examples
+
+ProxyPassReverse /examples http://anurag-74965892.ap-south-1.elb.amazonaws.com :8080/examples
+ProxyPassReverse /examples http://ipaddr:8080
+
+to startt if turned off
+chkconfig httpd on; chkconfig tomcat7 on;
+
+to chk disk space
+df -h
+
+to check diskformat
+df -Th
+
+to chck SSD devices connected to linux machine
+fdisk -l 
+
+
+to format
+mkfs.ext4 /dev/xvdf
+
+to mount 
+mount /dev/xvdf /data
+
+to mount new voulume 
+mount /dev/xvdg /data
+
+to add newly added disk space.
+resize2fs /dev/xvdg /data
+
+to unmount new voulume 
+unmount /dev/xvdg /data
+
+
+ conf -> /etc/tomcat7
+ lib -> /usr/share/java/tomcat7
+ logs -> /var/log/tomcat7
+ temp -> /var/cache/tomcat7/temp
+ webapps -> /var/lib/tomcat7/webapps
+ work -> /var/cache/tomcat7/work
+
+
+AJP port -8009 port
+ mod_jk   - used for internal load balncer.
+ 
+ 
+  to check version on httpd 
+  httpd -v
+  to check MPM module 
+  httpd -V
+  to check modules 
+  httpd -l 
+  

@@ -1,0 +1,53 @@
+GIT
+
+git status
+
+git add .
+git commit . -m "THis is comit message"
+
+git log
+
+git config --global --edit #to change the author.
+
+git checkout
+git commit  --amend --reset-author
+
+git ls-files
+git branch   # to show connected branch
+
+
+git branch dev
+git checkout dev
+
+
+git rm --cached    #to remove from staging
+
+git merge dev
+
+git branch -d dev  #to deelete branch
+
+git config merge.tool vimdiff
+git config merge.conflictstyle diff3
+git config mergetool.prompt false
+
+echo master > filenmae.txt # to add data into file 
+echo dev >> filename.txt  # to append the data 
+
+
+git remote -v #to show remote links
+git rmeote  add origin  link #to add repo
+
+
+git pull origin master link
+
+git push orign master 
+
+
+git clone link
+
+
+
+
+
+
+

@@ -1,0 +1,103 @@
+[root@ip-172-31-24-59 conf]# history
+    1  yum install -y docker; service docker start
+    2  docker swarm join --token SWMTKN-1-4ffisawo0tefkfefzuncn74td1tghsv1c8a93amj51hl6cjs2k-3xaopljpoxpuca42vt5s0hmj6 172.31.23.14:2377
+    3  docker node ls
+    4  docker service ls
+    5  docker images
+    6  docker ps
+    7  docker images
+    8  docker ps
+    9  docker ps | grep Running
+   10  docker ps
+   11  service docker stop
+   12  docker ps
+   13  service docker start
+   14  docker node ls
+   15  service docker stop
+   16  cd /home/ec2-user/
+   17  mkdir software
+   18  cd software
+   19  wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.2.4.tar.gz
+   20  yum install -y wget httpd php gcc glibc glibc-common gd gd-devel make net-snmp
+   21  useradd nagios
+   22  groupadd nagcmd
+   23  usermod -a -G nagcmd nagios
+   24  usermod -a -G nagcmd apache
+   25  ./configure --with-command-group=nagcmd
+   26  ll
+   27  tar -xzvf nagios-4.2.4.tar.gz
+   28  ll
+   29  cd nagios-4.2.4
+   30  ./configure --with-command-group=nagcmd
+   31  make all
+   32  make install
+   33  make install-init
+   34  make install-config
+   35  make install-commandmode
+   36  make install-webconf
+   37  cp -R contrib/eventhandlers/ /usr/local/nagios/libexec/
+   38  chown -R nagios:nagios /usr/local/nagios/libexec/eventhandlers
+   39  /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+   40  service nagios start
+   41  service httpd start
+   42  htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+   43  curl ifconfig.co
+   44  pwd
+   45  cd ..
+   46  pwd
+   47  ll
+   48  wget https://nagios-plugins.org/download/nagios-plugins-2.2.1.tar.gz
+   49  ll
+   50  tar -xzvf nagios-plugins-2.2.1.tar.gz
+   51  ll
+   52  cd nagios-plugins-2.2.1
+   53  ls
+   54  ./configure --with-nagios-user=nagios --with-nagios-group=nagios
+   55  make
+   56  make install
+   57  cd /usr/local/nagios/
+   58  ll
+   59  cd etc/
+   60  ll
+   61  vi nagios.cfg
+   62  cd objects/
+   63  ll
+   64  vi localhost.cfg
+   65  service nagios reload
+   66  vi localhost.cfg
+   67  service nagios reload
+   68  vi localhost.cfg
+   69  ll
+   70  vi templates.cfg
+   71  vi contacts.cfg
+   72  vi localhost.cfg
+   73  vi timeperiods.cfg
+   74  vi localhost.cfg
+   75  ll
+   76  vi commands.cfg
+   77  cd ..
+   78  ll
+   79  vi resource.cfg
+   80  cd /usr/local/nagios/libexec
+   81  ls
+   82  ./check_disk --help
+   83  cd -
+   84  ll
+   85  cd objects/
+   86  ll
+   87  vi localhost.cfg
+   88  vi commands.cfg
+   89  cd /usr/local/nagios/libexec
+   90  ./check_http --help
+   91  ./check_http -H localhost
+   92  vi /var/www/html/index.html
+   93  ./check_http -H localhost
+   94  yum install tomcat7
+   95  cd /usr/share/tomcat7/
+   96  ll
+   97  cd conf
+   98  ll
+   99  vi server.xml
+  100  vi tomcat7.conf
+  101  vi tomcat-users.xml
+  102  history

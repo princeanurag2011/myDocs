@@ -1,0 +1,40 @@
+CREATING CERTIFICATE
+========================================
+
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout test.key -out test.crt
+
+INSTALL MOD_SSL
+==============================
+
+yum install mod_ssl
+
+
+VIRTUALHOST FOR SSL
+=============================
+
+<VirtualHost *:443>
+DocumentRoot /var/www/html/
+SSLEngine on
+SSLCertificateFile /etc/httpd/conf/test.crt
+SSLCertificateKeyFile /etc/httpd/conf/test.key
+</VirtualHost>
+
+
+REDIRECTION
+=====================
+
+ONE TYPE OF REDIRECTION (IP ADDRESS REDIRECTION)
+
+<VirtualHost *:80>
+    ServerName example.com
+    Redirect / https://35.154.222.121
+</VirtualHost>
+
+
+SECOND TYPE OF REDIRECTION (MOD_REWRITE)
+
+<VirtualHost *:80>
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{SERVER_NAME}/$1 [R,L]
+</VirtualHost>

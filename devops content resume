@@ -1,0 +1,72 @@
+ Managing the Jenkins Infrastructure and setting up the automated build process. 
+ Continuous Integration setup for development team using Hudson / Jenkins
+ Planning Release Cycle and Branching strategy
+ Planning for Copy Up / Merge Down code sync up.
+ End to End planning for the Build and Release Cycle
+ Periodic training to Development Team on Code guidelines and Best Practice
+ Developer’s support on Unix and Perforce  
+ Coordinating with Integration team to collect fixes/tasks for each build.
+ Continuous Integration setup for development team using cruise control. 
+ Deciding build content for each build
+ Baselining / Freezing the build content after each build.
+ Smoke Testing of the build before sending the build for testing
+ Moving Errors to right state after successful build is done
+ Transferring Software to manufacturing factory.
+ Creating delta package between two releases.
+ Creating Change Document for the final release build.
+ Release Management
+ Expertise with Maven Dependency, plugin and nexus repository management during the builds.
+ 
+ 
+ Designing and Implementing Source Code Management in Perforce
+ Plan delivery of Builds and Mobile builds (Android and iOS) to QA and Production Environments 
+ Define Branching Strategy, Best Coding Policy for the Engineering Team 
+ Designing and Implementing Source Code Analyzer Tool - PMD, a static code analyzer tool to figure out coding miss like Security violations, Memory leaks etc.
+ Automated Build and Deployment Request Tool to Trigger Builds and Deployments once the request and Approval is in place
+ Manage and Train the Team of 15 members
+ Define Deployment Process to minimize environment downtime
+ Interact with Engineering, DBA and QA counterparts on reducing the environment issues and process creation
+ Performance management, hiring, training and people management
+ Prepare Metric on Team’s effort utilization and continuously looks for Automation of manual tasks
+ Alerts on Environment stableness using Nagios and Shell scripts to proactively perform system monitoring
+ Environment status monitoring and Exceptions monitoring using Shell scripts, Nagios, Splunk and Elastic search
+ Provide Developers Support to unblock them from issues in Version control tool / Environments issues
+ Automate Developers routine activities like dev builds and unit testing to increase developer’s productivity
+ Familiar in Amazon S3 - To Create Buckets, Upload Data, Set Permissions
+ Familiar in How to Setup Amazon Web Services EC2 Instance with Apache, PHP, MySQL
+ Creating a VPC, Subnets, and Base Security Groups
+ Propagating the changes from one branch to another Branch.
+ Help to developer to create workspace in their machines.
+ Providing Level 3 Remote LINUX System Administration.
+ Remote administration through Putty, SSH
+ 
+ 
+  Building and Releasing software for Banking solutions
+ Managing the Jenkins Infrastructure and setting up the automated build process. 
+ Continuous Integration setup for development team using Hudson / Jenkins
+ Planning Release Cycle and Branching strategy
+ Planning for Copy Up / Merge Down code sync up.
+ End to End planning for the Build and Release Cycle
+ Periodic training to Development Team on Code guidelines and Best Practice
+ Developer’s support on Unix and Perforce  
+ Coordinating with Integration team to collect fixes/tasks for each build.
+ Continuous Integration setup for development team using cruise control. 
+ Deciding build content for each build
+ Baselining / Freezing the build content after each build.
+ Smoke Testing of the build before sending the build for testing
+ Moving Errors to right state after successful build is done
+ Transferring Software to manufacturing factory.
+ Creating delta package between two releases.
+ Creating Change Document for the final release build.
+ Release Management
+ Expertise with Maven Dependency, plugin and nexus repository management during the builds.
+ Installed and administered nexus repository and created roles and privileges to restrict access to the users
+ Involved in troubleshooting build issues for java errors due to vast exposure to language.
+ Integrated the existing Ant scripts to automate the code quality report generation process for the existing legacy-based applications 
+ Installed Jenkins and perform troubleshooting during installation to implement the CI process for the java application builds.
+ Created Slaves to implement the build farm where multiple builds run on multiple slave machines in Jenkins
+ Responsible in deploying the application WARs, EARs in WebLogic application servers and troubleshoot any deployment issue.
+ Have knowledge on Distributed Version Control systems like SVN and GIT.
+ Work directly with Project Managers to establish and create & design the release plan.
+
+An@246246
