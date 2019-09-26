@@ -7,10 +7,10 @@ add these lines to apache config file.
 ProxyPass /examples http://ipaddr:8080
 ProxyPassReverse /examples http://ipaddr:8080
 
-ProxyPass /examples http://anurag-74965892.ap-south-1.elb.amazonaws.com:8080/examples
+ProxyPass /examples http://localhost:8080/examples
 
-ProxyPassReverse /examples http://anurag-74965892.ap-south-1.elb.amazonaws.com :8080/examples
-ProxyPassReverse /examples http://ipaddr:8080
+ProxyPassReverse /examples http://localhost :8080/examples
+ProxyPassReverse /examples http://localhost:8080
 
 to startt if turned off
 chkconfig httpd on; chkconfig tomcat7 on;
