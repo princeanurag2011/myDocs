@@ -1,0 +1,116 @@
+#############################----MY-SKILLS-------################################
+
+============================JAVA FULL STACK DEVELOPER=====================
+
+----------------------------USER-INTERFACE-------------------------------
+UI/UX Design:  HTML5, CSS3, BOOTSTRAP (RWD) 
+Client side scripting: JAVA SCRIPT, AJAX, JQUERY
+Single Page Application frameworks: Angular 8 , Node js 
+-------------------------------------------------------------------------
+-----------------------------SERVICES--------------------------------
+Application Programming language: CORE JAVA, SERVLETS, JSP
+J2EE FRAMEWORKS: SPRING MVC 
+DATABASE CONNECTIVITY API: JDBC, HIBERNATE
+WEBSERVICES: REST WEBSERVICES API
+-------------------------------------------------------------------------
+-----------------------------DATABASE------------------------------------
+RDS (OLTS) : MySQL, ORACLE
+-------------------------------------------------------------------------
+-----------------------------SERVERS-------------------------------------
+WEBSERVER: APACHE 2.2
+APPLICATION SERVER: APACHE TOMCAT 8 
+ENTERPRISE APPLICATION SERVER: REDHAT JBOSS EAP 6.4
+-------------------------------------------------------------------------
+---------------DEVELOPER TOOLS-------------------------------------------
+IDE FOR UI AND JAVA: ECLIPSE, VISUAL STUDIO CODE
+IDE FOR DATABASE: MySQL Workbench, Oracle SQL Developer
+-------------------------------------------------------------------------
+
+================================DEVEOPS===================================
+########################----DEVOPS TOOLS------############################
+-----------------LINUX---------------------------------------------------
+SHELL SCRIPTING: BASH
+TOOLS: MOBAXTERM, PUTTY, RDP
+-------------------------------------------------------------------------
+---------------SCM - SOURCE CODE MANAGEMENT------------------------------
+GIT HUB, BIT BUCKET
+-------------------------------------------------------------------------
+---------------BUILD TOOLS-----------------------------------------------
+MAVEN
+-------------------------------------------------------------------------
+----------------CI/CD PIPELINE-------------------------------------------
+JENKINS
+-------------------------------------------------------------------------
+----------------ARTIFACTORY REPOSITORY------------------------------------
+JFROG, NEXUS
+-------------------------------------------------------------------------
+----------------Code Quality TOOLS---------------------------------------
+SonarQube
+-------------------------------------------------------------------------
+----------------CONFIGURATION MANAGEMENT TOOLS----------------------------
+CHEF, ANSIBLE
+-------------------------------------------------------------------------
+-----------------CONTAINERS AND ORCHESTRAIZATION-------------------------
+DOCKER, KUBERNETES 
+-------------------------------------------------------------------------
+----------------------MONITORING TOOLS-----------------------------------
+NAGIOS
+-------------------------------------------------------------------------
+------------------------OS-----------------------------------------------
+windows: 7, 8.1, 10    
+LINUX:  AMI, REDHAT LINUX, CENT OS 7, UBUNTU 18.04 
+-------------------------------------------------------------------------
+########################----CLOUD ------############################
+=======================AWS CLOUD TECHNOLOGIES==================
+EC2, S3, RDS, IAM, EXTERNAL LOAD BALANCING, VPC, ROUTE53
+===============================================================
+
+===========AWS CERTIIFIED SOLUTIONS ARCHITECT - ASSOCIATE - 2020===============
+SYLLABUS:
+    -IAM:
+       NAME: IDENTITY ACCESS MANAGEMENT 
+       TOPICS: user and groups creation , password policies, MFA, ROLES, GROUP POLICIES
+    -EC2:
+       NAME: ELASTIC CLOUD COMPUTING
+       TOPICS: HANDS ON WITH EC2 INSTANCE, SECURITY GROUP BASICS, EBS, VOLUMES AND SNAPSHOTS, 
+               AMI TYPES, CLOUD WATCH, IAM ROLES WITH EC2, BOOTSTRAP SCRIPTS, EC2 INSTANCE METADATA
+               ELASTIC FILE SYSTEM, EC2 PLACEMENT GROUPS, AWS COMMAND LINE
+    -S3:
+       NAME: SIMPLE STORAGE SERVICE
+       TOPICS: CREATION OF BUCKETS, SECURITY AND ENCRYPTION, VERSION CONTROL, LIFE CYCLE MANAGEMENT
+               CROSS REGION REPLICATION, TRANSFER ACCELERATION, CLOUD FRONT OVERVIEW, SNOWBALL, STORAGE GATEWAY       
+    -DATABASE:
+       NAME: DATABASES ON AWS
+       TOPICS:
+         - RDS: RELATIONAL DATABASE SERVICES
+                -- MYSQL, ORACLE, POSTGRE SQL, MARIA DB, AMAZON AURORA
+         - RDS BACKUPS, MULTI AZ READ REPLICAS, 
+         - OTHER DATABASES: DYNAMO DB, REDSHIFT, ELASTIC CACHE    
+         
+    -ROUTE 53: 
+      NAME: DOMAIN PURCHASE/REGISTERING SERVICE
+      TOPIC: REGISTERING A DOMAIN, 
+            - ROUTING POLICIES: SIMPLE, WEIGHTED, LATENCY, FAILOVER, GEOLOCATION, GEOPROXIMITY        
+    -VPC:
+       NAME: VIRTUAL PRIVATE CLOUD
+       TOPIC: BUILD A CUSTOM VPC, NAT, ACL, ELB, VPC FLOW LOGS, DIRECT CONNECT, VPC END POINTS
+       
+    -HA ARCHITECTURE: 
+        NAME: HIGH AVAILABILITY ARCHITECTURE
+        TOPICS: LOAD BALANCERS THEORY, HEALTH CHECKS, HA ARCHITECTURE, SETTING UP EC2, AUTOSCALING, CLEANING UP, 
+                CLOUD FORMATION, ELASTIC BEANSTALK
+                
+    -APPLICATIONS:
+        NAME: APPLICATION SECURITY
+        TOPIC: SQS, SWF, SNS, ELASTIC TRANSCODER, API GATEWAY, KINESIS, WEB IDENTITY FEDERATION -COGNITO
+        
+    -SERVERLESS:
+        NAME: LAMBDA SERVICES
+        TOPIC: LAMBDA CONCEPTS 
+==============================================================================
+
+
+
+
+
+
