@@ -1,5 +1,5 @@
-
-CHEF SERVER, CHEF Workstation and CHEF NODE SETUP..
+#THIS DOCUMENT IS TO ADD(BOOTSTRAP) LINUX MACHINE TO CHEF SERVER
+CHEF SERVER, CHEF Workstation and CHEF NODE SETUP.. 
 ========================================================
 
 Create two EC2 INSTANCEs in AWS ..(ignore if already exists/created..)
@@ -135,8 +135,9 @@ chef -v
 16 . NOW GO TO CHEF NODE.. EXECUTE COOKBOOK (use following command..)
 		chef-client
 
-	 
-   
+==========================================================================================	 
+17. chef cookbooks reference docs
+https://docs.chef.io/cookbooks.html
 
 
 		
