@@ -136,7 +136,10 @@ chef -v
 		chef-client
 
 	 
-   
+   ============================================================
+   #cook book references
+   https://docs.chef.io/cookbooks.html
+   #search for resources
 
 
 		
