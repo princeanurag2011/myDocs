@@ -234,20 +234,303 @@ docker build -t princeanurag2011/apache:dev .
 #file from current directory.
 
 =======================================================================
-2.0 ============Docker Compose=========================================
+2.0 ============Docker persistence volumes =============================
+
+# Container Lifetime & Persistent Data: Volumes, Volumes, Volumes
+
+## Persistent Data: Data Volumes
+
+#To pull official image from docker hub
+docker pull mysql
+
+#to see metadata of the image
+docker image inspect mysql
+
+#To run mysql DB
+docker container run -d --name mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=True mysql
+
+#To see the metadata of mysql image.. here check the volumes and mount data
+docker container inspect mysql
+
+#To see the volume inforamtion like where data is being stored.
+docker volume ls
+
+#To see the volume inforamtion like where data is being stored.
+docker volume inspect <volume-id>
+
+#assging volumes to the container to tore data on host and this will name volumes with some hash code
+docker container run -d --name mysql3 -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v /var/lib/mysql mysql
+
+#named volumes:  -v tag is used to give location to store data and name that data volume..
+docker container run -d --name mysql3 -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v mysql-db:/var/lib/mysql mysql
+#OR we can do it using mount command
+docker container run -d --name mysql3 -e MYSQL_ALLOW_EMPTY_PASSWORD=True --mount type=volume, source=mysql-db, \
+target=/var/lib/mysql mysql
+
+#bind Mounts: To give common directory to both container and host
+docker container run -d --name mysql4 -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v $(pwd):/var/lib/mysql mysql
+
+==================================================================
+2.0 ============Docker-Compose.yml =============================
+
+ -------- Installation --------------------------
+ 
+sudo curl -L "https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+docker-compose --version
+
+------------to uninstall ------------------------
+sudo rm /usr/local/bin/docker-compose
+pip uninstall docker-compose
+---------------------------------------------------
+------------------------------------
+docker-compose.yml
+--------------------------------------
+---
+verison:'2.0'
+
+services:
+
+  wordpress:
+    image:wordpress
+	ports:
+	  - 8080:80
+	environment:
+	 WORDPRESS_DB_PASSWORD: example
+	volumes: 
+	  - ./worpress-data:/var/www/html
+	  
+  mysql:
+    image: mariadb
+	environment:
+	  MYSQL_ROOT_PASSWORD: example
+	volumes:
+	  - ./mysql-data:/var/lib/mysql
+------------------------------------------
 
 
+#To Setup volumes and networks and run all containers
+docker-compose up
+docker-composer up -d #To run in detached mode or background.
 
 
+#To remove volumes and networks and stop all containers
+docker-compose down
+	
+	
+=================Docker Swarm=====================================
+Why Orchestraitaion is needed?
+----------------------------------------------
+- To automate contianer life cycle
+- Scale  out/up/in
+- containre recreation if they failed
+- replace container withhout downtime(blue/green deploy
+- control/track where container s are running
+- create cross node virtual network
+- ensure only trusted servers run the containers
+- store secrets keys password and get them to the right container (and only that container)?
+
+--------------------------------------------------
+v1.13 (2017) docker swarm/node/service/stack/secret
+--------------------------------------------------
+Docker Swarm components
+Manager
+ -API  -- accepts command from client and creates service object.
+ -ORCHESTRATOR ---reconciliation loop for service objects and creates tasks
+ -ALLOCATOR  --allocates ipaddress to tasks
+ -SCHEDULER  --Assign nodes to tasks
+ -DISPATCHER --checks in workers
+NODE:
+ -WORKER
+ -EXECUTOR
+ 
+ Architecuture:
+Manager --> worker/node
+ 
+---------------------------------------------------------------
+----------------Docker swarm commands--------------------------
+
+#To start Docker Swarm and make it a leader
+docker swarm init
+
+#To start the swarm service 
+docker service <command> <image name>
+
+==<command>=====desc==============================================
+  create      #Create a new service
+  inspect     #Display detailed information on one or more services
+  logs        #Fetch the logs of a service or task
+  ls          #List services
+  ps          #List the tasks of one or more services
+  rm          #Remove one or more services
+  rollback    #Revert changes to a service's configuration
+  scale       #Scale one or multiple replicated services
+  update      #Update a service
+=================================================================
+
+#To Create a web service
+docker service create httpd
+
+#To see the services running and no of replicas..
+docker service ls
+
+#To see the status of the replicas like which node it is running..
+docker service ps <id>
+#or 
+docker node ps
+
+#To see service running on docker node 
+docker node ps <node-name>
+
+#TO See the services running on node
+docker node ls
+
+#To create the replicas to 3
+docker service update <id> --replica 3
+
+#To stop service
+docker service rm <id>
+#note: after creating replicas and if we try to stop container using command: docker container stop <dockerid>
+#it will create the replicas automatically.
+--------------------------------------------------------------------
+===========running docker swarm on multiple nodes===================
+
+#  Install docker on each node (best os to choose is ubuntu) Minimum no. of nodes should be 3
+#  To install latest production version  release use the following comand.
+    curl -sSL https:/get.docker.com/ | sh
+#  after instllation , start service using command
+    service docker start
+# To check whether docker swarm running status.
+    docker info | grep swarm -i
+# TO start the docker service docker swarm init 
+    docker swarm init --advertise-addr x.x.x.x  #(give ur machine public ip in place of x.x.x.x if nodes are on different network , if same network give private ip)
+# To add another node as worker run the following command on node.
+     docker swarm join --token SWMTKN-1-0ch9qaoavoknmp7mbyqyglpcxlh8u-4plhbu40pabr8mma9rvfjgnm8 x.x.x.x:2377
+     #note: token generated will be different on ur machine. 
+	 #on ur machine to get the token  run the below command on host machineonce you get the token run that command on node which we wanted to add.
+	 docker swarm join-token manager
+   
+# To check whether node is added or not check it using the command on the host 
+#  (where docker swarm init command is first executed. beacuase it will show data on only manger node.)
+    docker node ls
+# To Make node as manager
+    docker node update --role manager <hostname>
+	
+#To check docker network 
+docker network ls
+#------------------------------------------------------------------
+#NETWORK ID          NAME                DRIVER              SCOPE
+#764bfb0d468b        bridge              bridge              local
+#c72e898c5480        docker_gwbridge     bridge              local
+#86ad4bba7820        host                host                local
+#q6o1onevbwtn        ingress             overlay             swarm
+#c13ea4e57d9f        none                null                local
+#------------------------------------------------------------------
+#here swarm is runnning on overlay networks
+
+#To create overlay network 
+docker network create --driver overlay front_end_network
+docker network create --driver overlay backend_network
+
+#to run a service on different overlay networks along with replicas 
+docker service create --name webserver --network front_end_network -p 80:80 httpd:latest
+#mounting db using name volume mount
+docker service create --name mysqldb --mount type=volume, source=db-data, \
+target=/var/lib/mysql/data --network backend_network mysql:latest
+
+-------------------docker stack ------------------------------------
+#to deploy multiple services at once production level
+docker stack deploy -c docker-voting-stack.yml votingapp
+
+#-----------------docker-voting-stack.yml------------------------
+version: "3"
+services:
+  
+  redis:
+    image: redis
+    ports:
+      - "6379"
+    networks:
+      - frontend
+    deploy: 
+      replicas: 2
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    
+  db: 
+    image: postgres:9.4
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+       
+  vote:
+    image: dockersamples/examplevotingapp_vote:before
+    ports:
+      - 5000:80
+    networks:
+      - frontend
+    depends_on:
+      - redis
+    deploy:
+      replicas: 2
+      update_config: 
+        parallelism: 2
+      restart_policy: 
+        condition: on-failure
+    
+  result:
+    image: dockersamples/examplevotingapp_result:before
+    ports:
+      - 5001:80
+    networks:
+      - backend
+    depends_on:
+      - db
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+         
+  worker:
+    image: dockersamples/examplevotingapp_worker
+    networks:
+      - frontend
+      - backend
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels: [APP=VOTING]
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+      placement:
+        constraints: [node.role == manager]
+        
+networks:
+  frontend:
+    driver: overlay
+  backend:
+    driver: overlay
+    
+volumes:
+  db-data:
+#-----------------------------------------------------------------------------
 
 
-
-
-
-
-
-
-
-
-
-
+================================================================================
