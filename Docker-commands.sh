@@ -371,9 +371,9 @@ docker service <command> <image name>
   scale       #Scale one or multiple replicated services
   update      #Update a service
 =================================================================
-
+===============running docker swarm on leader as node============
 #To Create a web service
-docker service create httpd
+docker service create --name webserver -p 80:80 httpd:latest
 
 #To see the services running and no of replicas..
 docker service ls
@@ -390,13 +390,28 @@ docker node ps <node-name>
 docker node ls
 
 #To create the replicas to 3
-docker service update <id> --replica 3
+docker service update <id> --replica 3 #ex: docker service update 8t877887t87t --replica 3
+#or
+docker service scale <id>=3 #ex: docker service update 8t877887t87t=3
+
+#to update the docker service
+docker service update --image <imagename:tag> <servicename>
+
+#To update port no
+docker service update --publish-rm 8080:80 --publish-add 9090:80
+
+#To converge services automatically
+docker service update --force <servicename>
+
+#to rollback 
+docker service rollback <id> #ex: docker service rollback 8t877887t87t
 
 #To stop service
 docker service rm <id>
 #note: after creating replicas and if we try to stop container using command: docker container stop <dockerid>
 #it will create the replicas automatically.
 --------------------------------------------------------------------
+====================================================================
 ===========running docker swarm on multiple nodes===================
 
 #  Install docker on each node (best os to choose is ubuntu) Minimum no. of nodes should be 3
@@ -532,5 +547,27 @@ volumes:
   db-data:
 #-----------------------------------------------------------------------------
 
+=======================docker secrets===============================
+#adding notes in future
+====================================================================
 
-================================================================================
+====================Docker Full app life cycle====================
+docker-compose up # for dev
+docker-compose up # for ci
+docker stack deploy # for prodcution
+
+========Private docker registry=================================
+#Run the regisry image
+docker container run -d -p 5000:5000 --name registry registry
+
+#Re-tag existing image and push it to your new regisrty
+docker  tag hello-world 127.0.0.1:5000/hello-world
+docker push 127.0.0.1:5000/hello-world
+
+#Remove that image from local cache and pull it from new registry.
+docker image remove hello-world
+docker image remove 127.0.0.1:5000/hello-world
+docker pull 127.0.0.1:5000/hello-world
+
+#recreate registry using a bind mount and see how it store data.
+docker container run -d -p 5000:5000 --name registry -v $(pwd)/registry-data:var/lib/registry registry
