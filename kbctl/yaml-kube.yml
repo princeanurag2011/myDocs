@@ -1,0 +1,132 @@
+#YAML IN KUBERENETES BASIC
+# EVERY YAML FILE SHOULD HAVE FOLLOWING
+#--- pod-definition.yml-----------------------------
+apiVersion: v1
+kind: Pod 
+#here kind and api version can be 
+                  #Pod  and apiVersion is v1
+                  #Service and apiVersion is v1
+                  #ReplicaSet and apiVersion is apps/v1
+                  #Deployment and apiVersion is apps/v1
+#
+metadata: 
+  name: myapp-pod
+  labels:
+    app: myapp
+    type: front-end
+    
+spec:
+  containers:
+    - name: nginx-controller
+      image: nginx
+
+#--------------------------------------
+#To create pod using above file
+kubectl create -f pod-definition.yml
+#note: here -f is used to provide file as input
+#or
+kubectl run myapp-pod --image=nginx --generator=run-pod/v1
+
+#To see list of pods
+kubectl get pods
+
+#To see detailed information of pods like labels, containers, created time, events etc.
+kubectl describe pod myapp-pod
+
+#To remove the pod 
+kubectl delete pod myapp-pod
+
+#======== kubectl replicas ======
+
+#---------------rc-definition.yml---------------
+#note: the appVersion should be v1 for ReplicationController
+apiVersion: v1
+kind: ReplicationController
+metadata: 
+  name: webserver-rc
+  labels:
+    app: webserver
+    type: front-end
+    
+spec:
+  template:  
+    metadata: 
+      name: webserver-pod
+      labels:
+        app: webserver
+        type: front-end    
+    spec:
+      container:
+        - name: nginx-controller
+          image: nginx  
+  replicas: 3
+#--------------------------------------------
+
+#To create replication COntroller using above file.
+kubectl create -f rc-definition.yml
+
+#To see created replication controllers
+kubectl get replicationcontroller
+#note: we can see desired-current-ready status
+
+#To see no of pods created after running replicaiton controller
+kubectl get pods -o wide
+#NOte: we can see three pods if we used above to file to create replicas
+
+#To remove the replicationcontroller  and also pods underlying
+kubectl delete replicationcontroller webserver-rc
+#---------------ReplicaSet-definition.yml---------------
+#note: the appVersion should be apps/v1 for ReplicationController
+#if apiVersion is v1 , we can get error unable to recognize
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata: 
+  name: webserver-replicaset
+  labels:
+    app: webserver
+    type: front-end
+    
+spec:
+  template:  
+    metadata: 
+      name: webserver-pod
+      labels:
+        app: webserver
+        type: front-end    
+    spec:
+      container:
+        - name: nginx-controller
+          image: nginx  
+  replicas: 3
+  selector: #for repicaset selector is used as additonal feild
+    matchLabels:
+      type: front-end
+#--------------------------------------------
+
+
+#To create replicaset using above file.
+kubectl create -f replicaset-definition.yml
+
+#-----------------------------------------------
+#To increase the no. of replicas to 6 
+#change the replicas to 6 in the above file
+#then run the below command
+kubectl replace -f replicaset-definition.yml
+
+#or  we can do using tags for above file
+kubectl scale --replicas=6 -f replicaset-definition.yml
+
+#or  we can do using type and name format
+kubectl scale --replicas=6 replicaset myapp-replicaset
+#-----------------------------------------------------
+
+#To see created replicaset
+kubectl get replicaset
+#note: we can see desired-current-ready status
+
+#To see no of pods created after running replicaiton controller
+kubectl get pods -o wide
+#NOte: we can see three pods if we used above to file to create replicas
+
+#To remove the replicaset and also pods underlying
+kubectl delete replicaset webserver-replicaset

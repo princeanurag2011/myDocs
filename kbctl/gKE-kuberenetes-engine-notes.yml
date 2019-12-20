@@ -1,0 +1,53 @@
+#kubernetes engine 52-incomplete
+---
+#gKE-google_kubernetes_engine
+Features:
+   - fully managed
+   - Auto scale
+   - Auto Upgrade
+   - Auto repair
+   - Hybrid networking
+   - Stackdrive logging and monitoring
+   - Stateful Application Support
+   - Docker image support
+   - resource limits
+   - private container registry
+   - IAM
+   - resource -optimized deployments
+   - reliable and self healing
+   - Provide configuration as desired system state
+Concepts:
+  cluster:
+    - Container cluster
+    - Cluster federation
+    - Cluster autosacling
+    - Cluster lebeling
+  nodes:
+    - node pools
+    - node auto upgrade
+    - node repair
+    - node images
+  Others:
+    - load balancing
+    - IAM 
+    - IP agent
+    - others
+#---
+pods: it's an abstractionto repressent an application
+  - It holds one or more containers
+  - The containers in pod share :
+      - single IP Address
+      - single Namespace --> localhost
+      - data can be shared using Cloude storage bucket or disks
+  Lifecyle:
+    - pending: pod is created but some container are not running
+    - running: pod is bound to node and runnning all containers
+    - succeeded: ALL containers are terminated successfully
+    - failed: atleast one container has terminated failure
+    - unknown: pods can't be determined
+
+deployments:
+   - define HA and autoscale
+   - create and manage pod lifecycle
+   - used for rolling updates/changing versions of applications running in container
+   - it take care of sservice is available to user
