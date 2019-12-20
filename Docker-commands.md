@@ -1,7 +1,7 @@
 ==========docker installation============================
 
-#To install docker 
- sudo yum install docker -y
+#To install docker
+sudo yum install docker -y
 
 #To check the version after installing 
  docker --version #or
