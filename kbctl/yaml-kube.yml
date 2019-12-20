@@ -1,4 +1,4 @@
-#YAML IN KUBERENETES BASIC
+#YAML IN Kube BASIC
 # EVERY YAML FILE SHOULD HAVE FOLLOWING
 #--- pod-definition.yml-----------------------------
 apiVersion: v1
