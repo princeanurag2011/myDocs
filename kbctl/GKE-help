@@ -1,4 +1,4 @@
-#gKE-KubernetesEngine: COMMAND-LINE:
+#gKe: COMMAND-LINE:
 #To create a cluster
 gcloud container clusters create kuberenetes-cluster
 
