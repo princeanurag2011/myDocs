@@ -1,8 +1,12 @@
-#gKe: COMMAND-LINE:
-#To create a cluster
+#gKE: COMMAND-LINE:
+#To create a cluster with one node
 gcloud container clusters create kuberenetes-cluster
 
-#Accessing the cluster:
+#To create a cluster with two nodes
+gcloud container clusters create [CLUSTER_NAME] \
+    --num-nodes 2 --local-ssd-count [NUMBER_OF_DISKS]
+	
+#Accessing the cluster thoroug Gcloud :
 gcloud container clusters get-credentials <cluster-name> --zone <zone-name> --project <project-name/id>
 gcloud container clusters get-credentials kuberenetes-cluster --zone us-central1-a --project helpful-silo-261806
 
