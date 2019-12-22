@@ -107,7 +107,7 @@ read flag
 echo "$flag"
 if [ "$flag" = "y" -o "$flag" = "Y" ]; then
    echo "making root user"
-   echo "ansadmin ALL=(ALL) ALL" >> /etc/sudoers
+   echo "$username ALL=(ALL) ALL" >> /etc/sudoers
    usermod -aG root $username
    echo "welcome, $username, $username is now a root user."
   else
