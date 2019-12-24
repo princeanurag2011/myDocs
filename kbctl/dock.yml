@@ -1,7 +1,30 @@
 ==========docker installation============================
+#TO remove older version of docker in cent os 
+sudo yum remove docker \
+                  docker-client \
+                  docker-client-latest \
+                  docker-common \
+                  docker-latest \
+                  docker-latest-logrotate \
+                  docker-logrotate \
+                  docker-engine
 
-#To install docker
+#TO remove older version of docker in ubuntu os 
+sudo apt-get remove docker docker-engine docker.io containerd runc
+
+#To install docker on cent os
 sudo yum install docker -y
+
+#To install docker on ubuntu os
+sudo apt install docker -y
+
+
+#To install latest version of docker using script
+#then go to https://docs.docker.com/
+
+ curl -fsSL https://get.docker.com -o get-docker.sh
+ sudo sh get-docker.sh
+ 
 
 #To check the version after installing 
  docker --version #or
@@ -9,7 +32,7 @@ sudo yum install docker -y
 #note: it will only give the client version if the docker service is not started.
 
 #TO start the docker service 
- service docker start
+service docker start
 =============================================================
 #To check the docker running status
  service docker status
@@ -26,11 +49,25 @@ sudo yum install docker -y
 #TO see list of images..
  docker images 
 
+#To download an image from docker hub 
+docker pull <image-Name>
+#ex: docker pull ubuntu
+#in both the above cases it will download the latest version
+#ex: docker pull ubuntu:latest 
+#or 
+#if we want specific version then in place of latest mention version number/name
+#ex: docker pull ubuntu:18.04
+
 #TO delete downloaded docker images.
  docker rmi <imagename>
 
 #To run image as a container 
  docker run <image>
+#ex: docker run ubuntu
+#note: if we try to pull docker OS image and run using run command above
+#then it automatically stops running the image os.
+#it happens because docker is not intended to run OS but intended to run specific apps
+
 
 #To run nginx server image as a container 
  docker run --publish 80:80 nginx  # --publish or -p 
@@ -38,12 +75,16 @@ sudo yum install docker -y
 #the above command hangs the console to avoid that , we can 
 #run docker container in detached mode.
 
-#To run docker container in detached mode 
+#To run docker container in detached mode - in this mode docker runs in the background
+#and return back to the console.
  docker run -d -p 80:80 --name webserver nginx # -d or --detach 
  #or
  docker run -d -p 8080:80 --rm --name apacheweb httpd:latest 
  #note: --rm if this is used , when docker container is stopped, it
- #autmatically removes container image.
+ #automatically removes container image.
+
+#To bring the background container to foreground 
+docker attach <container-id>
 
 #To see list of running containers any of 3 below will work.
  docker ps 
@@ -52,7 +93,7 @@ sudo yum install docker -y
 #or 
  docker container ls 
 
-#To see list of all containers any of 3 below will work.
+#To see list of all containers(both running and stopped) any of 3 below will work.
  docker ps -a
 #or
  docker container ps -a
@@ -113,6 +154,9 @@ docker run -d -p 8080:80 --name webserver httpd
 #To see docker container stats.. (show details of all running ocntainer cpu mem utilization , block i/o network i/o)
  docker stats
 ============to enter into running docker container ==========================
+#TO execute commands inside docker container to see hosts inside it
+docker exec <containerid> cat /etc/hosts
+
 #To enter into container ubuntu (-i for interactiv mode and 
 #-t for TTY bash shell and this will create a new container)
  docker run -it --name ubuntu <container-id> 
@@ -571,4 +615,8 @@ docker pull 127.0.0.1:5000/hello-world
 
 #recreate registry using a bind mount and see how it store data.
 docker container run -d -p 5000:5000 --name registry -v $(pwd)/registry-data:var/lib/registry registry
+
+
+
+
 
