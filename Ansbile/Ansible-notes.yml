@@ -1,0 +1,228 @@
+#Ansible-notes.yml
+Anisble:
+  - Infra provisioning:
+      Deploy 50 VMS public/private cloud
+      Provosion storage to all VM's
+  - Configuration Mgmt:
+      Setup network config on VM's
+      Setup Cluster Config 
+      Config Web/db servers on 20 VM's
+      Setup load balancing between vm's
+      Setup monitoring components      
+      install and config backup clients on vm's
+      update CMDB database with new VM info
+  - Continuos Deployment
+  - APP deployments
+  - Security compliance
+  
+------------------------------------
+ansible variables:
+  ansible_host
+  ansible_connection:
+    - ssh
+    - winrm
+    - localhost
+    
+  ansible_user:
+    - root (for linux)
+    - administrator (for windows)
+    
+  ansible_port:
+    - 22
+    - 8080
+    
+  ansible_ssh_pass: (for linux)
+    - password
+    
+   ansible_password: (for windows)
+    - password
+  
+  ansible_private_key_file:
+    - /root/anuragaws1.pem
+  
+---
+sample_inventory_file:
+ #hosts file
+ [web]
+ 172.31.44.35
+
+ [web:vars]
+ ansible_user=ec2-user
+ ansible_private_key_file=/root/anuragaws1.pem
+ 
+-----------#referring with alias -connection types -users- passwords ----
+
+ansible-custom-inventory-file:
+ #web ansible_host=172.31.44.35
+
+ #To connect to localhost (default host=linux)
+ localhost ansible_connection=localhost
+ #web server and its alias and connection to it if it is linux host
+ web ansible_host=server1.windows.com ansible_connection=ssh ansible_user=ec2-user ansible_ssh_pass=8da9s0aas90d
+ #db server and its alias and connection to it if it is windows host
+ db  ansible_host=server2.windows.com ansible_connection=winrm
+ ---ping test- to ping web servers---
+ ansible web -m ping
+
+ #-- to ping hosts from and custom inventory file---
+ ansible web -m ping -i hosts.txt
+ #note: 
+ #create hosts.txt using vi hosts.txt
+ #add the host details in hosts.txt and run the above command in the same directory
+ #-i is used to provide file input
+
+ #troubleshoot:
+ #if we try to ping using ansible command it may not work
+ #two ways to resolve this:
+ #1) manually ping using ssh and add it to known hosts
+ #2) (not recommended for production) uncomment #host_key_checking=false in  /etc/ansible/ansible.cfg
+
+-----------Grouping of inventory files------------------------
+
+ansble_inventoryfile-creating-groupOfGroups:
+ # Sample Inventory File hosts.txt
+
+ #DB_NODES
+ sql_db1 ansible_host=sql01.xyz.com ansible_connection=ssh ansible_user=root ansible_ssh_pass=Lin$Pass
+ sql_db2 ansible_host=sql02.xyz.com ansible_connection=ssh ansible_user=root ansible_ssh_pass=Lin$Pass
+
+ #WEB_NODES
+ web_node1 ansible_host=web01.xyz.com ansible_connection=winrm ansible_user=administrator ansible_password=Win$Pass
+ web_node2 ansible_host=web02.xyz.com ansible_connection=winrm ansible_user=administrator ansible_password=Win$Pass
+ web_node3 ansible_host=web03.xyz.com ansible_connection=winrm ansible_user=administrator ansible_password=Win$Pass
+
+ [db_nodes]
+ sql_db1
+ sql_db2
+
+ [web_nodes]
+ web_node1
+ web_node2
+ web_node3
+
+ [boston_nodes]
+ sql_db1
+ web_node1
+
+ [dallas_nodes]
+ sql_db2
+ web_node2
+ web_node3
+ 
+ #group of groups
+ [us_nodes:children]
+ boston_nodes
+ dallas_nodes
+----
+
+LEARN_YAML_SYNTAX:
+    #https://www.linkedin.com/authwall?trk=bf&trkInfo=AQH_LizGBEADTQAAAW9HUW_I1_a4p9gF-8CgZipV3KUf45dvlmChBTZ7pZlXm0WUppcmsBtwUMGN0UQcIo_Pdl1IpTHwQ-2yfc59_303aOkWwB3KYA6Ho8A3tsMXIKmAaWgpRGc=&originalReferer=&sessionRedirect=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fmumshad-mannambeth-29987029%2F
+  #key_value_pair/map
+  fruit: apple
+  vegetable: carrot
+  
+  #arrays/List These are ordered collection
+  Fruits:
+    - Orange
+    - Apples
+    - Banana
+  Vegetables:
+    - Carrot
+    - Tomato
+    - Cabbage
+  
+  #Dictionaries/map These are unordered collection
+    Banana:
+      Calories: 105
+      Fat: 0.4g
+      Carbs: 27g
+    
+    Grapes:
+      Calories: 62
+      Fat: 0.5g
+      Carbs: 27g
+      
+   #List containing Dictionaries    These are ordered 
+    Fruits: 
+      - Banana:
+          Calories: 105
+          Fat: 0.4g
+          Carbs: 27g
+      - Grapes:
+          Calories: 62
+          Fat: 0.5g
+          Carbs: 27g
+---
+Playbooks_example1:
+  ---
+  name: Play 1
+  hosts: localhost
+  tasks:
+    - name: execute comand date
+      command: date
+    
+    - name: execute script on server
+      script: test_script.sh
+    
+    - name: install httpd service
+      yum:
+        name: httpd
+        state: present
+        
+    - name: Start web Server
+      service:
+        name: httpd
+        state: started
+---
+modules:
+  ansible-docs -l 
+  
+ ansible ad-hoc commands:
+  #To reboot nodes
+    ansible webservers -a "/sbin/reboot" -f 10 --become
+  ping:
+    ansible all -m ping 
+  shell:
+     ansible webservers -m shell -a 'uname -a'
+  copy:
+    ansible webservers -m copy -a "src=/etc/hosts dest=/tmp/hosts"
+  file:
+    ansible webservers -m file -a "dest=/srv/foo/b.txt mode=600 owner=mdehaan group=mdehaan"
+  yum:
+    ansible webservers -m yum -a "name=acme state=latest" 
+                                           #state=latest (to check installed version is latest)
+                                           #state=present (to ensure whether installed)                        
+                                           #state=absent (To ensure a package is not installed)
+                                                                                      
+
+  service:
+    ansible webservers -m service -a "name=httpd state=started"
+                                           #state=started (Ensure a service is started on all webservers)
+                                           #state=stopped (Ensure a service is stopped)                        
+                                           #state=restarted (restart a service on all webservers)
+    
+  user:
+    #notes will be added
+    
+  setup:
+      #notes will be added
+      ansible all -m setup
+  
+  #To dry run playboook
+  ansible all -m ping -C
+  
+  
+  
+
+---
+running playbooks:
+  #To check the syntax of playbook:
+  ansible-playbook playbook.yml --syntax-check
+  #TO run playbook:
+  ansible-playbook playbook.yml
+  
+  #To test Playbooks:
+  ansible-playbook playbook.yml -C 
+  #or
+  ansible-playbook playbook.yml --check
+---
