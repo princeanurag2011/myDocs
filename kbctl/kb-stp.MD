@@ -82,15 +82,15 @@
 ### 5. To add a node to this master run the following command on ONLY ON NODE instance (Other EC2 INSTANCE)
   ##### This below command is already auto-generated from step 3 and In your case it would be different.
      ```
-     kubeadm join 192.168.86.129:6443 --token 8951if.kmexn0g6z6xe2vnv --discovery-token-ca-cert-hash sha256:dde332f05cf2a84685dbaeb7324c01db142f213da0664eac94fa1023a3d37e6d
+       kubeadm join 192.168.86.129:6443 --token 8951if.kmexn0g6z6xe2vnv --discovery-token-ca-cert-hash sha256:dde332f05cf2a84685dbaeb7324c01db142f213da0664eac94fa1023a3d37e6d
      ``` 
   ##### TroubleShoot: (run this only on master)
    - To print the token: (in case if we forget to note down when generated using step 3)    
 	 ```
 	   kubeadm token create --print-join-command
 	 ```
-  - To create a new token if token generated is expired:  
+  - To create a new token if token generated is expired:
          ```
-	 kubeadm token create
-	 kubeadm token create --print-join-command
+	  kubeadm token create
+	  kubeadm token create --print-join-command
 	 ```
