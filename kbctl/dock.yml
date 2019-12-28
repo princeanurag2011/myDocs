@@ -33,6 +33,10 @@ sudo apt install docker -y
 
 #TO start the docker service 
 service docker start
+
+#To add this to autostart on server restart
+sudo systemctl enable docker.service
+
 =============================================================
 #To check the docker running status
  service docker status
@@ -604,7 +608,7 @@ docker stack deploy # for prodcution
 #Run the regisry image
 docker container run -d -p 5000:5000 --name registry registry
 
-#Re-tag existing image and push it to your new regisrty
+#Re-tag existing image and push it to your new regisrty (localhost)
 docker  tag hello-world 127.0.0.1:5000/hello-world
 docker push 127.0.0.1:5000/hello-world
 
@@ -619,4 +623,17 @@ docker container run -d -p 5000:5000 --name registry -v $(pwd)/registry-data:var
 
 
 
+#tasks
+docker run -d --name=wordpress --link db:db -p 8085:80 wordpress
+#data_backup
+docker run -v /opt/data:/var/lib/mysql -d --name mysql-db -e MYSQL_ROOT_PASSWORD=db_pass123 mysql
 
+
+
+#Create a new network named wp-mysql-network using the bridge driver. Allocate subnet 182.18.0.1/24. Configure Gateway 182.18.0.1
+
+docker network create --driver bridge --subnet 182.18.0.1/24 --gateway 182.18.0.1 wp-mysql-network
+
+#Deploy a web application named webapp, using image kodekloud/simple-webapp-mysql. Expose port to 38080 on the host. The application takes an environment variable DB_Host that has the hostname of the mysql database. Make sure to attach it to the newly created network wp-mysql-network
+
+docker run --network=wp-mysql-network -e DB_Host=mysql-db -e DB_Password=db_pass123 -p 38080:8080 --name webapp --link mysql-db:mysql-db -d kodekloud/simple-webapp-mysql
