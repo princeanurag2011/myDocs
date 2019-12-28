@@ -1,9 +1,8 @@
 # K8s-cluster-setup
 ### k8s Master and Node Setup
  ### 1. PREREQUISITES - Install following in ubuntu OS in AWS EC2 instance
-
  #### note: Instance requirements 2 vCPU  and 8GB RAM  -- t3.large would be sufficient
- #### note: these commands should be run on all masters and nodes
+ #### note: these below commands should be run on all masters and nodes
  ```
   apt-get update && apt-get upgrade -y  
   apt-get install -y apt-transport-https  
@@ -32,11 +31,34 @@
   sudo chown $(id -u):$(id -g) $HOME/.kube/config
   ```
 ### To check the status of instance whether it is initialized as master 
- ` kubectl get nodes -o wide`
+  ` kubectl get nodes -o wide`
   
-#### TroubleShoot:
+#### TroubleShoot: 
+  
+- 1. If Master is not ready status then check the pods: (run only on master)
+ ```
+  kubectl get pods -o wide --all-namespaces 
+ ```
+- 2. if issue with core dns then add any of the network plugins for cluster administration
+ ```
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/ 
+ ```
+  note: we can select any of the network plugins , we choose `calico`
+  ``` 
+   https://docs.projectcalico.org/v3.11/getting-started/kubernetes/ 
+  ```
+- 3. To setup core dns (run only on master)
+ ```
+  kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
+ ```
+- 4. To check the status of instance whether it is initialized as master 
+ ``` 
+  kubectl get pods -o wide --all-namespaces 
+  kubectl get nodes -o wide
+ ```
+
   #### Ensure that all the nodes are in ready state if not we can troubleshoot it. 
-  #### Possible reason would be the swap functionality enabled on the node or not.
+  #### 2. Possible reason would be the swap functionality enabled on the node or not.
   
    - TO disable the feature on swap on the current node)    
       ` swapoff -a `
@@ -48,19 +70,18 @@
        free -h
        cat /proc/swaps
       ```
-### 5. To add a node to this master run the following command on node instance (Other EC2 INSTANCE)
-  #### This below is auto-generated from step 3
-  #### In your case it would be different.
+### 5. To add a node to this master run the following command on ONLY ON NODE instance (Other EC2 INSTANCE)
+  ##### This below command is already auto-generated from step 3 and In your case it would be different.
      ```
      kubeadm join 192.168.86.129:6443 --token 8951if.kmexn0g6z6xe2vnv --discovery-token-ca-cert-hash sha256:dde332f05cf2a84685dbaeb7324c01db142f213da0664eac94fa1023a3d37e6d
      ``` 
-  ##### TroubleShoot:
-   - To print the token:     
+  ##### TroubleShoot: (run this only on master)
+   - To print the token: (in case if we forget to note down when generated using step 3)    
 	 ```
 	   kubeadm token create --print-join-command
 	 ```
   - To create a new token if token generated is expired:  
-     ```
+         ```
 	   kubeadm token create
 	   kubeadm token create --print-join-command
 	 ```
