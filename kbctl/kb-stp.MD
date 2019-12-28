@@ -35,20 +35,19 @@
  ` kubectl get nodes -o wide`
   
 #### TroubleShoot:
-  ##### Ensure that all the nodes are in ready state if not we can troubleshoot it. 
-  ##### Possible reason would be the swap functionality enabled on the node or not.
+  #### Ensure that all the nodes are in ready state if not we can troubleshoot it. 
+  #### Possible reason would be the swap functionality enabled on the node or not.
   
-    - TO disable the feature on swap on the current node)    
+   - TO disable the feature on swap on the current node)    
       ` swapoff -a `
-    - If you want it to permenantly disable the swap then
+   - If you want it to permenantly disable the swap then
     comment the swap line in /etc/fstab and type the below command   
       ` mount -a ` 
-    - For the confirmation run the below command:
-    ```
-     free -h 
-     cat /proc/swaps
-    ```
-	
+   - For the confirmation run the below command:   
+      ```
+       free -h
+       cat /proc/swaps
+      ```
 ### 5. To add a node to this master run the following command on node instance (Other EC2 INSTANCE)
   #### This below is auto-generated from step 3
   #### In your case it would be different.
