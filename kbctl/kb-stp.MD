@@ -50,7 +50,16 @@
 - 3. To setup core dns (run only on master)
  ```
   kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
+  kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
  ```
+- note: old versions
+ ```
+  kubectl apply -f \
+  https://docs.projectcalico.org/v3.6/getting-started/kubernetes/installation/hosted/kubernetes-datastorecalico-networking/1.7/calico.yaml
+  
+  kubectl apply -f \
+  https://docs.projectcalico.org/v3.4/getting-started/kubernetes/installation/hosted/etcd.yml
+  ```
 - 4. To check the status of instance whether it is initialized as master 
  ``` 
   kubectl get pods -o wide --all-namespaces 
@@ -82,9 +91,6 @@
 	 ```
   - To create a new token if token generated is expired:  
          ```
-	   kubeadm token create
-	   kubeadm token create --print-join-command
+	 kubeadm token create
+	 kubeadm token create --print-join-command
 	 ```
-  
-      
-## 6 
