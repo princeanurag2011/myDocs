@@ -94,3 +94,9 @@
       kubeadm token create
       kubeadm token create --print-join-command
     ```
+    #### we need to check the services of kubelet kube-proxy process running on the master and worker node
+     ` ps -aux | grep kube-proxy`
+    #### and also for kubelet
+    ` ps -aux | grep kubelet`
+    #### and finally we can get the overall information and status of the cluster using the kubectl
+    ` kubectl cluster-info`
