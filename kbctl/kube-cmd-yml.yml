@@ -71,7 +71,10 @@
 
 
 #Example using hostPath volumes
-#If you create a node pool with three local SSDs, the host OS mounts the disks at /mnt/disks/ssd0, /mnt/disks/ssd1 and /mnt/disks/ssd2. Your Kubernetes containers access the disks using the hostPath parameter in defined in your object's configuration file.
+#If you create a node pool with three local SSDs, the host OS mounts the disks at 
+#/mnt/disks/ssd0, /mnt/disks/ssd1 and /mnt/disks/ssd2. 
+#Your Kubernetes containers access the disks using the hostPath parameter 
+#in defined in your object's configuration file.
 
 #This example Pod configuration file references a local SSD: /mnt/disks/ssd0:
 ----------------------------pod-def.yml---- with hosted volumes-----------
@@ -452,22 +455,47 @@
  # For deployment name -> check in nginx-deploy.yml above look for name in the metadata section
  #Ex: kubectl get deploy nginx-1
 
-
-
+# To update the no. of replicas or version no make changes in the above yml file and use below command
+ kubectl apply -f nginx-deploy.yml
+ 
+# To update the deployment and keep a track record of every deployment 
+# this is done beacuase in case of any issue with deployed version we can rollback immediately
+ kubectl apply -f nginx-deploy.yml --record=true
+ 
 # To check rolling updates deployments status
- kubectl rollout status
+ kubectl rollout status deploy <deployment-name>
  
-# To roll back the updates to pevious version 
- kubectl rollout undo
+# To check the no of replicas sets created
+ kubectl get rc <replicaset-name> -o wide
+
+# To check the history i.e REVISION NO. and CHANGE CAUSE of roll out deployments
+ kubectl rollout history deploy <deployment-name>
  
+# To check the detailed history of revision
+ kubectl rollout history deploy <deployment-name> --revision=1
+ 
+#To add our own message to the CHANGE CAUSE after applying changes using below command
+ kubectl apply -f nginx-deploy.yml --record=true
+ #run the next command to update change cause we can do this using 'kubectl annotate'
+ kubectl annotate deployment.v1.apps/<deployment-name> kubernetes.io/change-cause="add your message here"
+  
+# To roll back the deployment to immediate pevious version 
+ kubectl rollout undo deploy <deployment-name>
+
+# To roll back the deployment to specific version or revision (say 1) 
+ kubectl rollout undo deploy <deployment-name> --to-revision=1
+
 # TO pause the deployments
- kubectl rollout pause
+ kubectl rollout pause deploy <deployment-name>
  
 # TO resume the deployments
- kubectl rollout resume
+ kubectl rollout resume deploy <deployment-name>
  
-# To check the revision of roll out deployments
- kubectl rollout history
+#note:
+ ####Deployment revision is triggered only when the 'rollout' is triggered
+ ####In the deployment revision/version history only changes made to template like
+ ####changing version no. and labels etc., then only deployment revision is created 
+ ####other updates like scaling the deployment don't create  deployment revision.
  
  
 ---
