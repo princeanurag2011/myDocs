@@ -1,0 +1,251 @@
+---
+ RHCSA: 3 years
+  essential-tools:
+   - I/O REDIRECTION
+   - GREP
+   - access remote systems SSH:
+     ssh: to connect to remote systems 
+      ssh user@IPaddress
+     file transfers:
+       telnet: no security no encryption
+       ftp: no security no encryption
+       scp: scp <file-name> user@IP:~
+       sftp: sftp user@IP 
+        - get: to download file
+        - put: to upload file
+       
+   - LOG-IN AND SWITH USERIN MULTI USER TARGETS
+   - UN/ARCHIVE , UN/COPMRESS UN/PACK files using tar.gz,star,gzip,bgip/2
+       - gzip:  
+            #used to compress only files and can't compress directories         
+            create .gz file
+             #to compress files
+             gzip filename
+             #to see compression details
+             gzip -l filename 
+             # to uncompress 
+             gzip -d filename
+        - gunzip :
+           - used to uncompress files
+             gunzip filename
+        - tar: used to compress files and directories
+           #to create a compressed file
+             tar -cvf filename.tar directory/ file1 file2
+           #to view files in tar
+             tar -tvf filename.tar
+           #to untar .tar files
+             tar -xvf filename.tar
+           #to untar tar.gz 
+             tar -xvzf filename.tar
+             
+   - create and edit txt files:
+      vi editor  
+       - press i - to go to insert mode
+       
+       - go to x mode and then 
+           press R to go to REPLACE mode and type on the exisiting chars and it will be replaced
+           press dd - to cut and then p to paste
+           press y - to copy the lines and then p to paste
+           gg - to go to start of file
+           shft+GG to go to end of file
+           cc to cut the line and go to insert mode
+           type colon : and then below
+           :u to undo 
+           :/searchword to find the matching lines #ex: if want to find hello in the test then
+           :/hello
+           :set nu  #to show line numbers
+           :+line number #to go to next line number ex: :/+50 to go to 55oth line from present line where the cursor exists
+           :%s/hello/how #to replace first occurance of word 'hello' with 'how'
+           :%s/hello/how/g #to replace all occurances in the file
+           :q! #to quit without saving
+           :wq! #to write and close the file
+           
+       
+   - create hard and soft links:
+     soft link:
+      ln -s <file> filename
+     hard link:
+      ln <file> <filename>    
+      
+   - List , set changes standards UGO/RWX PREMISSIONS -UNMASK:
+     file ownership permission: these are given to u g o
+          u - user/owner
+          g - group
+          o - others 
+          chown user:group -R <directory/> # to give access to u , g for directory and sub directories
+          
+         file operations: r w x s t 
+          normal mode:          
+           chmod o+rwx <filename> #to give permissions to others rwx
+           chmod o-rwx <filename> #to remove permissions to others rwx
+           chmod u+rwx <filename> #to give permissions to user rwx
+           chmod u-rwx <filename> #to remove permissions to user rwx
+           chmod ug+rwx <filename> #to give permission to user and group rwx
+           chmod u+rws <filename> #to give permissions to user rws
+           chmod a+rwx <filename> #to give permission to user and group and others rwx
+           chmod o+rwx -R <filename> #to give permissions to others rwx including sub directories
+           chmod +t <filename> #to set sticky bit to user
+         octal Mode:
+           rwx - read write execute
+           r = 4 
+           w = 2 
+           x = 1
+           no permission = 0
+          
+           chmod 777 <filename> #to give full access rwxrwxrwx to user group others
+           chmod 764 <filename> #to give full access rwxrwxrwx to user, rw to group, r to others
+           chmod 764 -R <filename> #to give full access rwx to user, rw to group, r to others
+           including all the files inside directory
+           chmod 4777 <filename> #to give full access rwsrwxrwx to user group other and set uid to user
+           chmod 2777 <filename> #to give full access rwxrwSrwx to user group other and set gid to group
+           chmod 6777 <filename> #to give full access rwsrwSrwx to user group other and set uid and gid to user and group
+           chmod 1777 <filename> #to give full access rwxrwxrwT to user group other and sticky bit only to user
+           chmod 7777 <filename> #to give full access rwx to user group other and set and sticky bit to user,owner,group
+         
+         t - sticky bit:
+             it is used to prevent premissions for other users. other than owner no one can modify it
+         s - set uid/ gid:     
+           user/owner permission bit means it runs with that set id
+   - locate Read and use System documentation with man, info and  usr/share/doc
+       mandb:
+       apropos:
+       info:
+       usr/share/doc:
+       usr/share/info:
+       updatedb: and then use locate to find the file
+       locate: this will work if we use updatedb command before it
+       which:
+       whereis:
+       rpm -qd <packagename> #q query and d doc
+       find:
+      
+   - finding files with locate and find
+  Running-System-Operations:
+   - boot/reboot/shutdown systems
+   - boot system into differetn targets
+   - interrupt the boot process and gain access to system
+   - adjust process priority and kill process
+   - locate a dn interpret system log files
+   - start/stop/check the status of system network services
+   - securely transfer files between systems
+  Configure-local-storage:
+   - list create/delete partitions on MBR/GPT disks
+   - using LVM
+   - Configure systems to mount FILE SYSTEMS at boot by using UUID or label
+   - Add new partition and logical volumes and swap to a system NON destructively
+  Create and configure FILE SYSTEMS:
+   - Create/mount/unmount  and use VFAT/EXT4/XFS File Systems
+   - Mount/Unmount CIFS/NFS network file systems
+   - Extend existing logical volumes
+   - create and confgure set -GID directories and colloborations
+   - Create and manage ACL
+   - Diagonise and correct File permission problems
+  Deploy Configure and Maintain System:
+   - Configure networking and host name resolutions statically/dynamically :troubles
+   - networking and host name resolutions statically/dynamically : Network Manager
+   - networking and host name resolutions statically/dynamically : host Name configuration
+   - Schedule task using at and cron
+   - Start/stop/configure services automatically at boot
+   - Configre systems to boot into specific target automatically
+   - install RHEL automatically using quick start
+   - Configure a physical machine to host virtual guests
+   - configure a sytem to use Time Services
+   - Install and update packages from redhat n/w YUM/RPM REPO 
+   - Managing repositories
+   - Configuring local repositories
+   - Configuring local repositories using GPG keys
+   - Update kernel package appropriately to ensure bootable system
+   - modify system boot loader
+  Manage Users and Groups:
+   - Create/delete/modify Local user Accounts
+   - Change passwords and adjust passwords aging for specific users
+   - Create/delete/modify Local groups and memberships
+   - Using set GID on directories
+  Manage Securities:
+   - Configure firewall settings usign availabel firewall utilities
+   - Configure key based authentication for SSH
+   - Intro to SE Linux
+   - Set Enforcing and permissive modes for SE Linux
+   - List and identify SELinux Files and Process Contexts
+   - Restore default file Contexts
+   - Use boolean Setting to modify Systems SELinux Settings
+   - Diagnose and address Routine SELinux Policy Violations
+---
+ LFCS: 3 years
+  Essential Commands – 25%:
+   - Log into local & remote graphical and text mode consoles
+   - Search for files
+   - Evaluate and compare the basic file system features and options
+   - Compare and manipulate file content
+   - Use input-output redirection (e.g. >, >>, |, 2>)
+   - Analyze text using basic regular expressions
+   - Archive, backup, compress, unpack, and uncompress files
+   - Create, delete, copy, and move files and directories
+   - Create and manage hard and soft links
+   - List, set, and change standard file permissions
+   - Read, and use system documentation
+   - Manage access to the root account
+   
+  Operation of Running Systems – 20%:
+   - Boot, reboot, and shut down a system safely
+   - Boot or change system into different operating modes
+   - Install, configure and troubleshoot bootloaders
+   - Diagnose and manage processes
+   - Locate and analyze system log files
+   - Schedule tasks to run at a set date and time
+   - Verify completion of scheduled jobs
+   - Update software to provide required functionality and security
+   - Verify the integrity and availability of resources
+   - Verify the integrity and availability of key processes
+   - Change kernel runtime parameters, persistent and non-persistent
+   - Use scripting to automate system maintenance tasks
+   - Manage the startup process and services (In Services Configuration)
+   - List and identify SELinux/AppArmor file and process contexts 
+   - Manage Software 
+   - Identify the component of a Linux distribution that a file belongs to
+   
+  User and Group Management – 10%:
+   - Create, delete, and modify local user accounts
+   - Create, delete, and modify local groups and group memberships
+   - Manage system-wide environment profiles
+   - Manage template user environment
+   - Configure user resource limits
+   - Manage user privileges
+   - Configure PAM
+  
+  Networking – 12%:
+   - Configure networking and hostname resolution statically or dynamically
+   - Configure network services to start automatically at boot
+   - Implement packet filtering
+   - Start, stop, and check the status of network services
+   - Statically route IP traffic
+   - Synchronize time using other network peers
+  
+  Service Configuration – 20%:
+   - Configure a caching DNS server
+   - Maintain a DNS zone
+   - Configure email aliases
+   - Configure SSH servers and clients
+   - Restrict access to the HTTP proxy server
+   - Configure an IMAP and IMAPS service
+   - Query and modify the behavior of system services at various operating modes
+   - Configure an HTTP server
+   - Configure HTTP server log files
+   - Configure a database server
+   - Restrict access to a web page
+   - Manage and configure containers
+   - Manage and configure Virtual Machines
+  
+  Storage Management – 13%:
+   - List, create, delete, and modify physical storage partitions
+   - Manage and configure LVM storage
+   - Create and configure encrypted storage
+   - Configure systems to mount file systems at or during boot
+   - Configure and manage swap space
+   - Create and manage RAID devices
+   - Configure systems to mount file systems on demand
+   - Create, manage and diagnose advanced file system permissions
+   - Setup user and group disk quotas for filesystems
+   - Create and configure file systems
+---
+ 
