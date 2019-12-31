@@ -56,6 +56,13 @@ echo "Installing kube Master - core DNS - calico network and its policy step- 10
 echo "https://kubernetes.io/docs/concepts/cluster-administration/addons/";
 echo "Applying https://docs.projectcalico.org/v3.11/manifests/calico.yaml";
 sudo kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml;
+
+echo "Creating a directory for kube configuration for current user!!";
+sudo mkdir -p $HOME/.kube;
+echo "Copying the necessary admin configuration files...";
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config;
+echo "Assigning proper permission to access the kube folder.";
+sudo chown $(id -u):$(id -g) $HOME/.kube/config;
 echo "=================================================================";
 echo " congrats!! Installing kube Master - successfully 10/10  ";
 echo "=================================================================";
