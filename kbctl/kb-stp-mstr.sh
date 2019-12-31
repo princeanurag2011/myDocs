@@ -51,7 +51,7 @@ sudo systemctl enable docker.service;
 echo "=================================================================";
 echo "Installing Kube Master.. 9/9"
 echo "=================================================================";
-sudo kubeadm init;
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16;
 echo "Installing kube Master - core DNS - calico network and its policy step- 10/10";
 echo "https://kubernetes.io/docs/concepts/cluster-administration/addons/";
 echo "=================================================================";
