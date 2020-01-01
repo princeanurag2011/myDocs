@@ -1,0 +1,17 @@
+file 'tmp/welcome.txt' do
+action: create
+content "Welcome to chef"
+end
+
+
+To check the written recipes 
+cookstyle 
+
+
+to run the cookbook locally  -z zeromode
+    chef-client -z --runlist  'recipe[mycookbook]'
+	
+	
+package 'httpd' do
+action :install
+end

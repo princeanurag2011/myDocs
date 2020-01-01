@@ -1,0 +1,17 @@
+1. ec2 instance  putty 
+2. ext loadbalancer
+3. internal loadbalancer
+4. add external SSD  ec2
+5. ec2-backup
+6. external ssd backup
+7. apache web  -- auto -- man
+8. apache tomcat  -- auto -- man
+9. proxypass web   ssl redirection 2 ssl
+10. jk_module 
+11. nagios   -- auto -- man
+12. nagios plug in
+
+practice linux commands
+
+.MY;(3F$z%
+

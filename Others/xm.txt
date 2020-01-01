@@ -1,0 +1,79 @@
+Configuration managemment tools
+PLATFORM INDEPENDENT
+
+saltstack -push   python    2011   saltstack
+
+puppet -pull      ruby		2006 	puppet labs        DOMAIN SPECIFIC LANG. (DSL)
+chef -pull        ruby      2009    opscade community       "
+ansible - push     python   2013    RedHat                 YMN
+
+
+nagios remote plugin  (nrpe)
+
+
+
+CHEF  FRAMEWORK
+1WRKSTATION  
+2.CHEF SERVER 
+3.NODE -NODE ---> CHEF CLIENT (AGENT ) --->  VM /PHYSiCAL SYSTEM / CLOUD
+
+FLAVORS - OPEN SOURCE 
+        - ENTERPSRISE 
+		- HOSTED CHEF SERVER   (SAAS MODEL)
+		
+		
+ 
+chef components
+work station   -
+1.chef repo	
+2. knife
+
+chef server   - 
+1.nginx	
+2.search index
+3.postgresql
+4.cookbooks
+5.exchef
+6.bookshelf
+7.node objects
+8. policies
+9.webUI
+10. message
+
+client node
+chef -client 
+ohai
+
+CCR
+#chef client   - run per minute.
+M3 LARGE.. CONFIGURATION
+64-bit -architecture.
+2 cpu core.
+4gb ram
+
+--> 500 NODES IN 30 MIN.
+THEN CCR = 6.66
+
+
+HA CONFIG  --> CCR =333   (10K NODES)
+
+
+=================================================================
+
+
+
+WORKSTATION --> 
+-EC2 
+-CHEF DK RPM (deveopment Kit)
+-KNIFE 
+      ( PEM FILE )
+	 chef repo 
+	 
+HOSTED CHEF -->
+CHEF IO -
+- AN ORGANIZATION
+   - ( starter kit ) policies (zip) (cookbook)  -----> register with node remotely
+   - cookbooks downloaded in  /var/chef/cache/  in linux machines..
+   - bootstrapping ---> chef setup
+   
+   
