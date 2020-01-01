@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: ReplicaSet
 metadata:
-  name: web-app-rc-1
+  name: webapp-rs-1
   labels:
    env: dev
    app: webapp-1
@@ -13,6 +13,7 @@ spec:
       labels:
         env: dev
         type: web
+        app: webapp-1
     spec:
       containers:
         - name: nginx-webserver
