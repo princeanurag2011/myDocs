@@ -497,7 +497,7 @@
  ####changing version no. and labels etc., then only deployment revision is created 
  ####other updates like scaling the deployment don't create  deployment revision.
  
- 
+--------------------------------------------------------------------------
 --- Others
  # List all pods in ps output format.
  kubectl get pods
@@ -506,7 +506,7 @@
  kubectl get pods -o wide
 
  # List all pods using labels
- kubectl get pods -l environement=production, type=front-end
+ kubectl get pods -l environment=production, type=front-end
 
  # List a single replication controller with specified NAME in ps output format.
  kubectl get replicationcontroller web

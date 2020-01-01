@@ -1,21 +1,23 @@
-master $ kubectl
-kubectl controls the Kubernetes cluster manager.
+---
+  master $ kubectl
+  kubectl controls the Kubernetes cluster manager.
 
- Find more information at: https://kubernetes.io/docs/reference/kubectl/overview/
+Find more information at:  
+   - https://kubernetes.io/docs/reference/kubectl/overview/
 
-Basic Commands (Beginner):
+Basic Commands Beginner:
   create         Create a resource from a file or from stdin.
   expose         Take a replication controller, service, deployment or pod and expose it as a new
-Kubernetes Service
+                 Kubernetes Service
   run            Run a particular image on the cluster
   set            Set specific features on objects
 
-Basic Commands (Intermediate):
+Basic Commands Intermediate:
   explain        Documentation of resources
   get            Display one or many resources
   edit           Edit a resource on the server
   delete         Delete resources by filenames, stdin, resources and names, or by resources and
-label selector
+                 label selector
 
 Deploy Commands:
   rollout        Manage the rollout of a resource
@@ -64,3 +66,539 @@ Other Commands:
 
 Usage:
   kubectl [flags] [options]
+
+
+---
+## master $ kubectl create --help
+Create:
+    Create a resource from a file or from stdin.
+
+ JSON and YAML formats are accepted.
+
+ Examples:
+  # Create a pod using the data in pod.json.
+  kubectl create -f ./pod.json
+
+  # Create a pod based on the JSON passed into stdin.
+  cat pod.json | kubectl create -f -
+
+  # Edit the data in docker-registry.yaml in JSON then create the resource using the edited data.
+  kubectl create -f docker-registry.yaml --edit -o json
+
+ Available Commands:
+  clusterrole         Create a ClusterRole.
+  clusterrolebinding  Create a ClusterRoleBinding for a particular ClusterRole
+  configmap           Create a configmap from a local file, directory or literal value
+  cronjob             Create a cronjob with the specified name.
+  deployment          Create a deployment with the specified name.
+  job                 Create a job with the specified name.
+  namespace           Create a namespace with the specified name
+  poddisruptionbudget Create a pod disruption budget with the specified name.
+  priorityclass       Create a priorityclass with the specified name.
+  quota               Create a quota with the specified name.
+  role                Create a role with single rule.
+  rolebinding         Create a RoleBinding for a particular Role or ClusterRole
+  secret              Create a secret using specified subcommand
+  service             Create a service using specified subcommand.
+  serviceaccount      Create a service account with the specified name
+
+ Options:
+      --allow-missing-template-keys=true: If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats.
+      --dry-run=false: If true, only print the object that would be sent, without sending it.
+      --edit=false: Edit the API resource before creating
+  -f, --filename=[]: Filename, directory, or URL to files to use to create the resource
+  -k, --kustomize='': Process the kustomization directory. This flag can't be used together with -f or -R.
+  -o, --output='': Output format.One of:json|yaml|name|go-template|go-template-file|template|templatefile|jsonpath|jsonpath-file.
+      --raw='': Raw URI to POST to the server.  Uses the transport specified by the kubeconfig file.
+      --record=false: Record current kubectl command in the resource annotation. If set to false, do not record the command. If set to true, record the command. If not set, default to updating the existing annotation value only if one already exists.
+  -R, --recursive=false: Process the directory used in -f, --filename recursively. Useful when you want to manage related manifests organized within the same directory.
+      --save-config=false: If true, the configuration of current object will be saved in its annotation. Otherwise, the annotation will be unchanged. This flag is useful when you want to perform kubectl apply on this object in the future.
+  -l, --selector='': Selector (label query) to filter on, supports '=', '==', and '!='.(e.g. -l key1=value1,key2=value2)
+      --template='': Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].
+      --validate=true: If true, use a schema to validate the input before sending it
+      --windows-line-endings=false: Only relevant if --edit=true. Defaults to the line ending native to your platform.
+
+ Usage:
+  kubectl create -f FILENAME [options]
+
+ Use "kubectl <command> --help" for more information about a given command.
+ Use "kubectl options" for a list of global command-line options (applies to all commands).
+---
+## master $ kubectl run
+Run:
+
+  Error: required flag(s) "image" not set
+
+
+ Examples:
+  # Start a single instance of nginx.
+  kubectl run nginx --image=nginx
+
+  # Start a single instance of hazelcast and let the container expose port 5701 .
+  kubectl run hazelcast --image=hazelcast --port=5701
+
+  # Start a single instance of hazelcast and set environment variables "DNS_DOMAIN=cluster" and "POD_NAMESPACE=default" in the container.
+  kubectl run hazelcast --image=hazelcast --env="DNS_DOMAIN=cluster" --env="POD_NAMESPACE=default"
+
+  # Start a single instance of hazelcast and set labels "app=hazelcast" and "env=prod" in the container.
+  kubectl run hazelcast --image=hazelcast --labels="app=hazelcast,env=prod"
+
+  # Start a replicated instance of nginx.
+  kubectl run nginx --image=nginx --replicas=5
+
+  # Dry run. Print the corresponding API objects without creating them.
+  kubectl run nginx --image=nginx --dry-run
+
+  # Start a single instance of nginx, but overload the spec of the deployment with a partial set of values parsed from JSON.
+  kubectl run nginx --image=nginx --overrides='{ "apiVersion": "v1", "spec": { ... } }'
+
+  # Start a pod of busybox and keep it in the foreground, don't restart it if it exits.
+  kubectl run -i -t busybox --image=busybox --restart=Never
+
+  # Start the nginx container using the default command, but use custom arguments (arg1 .. argN) for that command.
+  kubectl run nginx --image=nginx -- <arg1> <arg2> ... <argN>
+
+  # Start the nginx container using a different command and custom arguments.
+  kubectl run nginx --image=nginx --command -- <cmd> <arg1> ... <argN>
+
+  # Start the perl container to compute π to 2000 places and print it out.
+  kubectl run pi --image=perl --restart=OnFailure -- perl -Mbignum=bpi -wle 'print bpi(2000)'
+
+  # Start the cron job to compute π to 2000 places and print it out every 5 minutes.
+  kubectl run pi --schedule="0/5 * * * ?" --image=perl --restart=OnFailure -- perl -Mbignum=bpi -wle 'print bpi(2000)'
+
+ Options:
+      --allow-missing-template-keys=true: If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats.
+      --attach=false: If true, wait for the Pod to start running, and then attach to the Pod as if 'kubectl attach ...' were called.  Default false, unless '-i/--stdin' is set, in which case the default is true. With '--restart=Never' the exit code of the container process is returned.
+      --cascade=true: If true, cascade the deletion of the resources managed by this resource (e.g. Pods created by a ReplicationController).  Default true.
+      --command=false: If true and extra arguments are present, use them as the 'command' field in the container, rather than the 'args' field which is the default.
+      --dry-run=false: If true, only print the object that would be sent, without sending it.
+      --env=[]: Environment variables to set in the container
+      --expose=false: If true, a public, external service is created for the container(s) which are run
+  -f, --filename=[]: to use to replace the resource.
+      --force=false: Only used when grace-period=0. If true, immediately remove resources from API and bypass graceful deletion. Note that immediate deletion of some resources may result in inconsistency or data loss and requires confirmation.
+      --generator='': The name of the API generator to use, see http://kubernetes.io/docs/user-guide/kubectl-conventions/#generators for a list.
+      --grace-period=-1: Period of time in seconds given to the resource to terminate gracefully. Ignored if negative. Set to 1 for immediate shutdown. Can only be set to 0 when --force is true (force deletion).
+      --hostport=-1: The host port mapping for the container port. To demonstrate a single-machine container.
+      --image='': The image for the container to run.
+      --image-pull-policy='': The image pull policy for the container. If left empty, this value will not be specified by the client and defaulted by the server
+  -k, --kustomize='': Process a kustomization directory. This flag can't be used together with -f or -R.
+  -l, --labels='': Comma separated labels to apply to the pod(s). Will override previous values.
+      --leave-stdin-open=false: If the pod is started in interactive mode or with stdin, leave stdin open after the first attach completes. By default, stdin will be closed after the first attach completes.
+      --limits='': The resource requirement limits for this container.  For example, 'cpu=200m,memory=512Mi'.  Note that server side components may assign limitsdepending on the server configuration, such as limit ranges.
+  -o, --output='': Output format. One of: json|yaml|name|go-template|go-template-file|template|templatefile|jsonpath|jsonpath-file.
+      --overrides='': An inline JSON override for the generated object. If this is non-empty, it is used to override the generated object. Requires that the object supply a valid apiVersion field.
+      --pod-running-timeout=1m0s: The length of time (like 5s, 2m, or 3h, higher than zero) to wait until at least one pod is running
+      --port='': The port that this container exposes.  If --expose is true, this is also the port used by the service that is created.
+      --quiet=false: If true, suppress prompt messages.
+      --record=false: Record current kubectl command in the resource annotation. If set to false, do not record the command. If set to true, record the command. If not set, default to updating the existing annotation value only if one already exists.
+  -R, --recursive=false: Process the directory used in -f, --filename recursively. Useful when you want to manage related manifests organized within the same directory.
+  -r, --replicas=1: Number of replicas to create for this container. Default is 1.
+      --requests='': The resource requirement requests for this container.  For example, 'cpu=100m,memory=256Mi'.  Note that server side components may assign requests depending on the server configuration, such as limit ranges.
+      --restart='Always': The restart policy for this Pod.  Legal values [Always, OnFailure, Never].  If set to 'Always' a deployment is created, if set to 'OnFailure' a job is created, if set to 'Never', a regular pod is created. For the latter two --replicas must be 1.  Default 'Always', for CronJobs `Never`.
+      --rm=false: If true, delete resources created in this command for attached containers.
+      --save-config=false: If true, the configuration of current object will be saved in its annotation. Otherwise, the annotation will be unchanged. This flag is useful when you want to perform kubectl apply on this object in the future.
+      --schedule='': A schedule in the Cron format the job should be run with.
+      --service-generator='service/v2': The name of the generator to use for creating a service.  Only used if --expose is true
+      --service-overrides='': An inline JSON override for the generated service object. If this is non-empty, it is used to override the generated object. Requires that the object supply a valid apiVersion field.  Only used if --expose is true.
+      --serviceaccount='': Service account to set in the pod spec
+  -i, --stdin=false: Keep stdin open on the container(s) in the pod, even if nothing is attached.
+      --template='': Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].
+      --timeout=0s: The length of time to wait before giving up on a delete, zero means determine a timeout from the size of the object
+  -t, --tty=false: Allocated a TTY for each container in the pod.
+      --wait=false: If true, wait for resources to be gone before returning. This waits for finalizers.
+
+ Usage:
+  kubectl run NAME --image=image [--env="key=value"] [--port=port] [--replicas=replicas] [--dry-run=bool] [--overrides=inline-json] [--command] -- [COMMAND] [args...] [options]
+
+ Use "kubectl options" for a list of global command-line options (applies to all commands).
+
+ required flag(s) "image" not set
+---
+## master $ kubectl expose --help
+Expose:
+
+ Expose a resource as a new Kubernetes service.
+
+ Looks up a deployment, service, replica set, replication controller or pod by name and uses the selector for that resource as the selector for a new service on the specified port. A deployment or replica set will be exposed as a service only if its selector is convertible to a selector that service supports, i.e. when the selector contains only the matchLabels component. Note that if no port is specified via --port and the exposed resource has multiple ports, all will be re-used by the new service. Also if no labels are specified, the new service will re-use the labels from the resource it exposes.
+
+ Possible resources include (case insensitive):
+
+ pod (po), service (svc), replicationcontroller (rc), deployment (deploy), replicaset (rs)
+
+ Examples:
+  # Create a service for a replicated nginx, which serves on port 80 and connects to the containers on port 8000.
+  kubectl expose rc nginx --port=80 --target-port=8000
+
+  # Create a service for a replication controller identified by type and name specified in "nginx-controller.yaml", which serves on port 80 and connects to the containers on port 8000.
+  kubectl expose -f nginx-controller.yaml --port=80 --target-port=8000
+
+  # Create a service for a pod valid-pod, which serves on port 444 with the name "frontend"
+  kubectl expose pod valid-pod --port=444 --name=frontend
+
+  # Create a second service based on the above service, exposing the container port 8443 as port 443 with the name "nginx-https"
+  kubectl expose service nginx --port=443 --target-port=8443 --name=nginx-https
+
+  # Create a service for a replicated streaming application on port 4100 balancing UDP traffic and named 'video-stream'.
+  kubectl expose rc streamer --port=4100 --protocol=UDP --name=video-stream
+
+  # Create a service for a replicated nginx using replica set, which serves on port 80 and connects to the containers on port 8000.
+  kubectl expose rs nginx --port=80 --target-port=8000
+
+  # Create a service for an nginx deployment, which serves on port 80 and connects to the containers on port 8000.
+  kubectl expose deployment nginx --port=80 --target-port=8000
+
+ Options:
+      --allow-missing-template-keys=true: If true, ignore any errors in templates when a field or map key is missing in
+ the template. Only applies to golang and jsonpath output formats.
+      --cluster-ip='': ClusterIP to be assigned to the service. Leave empty to auto-allocate, or set to 'None' to create a headless service.
+      --dry-run=false: If true, only print the object that would be sent, without sending it.
+      --external-ip='': Additional external IP address (not managed by Kubernetes) to accept for the service. If this IP is routed to a node, the service can be accessed by this IP in addition to its generated service IP.
+  -f, --filename=[]: Filename, directory, or URL to files identifying the resource to expose a service
+      --generator='service/v2': The name of the API generator to use. There are 2 generators: 'service/v1' and 'service/v2'. The only difference between them is that service port in v1 is named 'default', while it is left unnamed in v2. Default is 'service/v2'.
+  -k, --kustomize='': Process the kustomization directory. This flag can't be used together with -f or -R.
+  -l, --labels='': Labels to apply to the service created by this call.
+      --load-balancer-ip='': IP to assign to the LoadBalancer. If empty, an ephemeral IP will be created and used (cloud-provider specific).
+      --name='': The name for the newly created object.
+  -o, --output='': Output format. One of:
+ json|yaml|name|go-template|go-template-file|template|templatefile|jsonpath|jsonpath-file.
+      --overrides='': An inline JSON override for the generated object. If this is non-empty, it is used to override the generated object. Requires that the object supply a valid apiVersion field.
+      --port='': The port that the service should serve on. Copied from the resource being exposed, if unspecified
+      --protocol='': The network protocol for the service to be created. Default is 'TCP'.
+      --record=false: Record current kubectl command in the resource annotation. If set to false, do not record the command. If set to true, record the command. If not set, default to updating the existing annotation value only if one already exists.
+  -R, --recursive=false: Process the directory used in -f, --filename recursively. Useful when you want to manage related manifests organized within the same directory.
+      --save-config=false: If true, the configuration of current object will be saved in its annotation. Otherwise, the annotation will be unchanged. This flag is useful when you want to perform kubectl apply on this object in the future.
+      --selector='': A label selector to use for this service. Only equality-based selector requirements are supported. If empty (the default) infer the selector from the replication controller or replica set.)
+      --session-affinity='': If non-empty, set the session affinity for the service to this; legal values: 'None','ClientIP'
+      --target-port='': Name or number for the port on the container that the service should direct traffic to. Optional.
+      --template='': Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].
+      --type='': Type for this service: ClusterIP, NodePort, LoadBalancer, or ExternalName. Default is 'ClusterIP'.
+
+ Usage:
+  kubectl expose (-f FILENAME | TYPE NAME) [--port=port] [--protocol=TCP|UDP|SCTP] [--target-port=number-or-name][--name=name] [--external-ip=external-ip-of-service] [--type=type] [options]
+  Use "kubectl options" for a list of global command-line options (applies to all commands).
+---
+## master $ kubectl set --help
+Set:
+ Configure application resources
+
+ These commands help you make changes to existing application resources.
+
+ Available Commands:
+  env            Update environment variables on a pod template
+  image          Update image of a pod template
+  resources      Update resource requests/limits on objects with pod templates
+  selector       Set the selector on a resource
+  serviceaccount Update ServiceAccount of a resource
+  subject        Update User, Group or ServiceAccount in a RoleBinding/ClusterRoleBinding
+
+ Usage:
+  kubectl set SUBCOMMAND [options]
+
+ Use "kubectl <command> --help" for more information about a given command.
+ Use "kubectl options" for a list of global command-line options (applies to all commands).
+   env:
+     master $ kubectl set env --help
+     Update environment variables on a pod template.
+
+     List environment variable definitions in one or more pods, pod templates. Add, update, or remove container environment variable definitions in one or more pod templates (within replication controllers or deployment configurations). View or modify the environment variable definitions on all containers in the specified pods or pod templates, or just those that match a wildcard.
+     If "--env -" is passed, environment variables can be read from STDIN using the standard env syntax.
+
+     Possible resources include (case insensitive):
+       pod (po), replicationcontroller (rc), deployment (deploy), daemonset (ds), job, replicaset (rs)
+
+     Examples:
+      # Update deployment 'registry' with a new environment variable
+      kubectl set env deployment/registry STORAGE_DIR=/local
+
+      # List the environment variables defined on a deployments 'sample-build'
+      kubectl set env deployment/sample-build --list
+
+      # List the environment variables defined on all pods
+      kubectl set env pods --all --list
+
+      # Output modified deployment in YAML, and does not alter the object on the server
+      kubectl set env deployment/sample-build STORAGE_DIR=/data -o yaml
+
+      # Update all containers in all replication controllers in the project to have ENV=prod
+      kubectl set env rc --all ENV=prod
+
+      # Import environment from a secret
+      kubectl set env --from=secret/mysecret deployment/myapp
+
+      # Import environment from a config map with a prefix
+      kubectl set env --from=configmap/myconfigmap --prefix=MYSQL_ deployment/myapp
+
+      # Import specific keys from a config map
+      kubectl set env --keys=my-example-key --from=configmap/myconfigmap deployment/myapp
+
+      # Remove the environment variable ENV from container 'c1' in all deployment configs
+      kubectl set env deployments --all --containers="c1" ENV-
+
+      # Remove the environment variable ENV from a deployment definition on disk and
+      # update the deployment config on the server
+      kubectl set env -f deploy.json ENV-
+
+      # Set some of the local shell environment into a deployment config on the server
+      env | grep RAILS_ | kubectl set env -e - deployment/registry
+
+      Options:
+      --all=false: If true, select all resources in the namespace of the specified resource types
+      --allow-missing-template-keys=true: If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats.
+      -c, --containers='*': The names of containers in the selected pod templates to change - may use wildcards
+      --dry-run=false: If true, only print the object that would be sent, without sending it.
+      -e, --env=[]: Specify a key-value pair for an environment variable to set into each container.
+      -f, --filename=[]: Filename, directory, or URL to files the resource to update the env
+      --from='': The name of a resource from which to inject environment variables
+      --keys=[]: Comma-separated list of keys to import from specified resource
+      -k, --kustomize='': Process the kustomization directory. This flag can't be used together with -f or -R.
+      --list=false: If true, display the environment and any changes in the standard format. this flag will removed when we have kubectl view env.
+      --local=false: If true, set env will NOT contact api-server but run locally.
+      -o, --output='': Output format. One of:
+      json|yaml|name|go-template|go-template-file|template|templatefile|jsonpath|jsonpath-file.
+      --overwrite=true: If true, allow environment to be overwritten, otherwise reject updates that overwrite existing environment.
+      --prefix='': Prefix to append to variable names
+      -R, --recursive=false: Process the directory used in -f, --filename recursively. Useful when you want to manage related manifests organized within the same directory.
+      --resolve=false: If true, show secret or configmap references when listing variables
+      -l, --selector='': Selector (label query) to filter on
+      --template='': Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].
+
+      Usage:  kubectl set env RESOURCE/NAME KEY_1=VAL_1 ... KEY_N=VAL_N [options]
+      Use "kubectl options" for a list of global command-line options (applies to all commands).
+
+
+---
+## master $ kubectl explain --help
+
+explain:
+ List the fields for supported resources
+ This command describes the fields associated with each supported API resource. Fields are identified via a simple
+ JSONPath identifier:
+
+  <type>.<fieldName>[.<fieldName>]
+
+ Add the --recursive flag to display all of the fields at once without descriptions. Information about each field is retrieved from the server in OpenAPI format.
+
+ Use "kubectl api-resources" for a complete list of supported resources.Examples:
+  # Get the documentation of the resource and its fields
+  kubectl explain pods
+
+  # Get the documentation of a specific field of a resource
+  kubectl explain pods.spec.containers
+
+ Options:
+      --api-version='': Get different explanations for particular API version
+      --recursive=false: Print the fields of fields (Currently only 1 level deep)
+
+ Usage:
+  kubectl explain RESOURCE [options]
+
+ Use "kubectl options" for a list of global command-line options (applies to all commands).
+---
+## master $ kubectl get --help
+get:
+
+ Display one or many resources
+
+ Prints a table of the most important information about the specified resources. You can filter the list using a label selector and the --selector flag. If the desired resource type is namespaced you will only see results in your current namespace unless you pass --all-namespaces.
+
+ Uninitialized objects are not shown unless --include-uninitialized is passed.
+
+ By specifying the output as 'template' and providing a Go template as the value of the --template flag, you can filter the attributes of the fetched resources.
+
+ Use "kubectl api-resources" for a complete list of supported resources.
+
+ Examples:
+  # List all pods in ps output format.
+  kubectl get pods
+
+  # List all pods in ps output format with more information (such as node name).
+  kubectl get pods -o wide
+
+  # List a single replication controller with specified NAME in ps output format.
+  kubectl get replicationcontroller web
+
+  # List deployments in JSON output format, in the "v1" version of the "apps" API group:
+  kubectl get deployments.v1.apps -o json
+
+  # List a single pod in JSON output format.
+  kubectl get -o json pod web-pod-13je7
+
+  # List a pod identified by type and name specified in "pod.yaml" in JSON output format.
+  kubectl get -f pod.yaml -o json
+
+  # List resources from a directory with kustomization.yaml - e.g. dir/kustomization.yaml.
+  kubectl get -k dir/
+
+  # Return only the phase value of the specified pod.
+  kubectl get -o template pod/web-pod-13je7 --template={{.status.phase}}
+
+  # List resource information in custom columns.
+  kubectl get pod test-pod -o custom-columns=CONTAINER:.spec.containers[0].name,IMAGE:.spec.containers[0].image
+
+  # List all replication controllers and services together in ps output format.
+  kubectl get rc,services
+
+  # List one or more resources by their type and names.
+  kubectl get rc/web service/frontend pods/web-pod-13je7
+
+ Options:
+  -A, --all-namespaces=false: If present, list the requested object(s) across all namespaces. Namespace in current context is ignored even if specified with --namespace.
+      --allow-missing-template-keys=true: If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats.
+      --chunk-size=500: Return large lists in chunks rather than all at once. Pass 0 to disable. This flag is beta and may change in the future.
+      --field-selector='': Selector (field query) to filter on, supports '=', '==', and '!='.(e.g. --field-selector key1=value1,key2=value2). The server only supports a limited number of field queries per type.
+  -f, --filename=[]: Filename, directory, or URL to files identifying the resource to get from a server.
+      --ignore-not-found=false: If the requested object does not exist the command will return exit code 0.
+  -k, --kustomize='': Process the kustomization directory. This flag can't be used together with -f or -R.
+  -L, --label-columns=[]: Accepts a comma separated list of labels that are going to be presented as columns. Names are case-sensitive. You can also use multiple flag options like -L label1 -L label2...
+      --no-headers=false: When using the default or custom-column output format, don't print headers (default print headers).
+  -o, --output='': Output format. One of: json|yaml|wide|name|custom-columns=...|custom-columns-file=...|go-template=...|go-template-file=...|jsonpath=...|jsonpath-file=...
+ See custom columns [http://kubernetes.io/docs/user-guide/kubectl-overview/#custom-columns], golang template [http://golang.org/pkg/text/template/#pkg-overview] and jsonpath template
+ [http://kubernetes.io/docs/user-guide/jsonpath].
+      --raw='': Raw URI to request from the server.  Uses the transport specified by the kubeconfig file.
+  -R, --recursive=false: Process the directory used in -f, --filename recursively. Useful when you want to manage related manifests organized within the same directory.
+  -l, --selector='': Selector (label query) to filter on, supports '=', '==', and '!='.(e.g. -l key1=value1,key2=value2)
+      --server-print=true: If true, have the server return the appropriate table output. Supports extension APIs and CRDs.
+      --show-kind=false: If present, list the resource type for the requested object(s).
+      --show-labels=false: When printing, show all labels as the last column (default hide labels column)
+      --sort-by='': If non-empty, sort list types using this field specification.  The field specification is expressed as a JSONPath expression (e.g. '{.metadata.name}'). The field in the API resource specified by this JSONPath expression must be an integer or a string.
+      --template='': Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].
+  -w, --watch=false: After listing/getting the requested object, watch for changes. Uninitialized objects are excluded if no object name is provided.
+      --watch-only=false: Watch for changes to the requested object(s), without listing/getting first.
+
+ Usage:
+  kubectl get
+ [(-o|--output=)json|yaml|wide|custom-columns=...|custom-columns-file=...|go-template=...|go-template-file=...|jsonpath=...|jsonpath-file=...]
+ (TYPE[.VERSION][.GROUP] [NAME | -l label] | TYPE[.VERSION][.GROUP]/NAME ...) [flags] [options]
+
+ Use "kubectl options" for a list of global command-line options (applies to all commands).
+
+---
+## master $ kubectl edit --help
+edit:
+ Edit a resource from the default editor.
+
+ The edit command allows you to directly edit any API resource you can retrieve via the command line tools. It will open the editor defined by your KUBE_EDITOR, or EDITOR environment variables, or fall back to 'vi' for Linux or 'notepad' for Windows. You can edit multiple objects, although changes are applied one at a time. The command accepts filenames as well as command line arguments, although the files you point to must be previously saved versions of resources.
+
+ Editing is done with the API version used to fetch the resource. To edit using a specific API version, fully-qualify the resource, version, and group.
+ The default format is YAML. To edit in JSON, specify "-o json".
+ The flag --windows-line-endings can be used to force Windows line endings, otherwise the default for your operating system will be used.
+
+ In the event an error occurs while updating, a temporary file will be created on disk that contains your unapplied changes. The most common error when updating a resource is another editor changing the resource on the server. When this occurs, you will have to apply your changes to the newer version of the resource, or update your temporary saved copy to include the latest resource version.
+
+ Examples:
+  # Edit the service named 'docker-registry':
+  kubectl edit svc/docker-registry
+
+  # Use an alternative editor
+  KUBE_EDITOR="nano" kubectl edit svc/docker-registry
+
+  # Edit the job 'myjob' in JSON using the v1 API format:
+  kubectl edit job.v1.batch/myjob -o json
+
+  # Edit the deployment 'mydeployment' in YAML and save the modified config in its annotation:
+  kubectl edit deployment/mydeployment -o yaml --save-config
+
+ Options:
+      --allow-missing-template-keys=true: If true, ignore any errors in templates when a field or map key is missing in
+ the template. Only applies to golang and jsonpath output formats.
+  -f, --filename=[]: Filename, directory, or URL to files to use to edit the resource
+  -k, --kustomize='': Process the kustomization directory. This flag can't be used together with -f or -R.
+  -o, --output='': Output format. One of:
+ json|yaml|name|go-template|go-template-file|template|templatefile|jsonpath|jsonpath-file.
+      --output-patch=false: Output the patch if the resource is edited.
+      --record=false: Record current kubectl command in the resource annotation. If set to false, do not record the command. If set to true, record the command. If not set, default to updating the existing annotation value only if one already exists.
+  -R, --recursive=false: Process the directory used in -f, --filename recursively. Useful when you want to manage related manifests organized within the same directory.
+      --save-config=false: If true, the configuration of current object will be saved in its annotation. Otherwise, the annotation will be unchanged. This flag is useful when you want to perform kubectl apply on this object in the future.
+      --template='': Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].
+      --validate=true: If true, use a schema to validate the input before sending it
+      --windows-line-endings=false: Defaults to the line ending native to your platform.
+
+ Usage:
+  kubectl edit (RESOURCE/NAME | -f FILENAME) [options]
+
+ Use "kubectl options" for a list of global command-line options (applies to all commands).
+---
+## master $ kubectl edit --help
+
+delete:
+ 
+ Delete resources by filenames, stdin, resources and names, or by resources and label selector.
+
+ JSON and YAML formats are accepted. Only one type of the arguments may be specified: filenames, resources and names, or
+ resources and label selector.
+
+ Some resources, such as pods, support graceful deletion. These resources define a default period before they are
+ forcibly terminated (the grace period) but you may override that value with the --grace-period flag, or pass --now to
+ set a grace-period of 1. Because these resources often represent entities in the cluster, deletion may not be
+ acknowledged immediately. If the node hosting a pod is down or cannot reach the API server, termination may take
+ significantly longer than the grace period. To force delete a resource, you must pass a grace period of 0 and specify
+ the --force flag.
+
+ IMPORTANT: Force deleting pods does not wait for confirmation that the pod's processes have been terminated, which can
+ leave those processes running until the node detects the deletion and completes graceful deletion. If your processes use
+ shared storage or talk to a remote API and depend on the name of the pod to identify themselves, force deleting those
+ pods may result in multiple processes running on different machines using the same identification which may lead to data
+ corruption or inconsistency. Only force delete pods when you are sure the pod is terminated, or if your application can
+ tolerate multiple copies of the same pod running at once. Also, if you force delete pods the scheduler may place new
+ pods on those nodes before the node has released those resources and causing those pods to be evicted immediately.
+
+ Note that the delete command does NOT do resource version checks, so if someone submits an update to a resource right
+ when you submit a delete, their update will be lost along with the rest of the resource.
+
+ Examples:
+  # Delete a pod using the type and name specified in pod.json.
+  kubectl delete -f ./pod.json
+
+  # Delete resources from a directory containing kustomization.yaml - e.g. dir/kustomization.yaml.
+  kubectl delete -k dir
+
+  # Delete a pod based on the type and name in the JSON passed into stdin.
+  cat pod.json | kubectl delete -f -
+
+  # Delete pods and services with same names "baz" and "foo"
+  kubectl delete pod,service baz foo
+
+  # Delete pods and services with label name=myLabel.
+  kubectl delete pods,services -l name=myLabel
+
+  # Delete a pod with minimal delay
+  kubectl delete pod foo --now
+
+  # Force delete a pod on a dead node
+  kubectl delete pod foo --grace-period=0 --force
+
+  # Delete all pods
+  kubectl delete pods --all
+
+ Options:
+      --all=false: Delete all resources, including uninitialized ones, in the namespace of the specified resource types.
+  -A, --all-namespaces=false: If present, list the requested object(s) across all namespaces. Namespace in current
+ context is ignored even if specified with --namespace.
+      --cascade=true: If true, cascade the deletion of the resources managed by this resource (e.g. Pods created by a
+ ReplicationController).  Default true.
+      --field-selector='': Selector (field query) to filter on, supports '=', '==', and '!='.(e.g. --field-selector
+ key1=value1,key2=value2). The server only supports a limited number of field queries per type.
+  -f, --filename=[]: containing the resource to delete.
+      --force=false: Only used when grace-period=0. If true, immediately remove resources from API and bypass graceful
+ deletion. Note that immediate deletion of some resources may result in inconsistency or data loss and requires
+ confirmation.
+      --grace-period=-1: Period of time in seconds given to the resource to terminate gracefully. Ignored if negative.
+ Set to 1 for immediate shutdown. Can only be set to 0 when --force is true (force deletion).
+      --ignore-not-found=false: Treat "resource not found" as a successful delete. Defaults to "true" when --all is
+ specified.
+  -k, --kustomize='': Process a kustomization directory. This flag can't be used together with -f or -R.
+      --now=false: If true, resources are signaled for immediate shutdown (same as --grace-period=1).
+  -o, --output='': Output mode. Use "-o name" for shorter output (resource/name).
+  -R, --recursive=false: Process the directory used in -f, --filename recursively. Useful when you want to manage
+ related manifests organized within the same directory.
+  -l, --selector='': Selector (label query) to filter on, not including uninitialized ones.
+      --timeout=0s: The length of time to wait before giving up on a delete, zero means determine a timeout from the
+ size of the object
+      --wait=true: If true, wait for resources to be gone before returning. This waits for finalizers.
+
+ Usage:
+  kubectl delete ([-f FILENAME] | [-k DIRECTORY] | TYPE [(NAME | -l label | --all)]) [options]
+
+ Use "kubectl options" for a list of global command-line options (applies to all commands).
+---

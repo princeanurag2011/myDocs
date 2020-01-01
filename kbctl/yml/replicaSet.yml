@@ -9,14 +9,15 @@ spec:
   replicas: 3
   template:
     metadata:
-      name: web-app-1
-      labels:
-        env: dev
-        type: web
-        app: webapp-1
+       name: webapp-1
+       labels:
+         env: dev
+         type: web
+         app: webapp-1
     spec:
       containers:
         - name: nginx-webserver
-          image: nginx:latest   
+          image: nginx:latest
   selector:
     matchLabels:
+               app: webapp-1

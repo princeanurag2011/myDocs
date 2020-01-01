@@ -11,7 +11,7 @@ spec:
       app: webapp-1
   template:
     metadata:
-      name: web-app-1
+      name: webapp-1
       labels:
         env: dev
         type: web
