@@ -192,7 +192,12 @@
 
 #To create replicaset using above file.
  kubectl create -f replicaset-definition.yml
+#To edit the replicaSet(say rs name: webserver-replicaset)
+ kubectl edit rs <replicaset-name>
+ #ex: kubectl edit rs webserver-replicaset
 
+#To export replicaset to yaml file
+ kubectl get rs webserver-replicaset -o yaml > rs.yml
 #-----------------------------------------------
 #To increase the no. of replicas to 6 
 #change the replicas to 6 in the above file
