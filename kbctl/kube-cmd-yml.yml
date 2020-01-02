@@ -12,7 +12,7 @@ NameSpaces:
 #To see list of Namespaces:
   kubectl get namespaces
   
-# To create a namespace (say dev)
+# To create a namespace (say dev) 
  kubectl create namespace dev
  
 # To create namespace usign YML file:
