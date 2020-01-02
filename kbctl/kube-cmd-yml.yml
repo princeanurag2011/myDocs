@@ -1,8 +1,65 @@
-# YAML IN KUBERENETES BASIC
-# EVERY YAML FILE SHOULD HAVE FOLLOWING
+====================== ====================== ====================== 
+                       Namespaces
+====================== ====================== ======================
+
+NameSpaces:
+  kubeadm creates 3 namespaces by default:
+    - kube-system
+    - default
+    - kube-public
+  
+# namespaces
+#To see list of Namespaces:
+  kubectl get namespaces
+  
+# To create a namespace (say dev)
+ kubectl create namespace dev
+ 
+# To create namespace usign YML file:
+kubectl create -f namespace-dev.yml #check the yaml file below
+
+-------namespace-dev.yml-------------------------
+  --- 
+  #namespace-dev.yml
+  apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: dev
+-------------------------------    
+
+================Namespace-quotas==============================
+ quota limits: Set resource limits to namespace
+ 
+ # To create namespace usign YML file:
+  --- 
+  #namespace-dev-with-quota-limits.yml
+  apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: dev
+  spec:
+    hard:
+      pods: "10"
+      requests.cpu: "4"
+      requests.memory: 5Gi
+      limits.cpu: "10"
+      limits.memory: "10Gi"
+ ==============================================================
 ====================== ====================== ====================== 
                        BASIC POD CREATION
 ====================== ====================== ====================== 
+#To set the default Namespace (say dev)
+  kubectl config set-context $(kubectl config current-context)  --namespace=dev
+# YAML IN KUBERENETES BASIC
+# EVERY YAML FILE SHOULD HAVE FOLLOWING
+ ---
+ apiVersion:
+ kind:
+ metadata:
+ 
+ spec:
+
+=========================================================
 --- pod-definition.yml------and pod creation-----------------------
  apiVersion: v1
  kind: Pod 
@@ -14,7 +71,9 @@
  metadata: 
     # this is the name assigned to pod ; 
     # if replicas are created additional hashcode will be added to same name
-   name: myapp-pod 
+   name: myapp-pod
+   #if we don't provide namespace tag here ,  then by default pods gets created in 'default' namespace
+   #namespace: dev 
    labels:
      app: myapp
      type: front-end
@@ -29,15 +88,22 @@
      availableZone: 1a
      
 ------------commands to create pods--------------------------
+#By default pods gets created in default namespace
 #To create pod using above file
  kubectl create -f pod-definition.yml
 #note: here -f is used to provide file as input
 #or
  kubectl run myapp-pod --image=nginx --generator=run-pod/v1
 
+#To create pod in a specific namespace (say dev)
+ kubectl create -f pod-definition.yml --namespace=dev
+
 #To see list of pods with high level information
  kubectl get pods
 
+#To see list of pods in a specific namespace (say dev)
+ kubectl get pods --namespace=dev
+ 
 #To see list of pods with detailed information
  kubectl get pods -o wide
 

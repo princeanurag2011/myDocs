@@ -251,6 +251,7 @@ Kube Control manager:
        if any pods becomes unhealthy  recreates them on other nodes
 
 Kube Schdeuler:
+  - responsible for assigning nodes to the pods 
   - Installation:
        - manual: 
            wget https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kube-scheduler
@@ -259,19 +260,45 @@ Kube Schdeuler:
            create a pod
            #to check : cat /etc/kubernetes/manifests/kube-scheduler.yaml
 Kubelet:
+   - An agent that runs on each node in the cluster. 
+   - It makes sure that containers are running in a pod.
+   - The kubelet takes a set of PodSpecs that are provided through various mechanisms 
+      and ensures that the containers described in those PodSpecs are running and healthy. 
+   - The kubelet doesn’t manage containers which were not created by Kubernetes.
    - Installation: 
        - manual:
           wget https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kubelet
        - kubeadm:
           does not install, we have to install on node 
 KubeProxy:
+   - kube-proxy is a network proxy that runs on each node in your cluster, 
+      implementing part of the Kubernetes Service concept.
+   - kube-proxy maintains network rules on nodes. 
+   - These network rules allow network communication to yourPods from 
+      network sessions inside or outside of your cluster.
    - Installation:
        - manual: 
          wget https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kube-proxy
        - kubeadm:
-         creates pods and deploy them as a daemonset
-
+           - creates pods and deploy them as a daemonset
+ ---
  
+NameSpaces:
+  kubeadm create 3 namespaces by default
+    - kube-system
+    - default
+    - kube-public
+    
+ #within same namespace (default namespace)
+ mysql.connect("db-service")
+ 
+ #with other namespace (say namespace = dev)
+  mysql.connect("db-service.dev.svc.cluster.local")
+   #db-service = servicename
+   #dev =namespace
+   #svc = service
+   # cluster.local =domain
+  
 
 
 
