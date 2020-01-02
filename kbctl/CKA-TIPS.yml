@@ -40,7 +40,10 @@ Deployment:
      kubectl run --generator=deployment/v1beta1 nginx --image=nginx --dry-run --replicas=4 -o yaml
        #or 
     kubectl create deployment --image=nginx nginx --dry-run  --replicas=4 -o yaml
-    
+    #or
+    kubectl scale deployment/webapp --replicas=3
+    #or
+   kubectl expose deployment webapp --type=NodePort --port=8080 --name=webapp-service --dry-run -o yaml > webapp-service.yaml
    #Save it to a file - (If you need to modify or add some other details before actually creating it)
      kubectl run --generator=deployment/v1beta1 nginx --image=nginx --dry-run --replicas=4 -o yaml > nginx-deployment.yaml
         #or 
