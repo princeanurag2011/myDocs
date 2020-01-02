@@ -569,6 +569,153 @@ kubectl create -f namespace-dev.yml #check the yaml file below
  ####other updates like scaling the deployment don't create  deployment revision.
  
 --------------------------------------------------------------------------
+=======================================================================
+                                                                     			Scheduling 
+=======================================================================
+---
+ManualSheduling:
+
+   If there is no scheduler, Then pods can't be placed on nodes.
+   To schedule pods manually we need to specify 'nodeName' in the definition file.
+   note: we can't specify the nodeName to the running pod. We need to delete recreate deleted pod.
+  ---------------------------------------------------------------------------------------------
+NodeSelector:
+ ---
+ apiVersion:
+ kind:
+ metadata:
+ 
+ spec:
+    nodeName: 
+ 
+---------------------------------------------------------------------------------------------
+  TAINTS and TOLERATIONS:
+      In CLUSTER ENV:  
+        No pods are deployed/scheduled on Master default taint is applied on Master;
+         To check the taints on masternode (say MasterNodeName = kubemaster)
+           #kubectl describe node kubemaster | grep Taint
+         
+     - Taints are applied to Nodes:
+            - taint-effect:
+                   - NoSchedule: 
+                           pods will not be placed on node
+                   - PreferNoSchedule:
+                           pods will not be placed on node (but no garuntee)
+                   - NoExecute:
+                           - pods will not be placed if pods tolerance is not compatible
+                           - existing pods will be evicted that doesn't meet the tolerance 
+     - Tolerations are applied to Pods:
+   #To apply taints to nodes:
+     kubectl taint nodes <node-name> <key>=<value>:taint-effect
+     #ex: kubectl taint nodes node01 app=blue:NoSchedule
+ #To apply taints to pod -definition:
+  ---------------------------------------------------------------------------------------------
+  ---
+  #pod-def-with-tolerance.yml
+  apiVersion:
+  kind:
+  metadata:
+ 
+  spec:
+    containers:
+     
+    tolerations:
+      - key: "app"
+         operator: "Equal"
+         value: "blue"
+         effect: "No Schedule"
+   ---------------------------------------------------------------------------------------------
+
+NodeSelector:
+   
+ #To add labels to nodes
+   kubectl label nodes <node-name> <label-key>=<label-value>
+    #ex: kubectl label nodes node-1 size=large
+
+ #To add nodeSelector in pod definition files:
+ ---
+  #pod-def-with-nodeSelector.yml
+        apiVersion:
+        kind:
+  		metadata:
+ 
+        spec:
+          containers:
+            
+          nodeSelector:
+   --------------------------------------------------------------------------------------------------  
+NodeAffinity:
+    
+    Types: (# availableNOW)
+      - requiredDuringSchedulingIgnoredDuringExecution
+      - preferredDuringSchedulingIgnoredDuringExecution
+      - requiredDuringSchedulingRequiredDuringExecution (#may come in future)
+
+   note: - DuringScheduling -> pod is created for the first time on that node
+             - DuringScheduling - > pod already running on the node   
+---          
+  #pod-def-with-nodeaffinity.yml
+        apiVersion:
+        kind:
+  		metadata:
+ 
+        spec:
+          containers:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpression:
+                       - key: size
+                          operator: Exists
+                        #operator: In
+                        #operator: NotIn
+                             values: 
+                              - Large
+-------------------------------------------------------------------------------------------------------
+ResourceLimits:
+  
+  ByDefault : each pod can use resources upto 1 vCPU and 512 Mi of RAM 
+  but these limits can be modified using below tags:  
+ --------------------------------------------------------------------------------------------------------
+ ---
+  apiVersion:
+  kind:
+  metadata:
+  
+  spec:
+    containers:
+      - name: 
+         image:
+         ports:
+           - containerPort: 8080
+         resources:
+           requests:
+              memory: "1 Gi"
+              cpu: 1
+           limits:
+              memory: "2 Gi"
+              cpu: 2
+-------------------------------------------------------------------     
+
+DaemonSets:
+
+StaticPods:
+  - kubelet can run static pods without any cluster or master arrangement.
+  - static pods can be deployed using yaml manifest files
+  - yaml files should be placed in this location for scheduling -> etc/kubernetes/manifests
+  - kubelet.service  -> contains the 'pod-manifest-path' by default  
+  - kubelet.service  -> other way to  we can add '--config=kubeconfig.yml' and 
+     in the 'kubeconfig.yml' -> mention 'staticPodPath: /etc/kubernetes/manifests'
+   
+  
+  
+  
+
+
+               
+
+ 
 --- Others
  # List all pods in ps output format.
  kubectl get pods
@@ -605,5 +752,3 @@ kubectl create -f namespace-dev.yml #check the yaml file below
 
  # List one or more resources by their type and names.
  kubectl get rc/web service/frontend pods/web-pod-13je7
-
-
