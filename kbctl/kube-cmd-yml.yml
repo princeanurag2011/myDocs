@@ -889,6 +889,7 @@ ResourceLimits:
 
 DaemonSets:
  - it creates one replica of pod in each node.
+ - these are coreDNS (say weavenet) and KubeProxy
 
 StaticPods:
   - kubelet can run static pods without any cluster or master arrangement.
@@ -962,31 +963,69 @@ Drain: This is used to move pods from one node to other nodes. It is done in cas
 Cordon: This is used to prevent schedulng new pods on the node.
 Uncordon: This is used to resume scheduling of pods
  
-#To drain the node
+ #To drain the node
   kubectl drain node01 #node01 is the nodename 
 
-#To cordon the node:
+ #To cordon the node:
   kubectl cordon node01
   
-#To uncordon the node.
-  kubectl uncordon node01
+ #To uncordon the node.
+   kubectl uncordon node01
  
-     - will have same version 'by deafult'
-          - kube-apiserver, 
-          - control mgr,
-          - kube scheduler,
-          - kubelet,
-          - kube-proxy,
+     - will have 'same version' (by deafult)
+          - kube-apiserver:
+               #  (can be at X.x version below object s can be at X.x-1 version )
+          - control mgr
+          - kube scheduler
           - kubectl 
-    -  have 'different versions'
+          
+          - kubelet  #(can be at X.x+1 version) kubelet alone can run container even the control plane is down.
+          - kube-proxy 
+    -  will have 'different versions'
          - coreDNS
          - ETCD Cluster
-    
-    
-    
-    
-    
-    
+    #NOTE: Kube api server supports upto 2 minor versions for upgrade
+
+ClusterUpgradeUsingKubeadm:
+  # To upgrade Kubeadm and see the list of upgrades available 
+    kubeadm upgrade plan
+       
+  #To check the running pods
+   kubectl get pods --all-namespaces -o wide
+  
+Masterupgrade:
+         
+       #Run the command to move the pods from master node to other nodes
+         kubectl drain master --ignore-daemonsets
+       #Run the command 
+         apt install kubeadm=1.12.0-00 
+       #and then 
+         kubeadm upgrade apply v1.12.0 
+       #and then to upgrade the kubelet on the master node 
+         apt install kubelet=1.12.0-00 
+       #and then
+         kubectl uncordon master 
+
+NodeUpgrade: 
+       note: NODES SHOULD BE UPGRADED ONLY ONE AT A TIME IN A SEQUENTIAL ORDER TO AVOID DOWNTIME
+      #Run this command to check the node version
+       kubectl get nodes -o wide
+	  #Run the commands: 
+	    kubectl drain node01 --ignore-daemonsets
+	  #Run the commands to connect to node
+        ssh node01
+	  #Run the commands: 
+	    apt install kubeadm=1.12.0-00 
+	  #and then 
+	    apt install kubelet=1.12.0-00
+	  #and then logout of it
+          ctrl+D
+	  # and then in master 
+	    kubeadm upgrade node config --kubelet-version $(kubelet --version | cut -d ' ' -f 2)
+     #Run this command to check the node version
+       kubectl get nodes -o wide
+     #and then to enable rescheduling 
+      kubectl uncordon node01
     
     
     
