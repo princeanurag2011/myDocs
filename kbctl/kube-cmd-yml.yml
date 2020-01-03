@@ -1,3 +1,22 @@
+
+KUBECTL VERSION history:
+   - https://blog.risingstack.com/the-history-of-kubernetes/
+   - https://www.thoughtworks.com/insights/blog/kubernetes-exciting-future-developers-and-infrastructure-engineering-0 
+   - initial release JUNE 7, 2014
+   - V1.0 RELEASED IN 2015 JULY 21
+   - minikube 2016 july
+   - KOPS -  PRODUCTION GRADE kubernetes cluster sep 2016
+   - Windows server support 2016 dec
+   - v 1.6 nov 2017 
+   - GKE 1.10 2018 may 21  general available
+   - V 1.13 RELEASED IN 2018 DEC
+   -  v ALPHA - EXPERIMENTAL (NEW FEAUTURE ARE DISABLED BY DEFAULT )
+   - v BETA  -  TESTED VERSION (NEW FEAUTURE ARE ENABLED BY DEFAULT ) 
+   - v 1.14 - STABLE version production versions
+
+kube-apiserver , control mgr, 	kube scheduler,  kubelet, kue-proxy , kubectl  all have 'same version by deafult'
+coreDNS and ETCD Cluster have 'different versions'
+
 ====================== ====================== ====================== 
                        Namespaces
 ====================== ====================== ======================
@@ -935,9 +954,43 @@ MetricsServer:
    #To see logs of conainers
    kubectl logs -f <podName>	<containerName>
    
+ =======================================================================
+                                                                     			CLUSTER MAINTAINANCE
+=======================================================================
    
-   
-   
+Drain: This is used to move pods from one node to other nodes. It is done in case of patching or OS Upgrades
+Cordon: This is used to prevent schedulng new pods on the node.
+Uncordon: This is used to resume scheduling of pods
+ 
+#To drain the node
+  kubectl drain node01 #node01 is the nodename 
+
+#To cordon the node:
+  kubectl cordon node01
+  
+#To uncordon the node.
+  kubectl uncordon node01
+ 
+     - will have same version 'by deafult'
+          - kube-apiserver, 
+          - control mgr,
+          - kube scheduler,
+          - kubelet,
+          - kube-proxy,
+          - kubectl 
+    -  have 'different versions'
+         - coreDNS
+         - ETCD Cluster
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
 --- Others
  # List all pods in ps output format.
