@@ -1,5 +1,5 @@
-Certification Tip:
-  Here's a tip: 
+CertificationTip:
+ -  Here's a tip: 
   As you might have seen already, it is a bit difficult to create and edit YAML files. 
   Especially in the CLI. During the exam, you might find it difficult to copy and paste YAML files from browser to terminal.
   Using the kubectl run command can help in generating a YAML template. And sometimes, you can even get away 
@@ -15,6 +15,11 @@ Certification Tip:
   note: 
    from kubectl v1.6 --generator is deprecated. In future versions it may be removed. 
    Generators other than run-pod/v1 are deprecated.
+   
+  -  Here's a quick tip. In the exam, you won't know if what you did is correct or not as in the practice tests in this course. 
+      You must verify your work yourself. For example, if the question is to create a pod with a specific image,
+      you must run the the kubectl describe pod command to verify the pod is created with the correct name and correct image.
+   
    
 POD:
  

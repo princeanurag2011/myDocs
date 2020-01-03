@@ -962,17 +962,20 @@ MetricsServer:
 BackupAndRestore:
   
     KUBERNETES backup and restore can be done by VALERO   formely called  ARK by HepIO
-    
+     https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/#backing-up-an-etcd-cluster
+     https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/recovery.md
+     ETCD BACKUP-RESTORE:
+     https://github.com/mmumshad/kubernetes-the-hard-way/blob/master/practice-questions-answers/cluster-maintenance/backup-etcd/etcd-backup-and-restore.md
   - Bakckup ResourcesConfig:
       #To export all application deployments 
          kubectl get all --all-namespaces -o yaml > all-deploy-services.yml
-   - Backup ETCD Cluster 
+   - Backup ETCD Cluster: 
        #To backup etcd cluster
           ETCDCTL_API=3	ectdctl snapshot save <filename.db>
        # To check the status of snaphot version and size
           ETCDCTL_API=3	ectdctl snapshot status <filename.db>
        
-    - Restore ETCD Cluster
+    - Restore ETCD Cluster:
       #Stop the kube-api server
          service kube-apiserver stop
       #and then 
@@ -981,12 +984,15 @@ BackupAndRestore:
           --initial-cluster master-1=<ip-address:portNo>, master-2=<ip-address:portNo> \
           --initial-cluster-token etcd-cluster-1
           --initial-advertise-per-urls  https://${INTERNAL_IP}:2380
-     #and then update following in 'etcd.service' 
+      #and then update following in 'etcd.service' 
          etcd.service=/usr/local/bin/etcd \\
          --initial-cluster-token etcd-cluster-1
          --data-dir=/var/lib/etcd-from-backup
-    #and then restart service
+      #and then restart service
         systemctl daemon-reload
+        service etcd restart
+      # Start the kube-api server
+         service kube-apiserver stop
  
 Drain: This is used to move pods from one node to other nodes. It is done in case of patching or OS Upgrades
 Cordon: This is used to prevent schedulng new pods on the node.
