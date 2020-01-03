@@ -955,13 +955,42 @@ MetricsServer:
    #To see logs of conainers
    kubectl logs -f <podName>	<containerName>
    
- =======================================================================
-                                                                     			CLUSTER MAINTAINANCE
 =======================================================================
-   
+                                                                     			CLUSTER MAINTAINANCE
+ =======================================================================
+ 
+BackupAndRestore:
+  
+    KUBERNETES backup and restore can be done by VALERO   formely called  ARK by HepIO
+    
+  - Bakckup ResourcesConfig:
+      #To export all application deployments 
+         kubectl get all --all-namespaces -o yaml > all-deploy-services.yml
+   - Backup ETCD Cluster 
+       #To backup etcd cluster
+          ETCDCTL_API=3	ectdctl snapshot save <filename.db>
+       # To check the status of snaphot version and size
+          ETCDCTL_API=3	ectdctl snapshot status <filename.db>
+       
+    - Restore ETCD Cluster
+      #Stop the kube-api server
+         service kube-apiserver stop
+      #and then 
+          ETCDCTL_API=3	ectdctl snapshot save <filename.db> \
+          --data-dir /var/lib/etcd-from-backup
+          --initial-cluster master-1=<ip-address:portNo>, master-2=<ip-address:portNo> \
+          --initial-cluster-token etcd-cluster-1
+          --initial-advertise-per-urls  https://${INTERNAL_IP}:2380
+     #and then update following in 'etcd.service' 
+         etcd.service=/usr/local/bin/etcd \\
+         --initial-cluster-token etcd-cluster-1
+         --data-dir=/var/lib/etcd-from-backup
+    #and then restart service
+        systemctl daemon-reload
+ 
 Drain: This is used to move pods from one node to other nodes. It is done in case of patching or OS Upgrades
 Cordon: This is used to prevent schedulng new pods on the node.
-Uncordon: This is used to resume scheduling of pods
+Uncordon: This is used to resume scheduling of pods.
  
  #To drain the node
   kubectl drain node01 #node01 is the nodename 
@@ -972,7 +1001,7 @@ Uncordon: This is used to resume scheduling of pods
  #To uncordon the node.
    kubectl uncordon node01
  
-     - will have 'same version' (by deafult)
+     - KUBERNETES  will have 'same version' (by deafult)
           - kube-apiserver:
                #  (can be at X.x version below object s can be at X.x-1 version )
           - control mgr
@@ -987,8 +1016,12 @@ Uncordon: This is used to resume scheduling of pods
     #NOTE: Kube api server supports upto 2 minor versions for upgrade
 
 ClusterUpgradeUsingKubeadm:
+     #NOTE: Kube api server supports upto 2 minor versions for upgrade
+     #Upgrade should be done only to nearest minor versions only 
+
   # To upgrade Kubeadm and see the list of upgrades available 
     kubeadm upgrade plan
+    
        
   #To check the running pods
    kubectl get pods --all-namespaces -o wide
@@ -1027,7 +1060,7 @@ NodeUpgrade:
      #and then to enable rescheduling 
       kubectl uncordon node01
     
-    
+  
     
     
     
