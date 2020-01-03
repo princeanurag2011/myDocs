@@ -570,6 +570,176 @@ kubectl create -f namespace-dev.yml #check the yaml file below
  
 --------------------------------------------------------------------------
 =======================================================================
+                                                                     			APP LIFE CYCLE MANAGEMENT
+=======================================================================
+
+appConfiguration:
+   - Configuring Command and Arguments on applications:
+        ---
+        apiVersion:
+        kind:
+        metadata:
+        spec:
+          contianers:
+            - name:
+               image:
+               command: ["sleep2.0"]  #similar to ENTRYPOINT
+               args: ["10"] #similar to CMD
+
+   - Configuring Environment Variables:
+        #Key value Pair:
+         ---
+          #pod-def.yaml
+         apiVersion:
+         kind:
+         metadata:
+         spec:
+           contianers:
+            - name:
+               image:
+               env:
+                  - name:  APP_COLOR
+                     value: pink
+         #To see the list of configMaps:
+           kubectl get configmaps
+           
+        # config Maps: from literals
+            kubectl create configmap <confg-name> --from-literal=<key>=<value>
+                ex:  kubectl create configmap my-config --from-literal=APP_COLOR=pink \
+                																	   --from-literal=APP_MOD=prod
+                																	   
+               # config Maps: from file
+                kubectl create configmap <confg-name> --from-file=<path-to-file>
+                #ex:  kubectl create configmap my-config --from-file=app_config.properties
+                 --- 
+                 #app_config.properties
+                 APP_COLOR=pink
+                 APP_MOD=prod
+                 -----------------------
+                 ---
+                 #pod-def.yaml
+                  ---
+		          apiVersion:
+		          kind:
+		          metadata:
+		          spec:
+		            contianers:
+		             - name:
+		                image:
+		             #  env:
+		             #  - name: APP_COLOR
+		             #     valueFrom:
+		             #       ConfigMapKeyRef:
+		             #         name: app-config
+		             #         key: APP_COLOR
+		                      
+		                envFrom:
+		                 - configMapRef:
+		                         name: app-config
+        ---
+        #Config-Maps.yml:
+         
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: app-config
+        data:
+	         APP_COLOR=pink
+	         APP_MOD=prod  
+              
+   - Configuring Secrets:
+    
+    #To see list of secrets:
+      kubectl get secrets
+         
+    #To create Secret from literals
+       kubectl create secret generic <secretName>  --from-literals=<key>=<value>
+      ex: kubectl create secret generic appsecret  --from-literals=DB_HOST=mysql
+      
+      #To create Secret from file
+       kubectl create secret generic <secretName>  --from-file=<filePath>
+      ex: kubectl create secret generic appsecret  --from-file=app_secret.properties
+   
+    #To create from yaml file:
+    #Config-secret.yml:
+       ---  
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: appsecret
+        data:
+	         DB_HOST=mysql   
+	         #DB_HOST=98sdu89suv9su===  to encrypt this 'mysql'   ->  echo -n mysql | base64
+               # to decrypt this 'mysql'  ->  echo -n mysql | base64 --decode   
+      -----------------------------------
+       kubectl create -f Config-secret.yml
+     
+     #To create pod from yaml file using secrets:
+       
+       ---
+       #pod-def.yaml
+         apiVersion:
+         kind: Pod
+         metadata:
+         spec:
+           contianers:
+            - name:
+               image:
+               #can use anyone of the three below envFrom or env or volumes
+               envFrom:
+                 - secretRef:
+                       name: appsecret
+               env:
+                 - name: DB_HOST
+                    	valueFrom:
+                    	  secretKeyRef:
+                    	     name: appsecret
+                    	     key: DB_HOST
+               volumes:
+                 - name: app-secret-volume
+                    secret: 
+                      secretName: appsecret
+                      #note: each attribute is created as file in the volumes 
+                       # vi /opt/app-secret-volume/DB_HOST
+MultiContainerPods:
+   In a multi-container pod, each container is expected to run a process that stays alive as long as the POD's lifecycle.
+   For example in the multi-container pod that we talked about earlier that has a web application and logging agent, 
+   both the containers are expected to stay alive at all times. The process running in the log agent container is 
+   expected to stay alive as long as the web application is running. If any of them fails, the POD restarts.
+   
+InitContainers:
+ -  But at times you may want to run a process that runs to completion in a container. 
+    For example a process that pulls a code or binary from a repository that will be used by the main web application. 
+    That is a task that will be run only  one time when the pod is first created. 
+    Or a process that waits  for an external service or database to be up before the actual application starts. 
+    That's where initContainers comes in.
+    
+   - You can configure multiple such initContainers as well, like how we did for multi-pod containers. 
+      In that case each init container is run one at a time in sequential order.If any of the initContainers fail to complete,
+      Kubernetes restarts the Pod repeatedly until the Init Container succeeds.
+---
+ apiVersion: v1
+ kind: Pod
+ metadata:
+   name: myapp-pod
+   labels:
+    app: myapp
+ spec:
+   containers:
+    - name: myapp-container
+       image: busybox:1.28
+       command: ['sh', '-c', 'echo The app is running! && sleep 3600']
+   initContainers:
+    - name: init-myservice
+       image: busybox:1.28
+       command: ['sh', '-c', 'until nslookup myservice; do echo waiting for myservice; sleep 2; done;']
+    - name: init-mydb
+       image: busybox:1.28
+       command: ['sh', '-c', 'until nslookup mydb; do echo waiting for mydb; sleep 2; done;']
+----------------------------------------------------------
+
+
+=======================================================================
                                                                      			Scheduling 
 =======================================================================
 ---
@@ -699,23 +869,76 @@ ResourceLimits:
 -------------------------------------------------------------------     
 
 DaemonSets:
+ - it creates one replica of pod in each node.
 
 StaticPods:
   - kubelet can run static pods without any cluster or master arrangement.
   - static pods can be deployed using yaml manifest files
-  - yaml files should be placed in this location for scheduling -> etc/kubernetes/manifests
+  - yaml files should be placed in this location for scheduling -> /etc/kubernetes/manifests
   - kubelet.service  -> contains the 'pod-manifest-path' by default  
   - kubelet.service  -> other way to  we can add '--config=kubeconfig.yml' and 
      in the 'kubeconfig.yml' -> mention 'staticPodPath: /etc/kubernetes/manifests'
    
+MultipleSchedulers:
+  - multiple schedulers can be configured in master
+  - kube-scheduler.service -> contains '--config=/etc/kubernetes/config/kube-scheduler.yml'
+                                                                  '--scheduler-name=default-scheduler'
+   - To create custom scheduler -> create  new service (copy content in default once)
+       my-custom-.service -> change the contents  '--config=/etc/kubernetes/config/my-custom-scheduler.yml'
+                                                                                     '--scheduler-name=my-custom-scheduler'  
   
-  
-  
+--- my-custom-scheduler.yml ---
 
+  in the yaml file change the following under 'command:'
+ --leader-elect=true
+ --lock-object-namespace=lock-object-namespace
+ --lock-object-name=lock-object-name
 
-               
-
+  # To use the custom scheduler to schedule pods 
+   -> add 'schedulerName:' under containers:
+   ---
+       apiVersion:
+       kind:
+       metadata:
+       spec:
+          containers:
+          schedulerName:
+---------------------------------------
+#To see the logs of the custom scheduler:
+ kubectl logs my-custom-scheduler --namespace=kube-system
  
+EVENTS:
+  #To see list of events in the current Namespace:
+   kubectl get events
+  
+  #To check the running/empty ports (default port of scheduler: 10251)
+     netstat -natulp | grep <portNo>
+               
+=======================================================================
+                                                                     			Metrics Server
+=======================================================================
+
+MetricsServer:
+   #To install metrics server:
+   git clone https://github.com/kubernetes-incubator/metrics-server.git
+   #then run 
+   kubectl create -f deploy/1.8+/
+   
+   after installtion:
+   
+   #To see details of cluster metrics of nodes
+    kubectl top node
+    
+    #To see the details of pods metrics 
+   kubectl top pods
+   
+   #To see logs of conainers
+   kubectl logs -f <podName>	<containerName>
+   
+   
+   
+   
+    
 --- Others
  # List all pods in ps output format.
  kubectl get pods
