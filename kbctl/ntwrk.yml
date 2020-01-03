@@ -106,8 +106,80 @@
    
      ARP - ADDRESS RESOLUTION PROTOCOL :
       - it is used to  store ipaddress and mac address of devices
-    #To see the ARP table in host or namespace
+    #To see the ARP table in host or namespaces
       arp
+   # To see the route tables in host pr namespaces
+     route 
   
+   #LOCAL HOST IP ADRESS IS 192.168.1.2
+   #To establish virtual connectivity between the namespaces (veth -virtual ethernet interface )
+      ip link add veth-red type veth peer name veth-blue  #veth-red, veth-blue are the netwrk interface for namespace red and blue .
+ 
+   #To attach the virtual network interfaces (veth) to namespaces:
+      ip link set veth-red netns red #for namespace red
+      ip link set veth-blue netns blue #for namespace blue
   
+   #To add ip address to namespaces and make them up and running
+      ip -n red addr add 192.168.15.1 dev  veth-red
+      ip -n red  link set  veth-red up
+      
+      ip -n blue addr add 192.168.15.2 dev veth-blue
+      ip -n blue  link set  veth-blue up
+      
+     #Ping test within namespaces 
+      ip netns exec red ping  192.168.15.2
+    -----------------------------------------------------------------------------------------  
+     # To check the ARP tables in namespaces
+      ip netns exec red arp  #run this in red
+      ip netns exec blue arp  #run this in blue
+    
+    # To add virtual switch in namspaces
+      ip link add v-net-0 type 	bridge
+      ip link #to check the interface list  ( by default newly created v-net-0 will be DOWN.)
+      ip link set dev v-net-0 up  #to make  switch up and running
+    
+    # To delete the links in namespace
+      ip -n red link del veth-red 
+    ========================================================
+    # To link with bridge 
+      ip  link add veth-red type veth peer name veth-red-br       
+      ip  link add veth-blue type veth peer name veth-db-br
+        
+    # To link namspace with veth
+      ip link set veth-red  netns red
+      ip link set veth-blue  netns blue
+    
+    # To link veth with bridge  
+      ip link set veth-red-br  master v-net-0
+      ip link set veth-db-br  master v-net-0
+      
+    # To add ip address to namespaces and make them up and running
+      ip -n red addr add 192.168.15.1 dev  veth-red
+      ip -n red  link set  veth-red up
+      
+      ip -n blue addr add 192.168.15.2 dev veth-blue
+      ip -n blue  link set  veth-blue up
+           
+    # To connect from host to namespace network 
+      ping  192.168.15.1  #doesn't work no entry in table
+     
+     # To make an entry into route table
+      ip addr  add 192.168.15.5/24 dev v-net-0      
+     
+     # In the namespace add the entry to the route table
+      ip netns exec blue  ip route add 192.168.1.0/24 via 192.168.15.5
+     
+     # To connect from namespace to other network via localhost
+      ip netns exec blue ping 192.168.1.3 # doesn't work beause we nee to use NAT gateway
+      
+     #To add NAT 
+      iptables -t nat  -A POSTROUTING -s 192.168.15.0/24 -j MASQUERADE
+     
+     #To connect to Internet from ns
+      ip netns exec blue ip route add default via 192.168.15.5
+      #or
+      ip netns exec blue ip route add 0.0.0.0 via 192.168.15.5
+       
+     #To connect from other n/w to namespace
+      iptables -t nat  -A POSTROUTING --dport 80 --to-destination 192.168.15.2:80 -j DNAT
   
