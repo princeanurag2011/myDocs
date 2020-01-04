@@ -42,8 +42,8 @@ a=$b # assigemnt operator
 
 #================================
 ! #boolean  not   [!false ]
--o #logical or    [$a -lt 20 -o $b -lt 100 ]
--a #logical and   [$a -lt 20 -a $b -lt 100 ]
+-o #logical OR    [$a -lt 20 -o $b -lt 100 ]
+-a #logical AND   [$a -lt 20 -a $b -lt 100 ]
 #=============FILE======================
 FILE1=/etc/hosts
 FILE2=/home/anurag/1.txt
@@ -124,14 +124,21 @@ echo $a
   $a=`expr $a + 1`  #` back quote
 done
 
-================special=============
-$0 #file name of the script
-$1---9 # position of argument supplied to script.
-$# #no. of arguments supplied to script.
-$* # return all the argument s that are double quoted
-$@ # return all the argument s that are induvidually double quoted.
-$? # exit status of last command. if success return 0
-$$ #process no. of current shell for shell script. 
+================special======================
+#file name of the script
+    $0
+# position of argument supplied to script.
+    $1---9 
+#no. of arguments supplied to script.
+    $#
+# return all the argument s that are double quoted
+    $*
+# return all the argument s that are induvidually double quoted.
+    $@
+# exit status of last command. if success return 0
+    $?
+#process no. of current shell for shell script.
+   $$ 
 =======================================
  
 #===============functions=====================
