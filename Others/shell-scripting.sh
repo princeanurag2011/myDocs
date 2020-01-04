@@ -12,7 +12,9 @@ ID=0000
 MY_NAME='Anurag' #valid variable
 MY_id=25  #valid variable
 _my_name_='Anurag' #valid variable
-
+hostName=$(hostname)  #echo $hostName gives the host name
+hostName=`hostname` #echo $hostName gives the host name
+hostName='hostname' #echo $hostName gives the text 'hostname'
 my_id=$(uid) 
 my_id=$ID
 
