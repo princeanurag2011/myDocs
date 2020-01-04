@@ -101,13 +101,19 @@ for var  in 0 1 2 3 4 5 6 7 8 9
 do
  echo var
  done
+
+#Example-3 rename pictures in a directory
+PICTURES=$(ls *jpg)
+DATE=$(date +%F)
+for picture in PICTURES
+  do 
+    echo "renaming pictures started.. "
+    echo "renaming $picture  to ${DATE}-${picture} . "  
+    mv $picture ${DATE}-${picture}
+  done
  
  #Example-2  - print 100 natural numbers
- N=[1 2 3 ..100]
- for n in N
-  do 
-    echo n 
- done
+
 #=====while=============================
 a=0
 while [ $a -lt 100 ]
@@ -135,22 +141,23 @@ create_user(){
 	read username
 	useradd $username
 	passwd $username
-	return 10
+	return 0
 }
 #Invoke Function
 create_user 
-ret=$?
+ret=$?    #return status of last function
 
-if [ ret == 10]
+if [ ret == 0]
 	 then 
-	  echo "User with $username is created"
+	    echo "User with $username is created"
 	 else
-	  echo "error creating username.."
+	    echo "error creating username.."
 fi
 
 create_root_user(){
 	echo "Enter username:"
 	read username
+	# read -p "Please enter your username: " username
 	useradd $username
 	passwd $username
 	echo "ansadmin ALL=(ALL) ALL" >> /etc/sudoers
@@ -164,7 +171,9 @@ make_root_user(){
 
 ============================creating root user=================================================================
 #!/bin/sh
-
+#save this filename as createUser.sh
+# $0 gives the current file name
+echo "  Executing script   $0"
 echo "Enter username"
 read username
 useradd $username
