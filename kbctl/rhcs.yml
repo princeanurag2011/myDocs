@@ -384,8 +384,104 @@
     echo all arguments: $*
     echo all  no of arguments: $#
     echo print process id: $$
+---
+  EXAMPLE-7:
+    #!/bin/bash
+    # - STDIN(0)
+    # - STDOUT(1)
+    # - STDERR(2)
+    # 
+    cat file1.txt > output-file1.txt #> redirecting output
+    cat file1.txt 1>output-file1.txt #1> redirecting output
+    cat file1.txt 2>errors-file1.txt #2> redirecting errors
+    cat file1.txt 1>output-file1.txt 2>errors-file1.txt
+    cat file1.txt &> output-file1.txt #&> redirecting output/error or both
+    cat file1.txt 1> output-file1.txt 2>&1 #redirecting error and output
+    # < redirecting input 
+    wc -l < output-file1.txt #o/p = no. of lines
+    wc -l  output-file1.txt #o/p = no. of lines and filename
+    cat output-file1 | head -5 | tail -3 | wc -l #prints top 5 lines and then picks bottom 2 lines and gives no of lines count 2
+---
+  EXAMPLE-8:
+    #!/bin/bash
+    #exit status code 0-255, if we  give exit 256 then exit code will be 0 again
+    #exit code 0 , previous commnd is sucessful other than 0 , it's an error
+    NUM=1
+    let NUM++    
+    let NUM++    
+    echo NUM: $NUM
+    exit 0
+    let NUM++    
+    let NUM++    
+    echo NUM: $NUM
+    exit 257
+    let NUM++    
+    let NUM++    
+    echo NUM: $NUM
 
+---
+  EXAMPLE-9:
+    #!/bin/bash
+    #------------------------------
+    # -eq #equal
+    # -ne #not equal
+    # -gt #greater than
+    # -lt #less than    
+    # -ge #greater than equal to 
+    # -le #less than equal to
+    #------------------------------
+    # &&  # logical AND
+    # ||  # logical OR
+    # !   # logical NOT
+    #-------------------------------
+    VAR=$1
 
+    if [ $VAR = 5 ] && [ $VAR -gt 0 ]; then
+     echo "welcome $VAR"
+
+    else
+     echo "try again" 
+
+    fi
+
+    if [ $VAR == 10 -o $VAR -gt 7 ]; then
+     echo "hello ${VAR}"
+
+    elif [ $VAR -eq 8  ||  $VAR -eq 9 ]; then
+     echo " HELLO $(VAR)"
+
+    else
+     echo "TRAY AGAIN"
+
+    fi
+---
+  EXAMPLE-10:
+    #!/bin/bash
+    [ "$STR1" = "$STR2" ]     [ "$STR1" = "HELLO" ]
+    [ "$STR1" != "$STR2" ]
+
+     [[ $STR1 = $STR2 ]]  [[ $STR1 = "hello" ]]
+     [[ $STR1 != $STR2 ]] [[ $STR1 != "hello" ]]
+
+     [[ -z $STR1]] [-z "$STR1"] #-z checks if empty
+     [[ -n $STR1]] [-n "$STR1"] #-n checks if not-empty
+    
+
+---
+  EXAMPLE-11: wildcards
+    #!/bin/bash
+
+    hel? --> helo,  hell, help ..
+
+    hel* --> hello, helped, ...
+
+    file[0-2]  --> file0, file1, file2 
+
+    [hd]ello --> hello or dello
+
+    {*.txt, *.pdf} --> hello.pdf, help.txt ..
+
+    file[!1] --> file2, file3 , file4 ..
 
     
    
