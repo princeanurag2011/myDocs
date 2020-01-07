@@ -305,12 +305,13 @@
    - Create, manage and diagnose advanced file system permissions
    - Setup user and group disk quotas for filesystems
    - Create and configure file systems
+
 ---
- Scripting:
-   echo $PATH
-   echo PATH=$PATH:$(pwd)
+Scripting:
+ echo $PATH
+ echo PATH=$PATH:$(pwd)
  
-----
+ ----
  EXAMPLE-1: read inputs from command line
    
    #!/bin/bash   
@@ -322,19 +323,19 @@
    echo ===========emp details====
    echo name: $NAME
    echo Age: $AGE
-----
+ ----
  EXAMPLE-2: read inputs from command and hide them while typing
     #!/bin/bash   
     read -p "YOUR NAME:" NAME
     read -sp "YOUR PASSWORD:" PASS #sp hides entered text
     echo
     echo "YOUR NAME: $NAME , YOUR PASSWORD: $PASS"
-----
+ ----
  EXAMPLE-3:  read inputs from file
     #!/bin/bash
     read FILEDATA < /etc/hosts
     echo HOSTNAME: $FILEDATA
----  
+ ---  
  EXAMPLE-4: calculate time elapsed
    #!/bin/bash
    #(date %s) gives the time in seconds , this is no. of seconds counte from jan 1 1970
@@ -345,8 +346,8 @@
    #end time measurent
    DIFFERENCE=$(( START - END ))
    echo "Time Elapsed: $DIFFERENCE"
----
- Example-5: MATH OPERATIONS
+ ---
+  Example-5: MATH OPERATIONS
   #!/bin/bash
    NUM=5
    
@@ -374,8 +375,8 @@
    #power expression
    RES=`echo "$NUM^$NUM" | bc`
    echo "result from  bc for x^y : $RES"
----
-  EXAMPLE-6:
+ ---
+  EXAMPLE-6: special arguments
     #!/bin/bash
     echo script name: $0
     echo first argument: $1
@@ -384,8 +385,8 @@
     echo all arguments: $*
     echo all  no of arguments: $#
     echo print process id: $$
----
-  EXAMPLE-7:
+ ---
+  EXAMPLE-7: i/o redirections
     #!/bin/bash
     # - STDIN(0)
     # - STDOUT(1)
@@ -401,8 +402,8 @@
     wc -l < output-file1.txt #o/p = no. of lines
     wc -l  output-file1.txt #o/p = no. of lines and filename
     cat output-file1 | head -5 | tail -3 | wc -l #prints top 5 lines and then picks bottom 2 lines and gives no of lines count 2
----
-  EXAMPLE-8:
+ ---
+  EXAMPLE-8: EXIT STATUS
     #!/bin/bash
     #exit status code 0-255, if we  give exit 256 then exit code will be 0 again
     #exit code 0 , previous commnd is sucessful other than 0 , it's an error
@@ -419,8 +420,8 @@
     let NUM++    
     echo NUM: $NUM
 
----
-  EXAMPLE-9:
+ ---
+  EXAMPLE-9: numbers comparsions
     #!/bin/bash
     #------------------------------
     # -eq #equal
@@ -454,8 +455,8 @@
      echo "TRAY AGAIN"
 
     fi
----
-  EXAMPLE-10:
+ ---
+  EXAMPLE-10: string comparsions
     #!/bin/bash
     [ "$STR1" = "$STR2" ]     [ "$STR1" = "HELLO" ]
     [ "$STR1" != "$STR2" ]
@@ -467,7 +468,7 @@
      [[ -n $STR1]] [-n "$STR1"] #-n checks if not-empty
     
 
----
+ ---
   EXAMPLE-11: wildcards
     #!/bin/bash
 
@@ -483,7 +484,18 @@
 
     file[!1] --> file2, file3 , file4 ..
 
----
+    ^hello --> line starts with hello
+    hello$ --> lineends with hello
+    file[^12345] --> other than mentionde in that square brackets 
+                 --> file6, file7, ....
+
+    [0-9]{3} --> 123, 456, 234 ...   #3 digited number
+    [0-9]{1,3} --> 11, 123, 456 ...  #3 digited number
+    [0-9]{3,} --> 111, 1234, 456242 ...  #3 or more digited number
+    file1+ --> file1, file11, file123.. But not file
+
+
+ ---
   EXAMPLE-12: create files using loops
    #!/bin/bash
     echo "creating 1-30 files" 
@@ -492,14 +504,147 @@
       touch file$i.txt;
       touch file$i.img;
     done
----
-  EXAMPLE-13: backup script
+ ---
+  EXAMPLE-13: backup_script
    #!/bin/bash
    PROD=/home/ec2-user/
    DEST=/home/ec2-user/backup
    DATE=$(date +%Y-%m-%d_%H_%M_%S)
    mkdir -p $DEST/$DATE
    cp -R $PROD/*.txt $DEST/$DATE
+
+   if [ $? -eq 0]
+     echo "BACKUP DONE!"
+   else
+     echo "BACKUP FAILED! Something went wrong!"
+     exit 1
+   fi
+ ---
+  EXAMPLE-14: file comparsions
+   #!/bin/bash
+   #=============FILE======================
+   FILE1=/etc/hosts
+   FILE2=/home/anurag/1.txt
+   [ -e $FILE1 ]                 #here 'hosts' is a file 
+   [ -e /home/anurag/1.txt]  #here '1.txt' is the file.
+   [ -e FILE1 ] 
+   [ -e FILE2 ] 
+   -e    #to check file exists
+   -r    #to check whether  file is readable
+   -w    #to check whether  file is readable
+   -x    #to check whether  file is executable
+   -d    #to check whether  file is directory
+   -f    #to check whether  file exists and is regular file
+   -s    #to check whether  file exists and is not empty
+   -L    #to hekc if it holds path of symb link
+
+ ---
+  EXAMPLE-15: LOOPS 
+   #!/bin/bash
+   #PRINT 1-10 NUMBERS USING FOR LOOP
+   for((i=0;i<10;i++))
+   do
+     echo $i
+   done
+
+   #Add date inside all the text files..
+   for FILE in *.txt
+   do 
+     echo $(date) >> $FILE
+   done
+
+   #print the arguments line by line "$@" OR $*
+   COUNT=1
+   for ARG in "$@"
+   do 
+     echo $COUNT : $ARG
+     let COUNT++
+   done
+
+   #print the arguments in one line "$*"
+   COUNT=1
+   for ARG in "$*"
+   do 
+     echo $COUNT : $ARG
+     let COUNT++
+   done
+
+   #TO CHECK INTER FEILD SEPARATOR
+   set | grep ^IFS #O/P SHOWN BELOW
+   #IFS=$' \t\n'
+ ---
+  EXAMPLE-16: WHILE LOOP
+  #!/bin/bash
+   #Print 10 to 2 
+    COUNT=10
+    while (( $COUNT != 1 )) # [ $COUNT -ne 1 ] # [[ $COUNT -ne 1 ]] # [[ $COUNT != 1 ]] # [ $COUNT -ne 1 ]
+    do 
+      echo $COUNT
+      let count--
+    done
    
+   #PRINT line number for files 
+    COUNT=1 
+    FILENAME=$1
+    while read line
+    do
+     echo "$COUNT : $line"
+     let COUNT++
+    done < "$FILENAME"  #we will get ambiguous redirect error if we dont use "" here if file name has spaces
+  
+   #PRINT line number for files 
+    COUNT=1 
+    FILENAME=$1
+    cat "$FILENAME" |   #we will get ambiguous redirect error if we dont use "" here if file name has spaces
+    while read line
+    do
+     echo "$COUNT : $line"
+     let COUNT++
+    done
 
+ ---
+  EXAMPLE-17: ARRAYS
 
+     #!/bin/bash
+     ARRAY=(one two three)
+     echo value of first item: ${ARRAY[0]} #FIRST value
+     echo value of first item: ${ARRAY[1]} #SECOND value
+     echo all values: ${ARRAY[@]} # ALL values
+     echo all values: ${ARRAY[*]} # ALL values in array delimied by IFS (Internal feild separator) # set | grep ^IFS #O/P SHOWN BELOW
+     echo all index values: ${!ARRAY[@]} # ALL index values
+     echo "(length/no. of items) of array: ${#ARRAY[@]}" # no. of items in array
+     echo length of first value in aray: ${#ARRAY[0]} # length of FIRST value
+
+ ---
+  EXAMPLE-18: ARRAYS EXAMPLES to print list of files from array and its wrtiable status
+
+   #!/bin/bash
+    #ARRAY=($(ls *.txt))
+    ARRAY=($(ls))
+    COUNT=1
+    echo -e "s.no. \t file name \t writable "
+    for FILE in "${ARRAY[@]}"
+    do
+      echo -n  " $COUNT "
+      echo -n " ${FILE} "
+     if [ -w $FILE ]; then
+       echo -e "\t yes"
+     else
+       echo -e "\t no"
+     fi
+     let COUNT++
+    done
+ ---
+  EXAMPLE-19: FUNCTIONS
+    #!/bin/bash
+    function addition {
+      local VAR1=$1
+      local VAR2=$2
+      let RESULT=VAR1+VAR2
+      echo "$1 + $2 = $RESULT"
+    }
+    echo -n "enter FIRST number:"
+    read VAR1
+    echo -n "enter SECOND number:"
+    read VAR2
+    addition $VAR1 $VAR2 #function invoke
