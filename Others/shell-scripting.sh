@@ -33,6 +33,7 @@ a=$b # assigemnt operator
 [ $a==$b ]
 [ $a!=$b ]
 -----------------------logic----------------
+
 -eq # equal =    [ $a -eq $b ]
 -ne  # not equal !=
 -gt  # >
@@ -41,9 +42,18 @@ a=$b # assigemnt operator
 -le # <=
 
 #================================
-! #boolean  not   [!false ]
--o #logical OR    [$a -lt 20 -o $b -lt 100 ]
--a #logical AND   [$a -lt 20 -a $b -lt 100 ]
+! #boolean  not   [!false ]  
+-o #logical OR      [$a -lt 20 -o $b -lt 100 ]
+-a #logical AND   [$a -lt 20 -a  $b -lt 100 ]
+
+&&  #logical AND
+||     #logical OR
+
+#example: 
+HOST="google.com"
+  ping -c 1 HOST   && echo "$HOST reachable"    #both statements will be executed. 
+  ping -c 1 HOST   ||  echo "$HOST unreachable"  #only one of the two will work. 
+
 #=============FILE======================
 FILE1=/etc/hosts
 FILE2=/home/anurag/1.txt
@@ -68,6 +78,50 @@ b=""
 [ -z $a ]       #To check whether string is empty
 [ -n $a ]       #To check whether string is not- empty 
 [ $a ]           #if not empty
+
+#============case==========================
+
+#Example:1
+
+case "$1" in
+	start)
+   	  /usr/sbin/sshd
+	  ;;
+    stop)
+      kill $(cat /var/run/sshd.pid)
+      ;;
+         *)
+      echo "Usage:  $0  start | stop" ; exit 1
+      ;;
+  esac	  
+
+#Example:2
+
+case "$1" in
+	start | START)
+	  /usr/sbin/sshd
+	  ;;
+    stop | STOP)
+      kill $(cat /var/run/sshd.pid)
+      ;;
+         *)
+      echo "Usage:  $0  start | stop" ; exit 1
+      ;;
+  esac	  
+
+#Example:3 
+read -p "Enter y or n :"  ANSWER
+case "$ANSWER" in
+		[yY] | [yY] [eE] [sS] )
+  					echo "yes"
+  			;;
+  		[nN] | [nN] [oO] )
+  				echo "no"
+  			;;
+  			   *)
+   				echo "Invalid answer"
+   			;;
+  esac
 
 #==========if=============================
 #EXAMPLE-1:
@@ -119,10 +173,10 @@ for picture in PICTURES
 #=====while=============================
 a=0
 while [ $a -lt 100 ]
-do
-echo $a
-  $a=`expr $a + 1`  #` back quote
-done
+ do
+   echo $a
+   a=`expr $a + 1`  #` back quote
+ done
 
 ================special======================
 #file name of the script
@@ -201,6 +255,26 @@ if [ "$flag" = "y" -o "$flag" = "Y" ]; then
 fi
 echo "User creation succesfully done"
 ============================================================================================
+----------------WILDCARDS------------------------------
 
+?.txt to match one char
+*.txt to match all chars
 
+*
+?
+[]
+[0-3]
+
+[[:alpha:]]
+[[:alnum:]]
+[[:digit:]]
+[[:lower:]]
+[[:space:]]
+[[:upper:]]
+
+\   escape char
+*\? match all that ends with ?
+
+cp *.html /var/www/html/
+-------------------------------------------------------------------
 

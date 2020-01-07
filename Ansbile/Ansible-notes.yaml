@@ -51,7 +51,7 @@ sample_inventory_file:
  ansible_user=ec2-user
  ansible_private_key_file=/root/anuragaws1.pem
 
------------#referring with alias -connection types -users- passwords ----
+#referring with alias -connection types -users- passwords ----
 
 ansible-custom-inventory-file:
  #web ansible_host=172.31.44.35

@@ -1,6 +1,6 @@
 ---
  RHCSA: 3 years
-  essential-tools:
+  Essential-tools:
    - I/O REDIRECTION
    - GREP
    - access remote systems SSH:
@@ -120,9 +120,67 @@
        find:
       
    - finding files with locate and find
+        find /home/ec2-user  -max-depth 3 -name "*.sh" -type f -mtime +50  # find file upto 3 sub directores +50 more than 50 days ago, -50 leass than 50 days
+         
+        find /home/ec2-user  -max-depth 3 -name "*.sh" -type f -mtime 50
   Running-System-Operations:
    - boot/reboot/shutdown systems
+     runlevel
+      0 – Halt
+      1 – Single-user text mode
+      2 – Not used (user-definable)
+      3 – Full multi-user text mode
+      4 – Not used (user-definable)
+      5 – Full multi-user graphical mode (with an X-based login screen)
+      6 – Reboot
+      
+      
+       init 0 shutdown
+       init 6 reboot
+       #To shutdown now
+       shutdown -h now
+       
+       #To poweroff after shutdown
+       shutdown -p now
+       
+       #To cancel pending shutdown
+       shutdown -c 
+       
+       #To send messages during shutdown
+       shutdown -k "your message"
+       
+       #To restart after shutdown 
+       shutdown -r now
+       
+       #To shutdown at  particular time
+       shutdown -h 08:30 " your message" 
+       
+       #To shutdown in 5 min..
+       shutdown -h +5 "system will be shutdown in 5min.."
+       
+       Usage: shutdown [OPTION]... TIME [MESSAGE]
+       Bring the system down.
+
+        Options:
+         -r                          reboot after shutdown
+         -h                          halt or power off after shutdown
+         -H                          halt after shutdown (implies -h)
+         -P                          power off after shutdown (implies -h)
+         -c                          cancel a running shutdown
+         -k                          only send warnings, don't shutdown
+         -q, --quiet                 reduce output to errors only
+          -v, --verbose               increase output to include informational messages
+           --help                  display this help and exit
+          --version               output version information and exit
+
+       
    - boot system into differetn targets
+       #to check the current target 
+        systemctl get-default
+      #to see list of targets 
+        systemctl list-units --type=target
+        
+        
    - interrupt the boot process and gain access to system
    - adjust process priority and kill process
    - locate a dn interpret system log files
@@ -248,4 +306,86 @@
    - Setup user and group disk quotas for filesystems
    - Create and configure file systems
 ---
+ Scripting:
+   echo $PATH
+   echo PATH=$PATH:$(pwd)
  
+----
+ EXAMPLE-1: read inputs from command line
+   
+   #!/bin/bash   
+   echo -n you name:
+   read NAME
+   echo -n your age:
+   read AGE
+   echo
+   echo ===========emp details====
+   echo name: $NAME
+   echo Age: $AGE
+----
+ EXAMPLE-2: read inputs from command and hide them while typing
+    #!/bin/bash   
+    read -p "YOUR NAME:" NAME
+    read -sp "YOUR PASSWORD:" PASS #sp hides entered text
+    echo
+    echo "YOUR NAME: $NAME , YOUR PASSWORD: $PASS"
+----
+ EXAMPLE-3:  read inputs from file
+    #!/bin/bash
+    read FILEDATA < /etc/hosts
+    echo HOSTNAME: $FILEDATA
+---  
+ EXAMPLE-4: calculate time elapsed
+   #!/bin/bash
+   #(date %s) gives the time in seconds , this is no. of seconds counte from jan 1 1970
+   START=$(date +%s) 
+   CURRENT_DIR=$(pwd)
+   END=$(date +%s) 
+   
+   #end time measurent
+   DIFFERENCE=$(( START - END ))
+   echo "Time Elapsed: $DIFFERENCE"
+---
+ Example-5: MATH OPERATIONS
+  #!/bin/bash
+   NUM=5
+   
+   #-------let----
+   let RES=NUM+5
+   echo "result from let: $RES"
+   
+   #--------(( ))----
+   RES=$(( NUM + 5 ))
+   echo "result from  (( )): $RES"
+   
+   #------[]-------
+   RES=$[ NUM + 5 ] 
+   echo "result from  [ ]: $RES"
+   
+   #-----expr----------
+   RES=$(expr  $NUM + 5)
+   echo "result from  expr: $RES"
+   
+   #-------bc----------
+   #for floting points
+   RES=`echo "$NUM * 1.9 " | bc`
+   echo "result from  bc: $RES"
+
+   #power expression
+   RES=`echo "$NUM^$NUM" | bc`
+   echo "result from  bc for x^y : $RES"
+---
+  EXAMPLE-6:
+    #!/bin/bash
+    echo script name: $0
+    echo first argument: $1
+    echo second argument: $2
+    echo all arguments: $@
+    echo all arguments: $*
+    echo all  no of arguments: $#
+    echo print process id: $$
+
+
+
+    
+   
