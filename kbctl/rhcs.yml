@@ -610,7 +610,7 @@ Scripting:
      echo value of first item: ${ARRAY[0]} #FIRST value
      echo value of first item: ${ARRAY[1]} #SECOND value
      echo all values: ${ARRAY[@]} # ALL values
-     echo all values: ${ARRAY[*]} # ALL values in array delimied by IFS (Internal feild separator) # set | grep ^IFS #O/P SHOWN BELOW
+     echo all values: ${ARRAY[*]} # ALL values in array delimied by IFS (Internal feild separator) # set | grep ^IFS #O/P SHOWN AS #IFS=$' \t\n'
      echo all index values: ${!ARRAY[@]} # ALL index values
      echo "(length/no. of items) of array: ${#ARRAY[@]}" # no. of items in array
      echo length of first value in aray: ${#ARRAY[0]} # length of FIRST value
