@@ -483,5 +483,23 @@
 
     file[!1] --> file2, file3 , file4 ..
 
-    
+---
+  EXAMPLE-12: create files using loops
+   #!/bin/bash
+    echo "creating 1-30 files" 
+    for i in {1..30};
+    do 
+      touch file$i.txt;
+      touch file$i.img;
+    done
+---
+  EXAMPLE-13: backup script
+   #!/bin/bash
+   PROD=/home/ec2-user/
+   DEST=/home/ec2-user/backup
+   DATE=$(date +%Y-%m-%d_%H_%M_%S)
+   mkdir -p $DEST/$DATE
+   cp -R $PROD/*.txt $DEST/$DATE
    
+
+
