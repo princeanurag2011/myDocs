@@ -1,6 +1,120 @@
 ---
  RHCSA: 3 years
   Essential-tools:
+   - BASIC Commands:
+       - basic commands list:
+            - ls
+            - mv
+            - touch
+            - cat
+            - mkdir
+            - rm
+            - cp
+            - vi
+            - vim
+            - man
+            - ifconfig
+            - hostname
+            - hostnamectl
+            - date
+            - timedatectl
+            - cal
+            - history
+            - more
+            - grep
+            - >
+            - >>
+            - <
+            - redirecting error and output:
+               cat file1.txt &> output-file1.txt #&> redirecting output/error or both
+               cat file1.txt 1> output-file1.txt 2>&1 #redirecting error and output
+               cat file1.txt 1> /dev/null 2>&1 #redirecting error and output to null # destroying data
+            - |
+            - wc
+
+
+
+       - To see the n/w interfaces:
+             ifconfig
+             ip addr show
+
+       - To see list of files:
+          - to see detailed info of folders/directories and files:
+              ls -l 
+          - to see hidden files:
+              ls -al
+          - to sort the file based on alphabetical order:
+              ls -lr
+          - to sort the file based on  reverse alphabetical order or time created:
+              ls -lrt
+          - to see the files in a tre view:
+              ls -R
+       - To set the hostname:
+              hostnamectl set-hostname <hostname> # ex: hostnamectl set-hostname web.company.com
+       - To see time date and time zone:
+              timedatectl
+       - To set the timezone:
+              timedatectl set-timezone <timezone name>
+              #note: type without quotes 'timedatectl set-timezone' and then hit Tab twice to see list of timezones available
+       - To print time on screen:
+            - to print in 12 hrs format:
+               date +%r
+            - to print in 24 hrs format:
+               date +%R
+       - To print calender on screen:
+            - to print calender of current month:
+               cal 
+            - to print calender of year:
+               cal 2019
+            - to print calender of month:
+               cal 08 2019
+       - To see the list of previous commands executed: 
+          history # by default it stores upto tha last 1000 commands.
+            - to see the history file size:
+               echo $HISTFILESIZE
+            - to set the history file size to (say 2000):
+               echo HISTFILESIZE=2000
+            - to use the commands shown in history:
+                history # and then below command
+                !<command-no> #ex: if we want to run 20th command then # type !20 and hit enter
+            - to show in pages:
+                history | more
+            - to see the last 5 commands run:
+                history 5
+            - to use last command starting with a letter :
+               !c # for command starting with c
+               !w # for command starting with w
+            - to search for a command in history:
+                press CTRL+R on keyboard and start typing
+            - to run the recent last command:
+                !!
+            - to set the print format for history:
+               export HISTTIMEFORMAT='%F %T '
+            - to see the any linux OS version:
+               cat /etc/*-release
+            - to see the redhat OS version:
+               cat /etc/readhat-release
+            - to print the kernel name:
+               uname -s
+            - to print the node name:
+               uname -n 
+            - to see the cpu info:
+               cat /proc/cpuinfo #or lscpu
+            - to see the memory details:
+               cat /proc/meminfo #or free -h 
+            - to see the list of running process:
+               top
+            - to see the virtual memory:
+               vmstat
+
+   - Keyboard shortcuts:
+      - CTRL + u  # to clear the command and put the cursor at starting position
+      - CTRL + arrow key # to mov e the cursor tot starting position of the each word
+      - up/down arrow  #to see the previous command run
+      - CTRL + l # to clear the screen
+      - CTRL + k 
+      - CTRL + c # to stop the running process
+      - CTRL + r # to search for previous command
    - I/O REDIRECTION
    - GREP
    - access remote systems SSH:
@@ -648,3 +762,21 @@ Scripting:
     echo -n "enter SECOND number:"
     read VAR2
     addition $VAR1 $VAR2 #function invoke
+ ---
+  EXAMPLE-20: sed -STREAM EDITOR
+    #!/bin/bash
+    -a  #append the text after a line
+    -d  # delete the pattern space
+    -i  # insert the text
+    -p  # print the pattern space
+    -q  # quit exit without any processing
+    -n  # disable automatic printing
+    -e  script # add script
+    -r # used for extended redular expression
+     s/regexp/replacement/[flags] # substitute regexp with replacement text.
+
+
+
+
+
+
