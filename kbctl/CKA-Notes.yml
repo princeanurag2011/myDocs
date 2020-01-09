@@ -288,14 +288,59 @@ NameSpaces:
     - kube-system
     - default
     - kube-public
-    
- #within same namespace (default namespace)
- mysql.connect("db-service")
+    - To connect to namespace:
+         #within same namespace (default namespace)
+         mysql.connect("db-service")
  
- #with other namespace (say namespace = dev)
-  mysql.connect("db-service.dev.svc.cluster.local")
-   #db-service = servicename
-   #dev =namespace
-   #svc = service
-   # cluster.local =domain
-   abcd
+         #with other namespace (say namespace = dev)
+        mysql.connect("db-service.dev.svc.cluster.local")
+        #http://service-name.namespace.servicetype.domain-name/
+        #db-service = service-name
+        #dev =namespace
+        #svc = servicetype
+        # cluster.local =domain-name
+    
+Networking:
+  - Docker uses CNM (container network model)
+  - Kubernetes uses CNI (container network interface):
+      - waevenet
+      - flannel
+      - cillium
+      - nsx etc..,
+      
+PORT_NUMBERS:
+  - MASTER:
+       - kube-api: 6443
+       - kubelet: 10250
+       - Kube-scheduler: 10251
+       - Kube-controller-manager: 10252
+       - ETCD: 2379
+       - ETCD: 2380 #INCASE OF MULTIPLE MASTERS
+   - Node:
+        - Services: 30000-32767
+        - kubelet: 10250
+  
+CNI:
+  - The details of CNI and IPAM are stored in 
+      /etc/cni/net.d/net-script.conf
+  -  weave net gives 10.32.0.1/12   i.e about 1M IP's
+  
+KubePROXY:
+  - it supports 3 modes::
+       - userspaces
+       - ipvs
+       - iptables
+  - #we can change the proxy type usingthe command
+       kube-proxy --proxy-mode  [ userspace | iptables | ipvs ]
+       #by deafult it wil take iptables
+  - # to see the logs 
+     cat /var/log/kube-proxy.log	
+coreDNS:
+    - before  v1.12 it is called kube-dns
+    - after v1.12 it is called coreDNS
+    - cat /etc/coredns/Corefile
+    
+ingress:
+   - It is service which acts as a load balancer along with SSL 
+   - in Kubernetes to implemtn it we need to deploy the nginx pod and run that service
+   

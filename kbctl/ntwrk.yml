@@ -27,7 +27,7 @@
     
 
  router: 
-  network -1 and network -2 can connect through 'router'
+  network -1 and network -2 can connect to 'router' through switch1 and 2
   
   has two ip address of networks-1,2  i.e  192.168.1.1 and 192.168.2.1
   
