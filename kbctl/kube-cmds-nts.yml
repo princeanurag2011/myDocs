@@ -1290,7 +1290,54 @@ NodeUpgrade:
                servicePort: 80
   ------------------------------------------ 
 
-
+ =======================================================================
+                                                                     			STORAGE VOLUMES
+  =======================================================================
+  Volumes and Mounts:
+     
+    -------------------------pod-with-volume.yaml-----------------------
+     apiVersion: v1
+     kind: Pod
+     metadata:
+       name: random-number-generator
+     spec:
+       containers:
+         - name: alpine
+            image: alpine
+            command: ["/bin/sh", "-c"]
+            args: [ "shuf -i  0-100 -n 1 >> /opt/number.out;"]
+            volumeMounts: 
+              - mountPath: /opt
+                 name: data_volume
+       volumes: 
+          - name: data_volume
+             hostPath: 
+                path: /data
+                type: Directory
+     -------------------------------------------------------------------
+     there is drawback with above model , because it would create this volume copy on every node
+     -------------------------------------------------------------------
+    -------------------------pod-with-ext-volume-aws-ebs.yaml-----------------------
+     apiVersion: v1
+     kind: Pod
+     metadata:
+       name: random-number-generator
+     spec:
+       containers:
+         - name: alpine
+            image: alpine
+            command: ["/bin/sh", "-c"]
+            args: [ "shuf -i  0-100 -n 1 >> /opt/number.out;"]
+            volumeMounts: 
+              - mountPath: /opt
+                 name: data_volume
+       volumes: 
+          - name: data_volume
+            awsElasticBlockStore:
+              volumeID: <volume-id>
+              fsType: ext4
+     -------------------------------------------------------------------           
+  PersistentVolumes:
 
 
 

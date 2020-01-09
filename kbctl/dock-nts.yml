@@ -1,0 +1,30 @@
+===========================================
+                                              DOCKER
+   ===========================================
+   default locations for docker
+       var/lib/docker: 
+         - aufs
+         - containers
+         - images
+         - 'volumes'
+                - 'mysql_db'
+
+
+    ===========================================
+                                             Dockerfile
+    ===========================================
+    ---------------------------------------------------------------------------
+     #pytn app deploymnt
+	     FROM Ubuntu
+	     RUN apt-get update && apt-get -y install python
+	     RUN pip install flask flask-mysql
+	     COPY app.py /opt/source-code
+	     ENTRYPOINT FLASK_APP=/opt/source-code/app.py flask
+     -----------------------------------------------------------------------------
+     
+     #To build an image run the below command
+       docker build -t princeanurag2011/my-py-app:1.0 Dockerfile
+       docker run princeanurag2011/my-py-app:1.0
+       docker volume create mysql_db
+       docker container run -d --name mysql3 -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v mysql_db:/var/lib/mysql mysql
+    

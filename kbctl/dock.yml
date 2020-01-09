@@ -285,6 +285,12 @@ docker build -t princeanurag2011/apache:dev .
 2.0 ============Docker persistence volumes =============================
 
 # Container Lifetime & Persistent Data: Volumes, Volumes, Volumes
+ default locations
+ var/lib/docker 
+   - aufs
+   - containers
+   - images
+   - 'volumes'
 
 ## Persistent Data: Data Volumes
 

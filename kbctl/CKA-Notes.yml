@@ -282,7 +282,14 @@ KubeProxy:
        - kubeadm:
            - creates pods and deploy them as a daemonset
  ---
- 
+CRI: 
+   - Kubernetes implemented CRI (Container Runtime Interface)
+         to support  different containers like 
+              - Docker
+              - CRI-O
+              - RKT
+                                                                       
+   
 NameSpaces:
   kubeadm create 3 namespaces by default
     - kube-system
@@ -303,44 +310,72 @@ NameSpaces:
 Networking:
   - Docker uses CNM (container network model)
   - Kubernetes uses CNI (container network interface):
-      - waevenet
-      - flannel
-      - cillium
-      - nsx etc..,
+      - WeaveWorks
+      - Flannel
+      - Cillium
       
-PORT_NUMBERS:
-  - MASTER:
+      
+  PORT_NUMBERS:
+    - MASTER:
        - kube-api: 6443
        - kubelet: 10250
        - Kube-scheduler: 10251
        - Kube-controller-manager: 10252
        - ETCD: 2379
        - ETCD: 2380 #INCASE OF MULTIPLE MASTERS
-   - Node:
+    - Node:
         - Services: 30000-32767
         - kubelet: 10250
   
-CNI:
-  - The details of CNI and IPAM are stored in 
-      /etc/cni/net.d/net-script.conf
-  -  weave net gives 10.32.0.1/12   i.e about 1M IP's
+  CNI:
+    - The details of CNI and IPAM are stored in 
+        /etc/cni/net.d/net-script.conf
+     -  weave net gives 10.32.0.1/12   i.e about 1M IP's
   
-KubePROXY:
-  - it supports 3 modes::
+   KubePROXY:
+     - it supports 3 modes::
        - userspaces
        - ipvs
        - iptables
-  - #we can change the proxy type usingthe command
-       kube-proxy --proxy-mode  [ userspace | iptables | ipvs ]
-       #by deafult it wil take iptables
-  - # to see the logs 
-     cat /var/log/kube-proxy.log	
-coreDNS:
-    - before  v1.12 it is called kube-dns
-    - after v1.12 it is called coreDNS
-    - cat /etc/coredns/Corefile
+     - #we can change the proxy type usingthe command
+        kube-proxy --proxy-mode  [ userspace | iptables | ipvs ]
+        #by deafult it wil take iptables
+     - # to see the logs 
+         cat /var/log/kube-proxy.log	
+   coreDNS:
+      - before  v1.12 it is called kube-dns
+      - after v1.12 it is called coreDNS
+      - cat /etc/coredns/Corefile
     
-ingress:
-   - It is service which acts as a load balancer along with SSL 
-   - in Kubernetes to implemtn it we need to deploy the nginx pod and run that service
-   
+   ingress:
+     - It is service which acts as a load balancer along with SSL 
+     - in Kubernetes to implemtn it we need to deploy the nginx pod and run that service
+ 
+STORAGE:
+   - Storage drivers for Docker  (docker wil choose best driver based on OS)
+        - AUFS (default for ubuntu) 
+        - ZFS
+        - BTRFS
+        - DEVICE MAPPER (fedora best option)
+        - Overlay
+        - Overlay2
+   - Volume Drivers:
+        - Local (default):  Here volume is used from local host
+        - Azure FILE STORAGE
+        - Convoy
+        - Digital Ocean Block Storage
+        - RexRay
+        - gceDocker
+     #TO use AWS EBS volume we can try rexray volume driver
+       ex: docker run -it  --name	mysql \
+                                      --volume-driver rexray/ebs \
+                                      --mount src=ebs-vol, target=/var/lib/mysql mysql
+                                      
+    - Storage for Kubernetes:
+         - To support multiple Storage solutions CSI (Container Storage Interface) was developed
+         -  CSI:
+              - port worx 
+              - AMAZON EBS
+              - DELL MC
+              - GLUSTER FS 
+         - In CSI volue creation and deletion is done by RPC (remote procedural calls) 
