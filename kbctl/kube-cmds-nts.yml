@@ -1338,9 +1338,75 @@ NodeUpgrade:
               fsType: ext4
      -------------------------------------------------------------------           
   PersistentVolumes:
-
-
-
+     
+     ---------------------pv-def.yml---------in dev--------------
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata: 
+        name: pv-vol1
+      spec:
+        accessmode:
+           - ReadWriteOnce
+         #- ReadOnlyMany
+         #- ReadWriteMany
+       capacity:
+          storage: 1Gi
+       hostPath:
+          path: /tmp/data   
+     -------------------------------------------------------------
+       
+       kubectl create -f pv-def.yml
+       kubectl get persistentvolume
+       
+     ---------------------pv-def.yml-----------in-prod------------
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata: 
+        name: pv-vol1
+      spec:
+        accessmode:
+           - ReadWriteOnce
+         #- ReadOnlyMany
+         #- ReadWriteMany
+        capacity:
+          storage: 1Gi
+        awsElasticBlockStore:
+              volumeID: <volume-id>
+              fsType: ext4  
+     -------------------------------------------------------------
+     -------------pvc-def.yml----------------------------------
+      apiVersion: v1
+      kind: PersistenceVolumeClaim
+      metadata:
+        name: myclaim
+      spec: 
+        accessMode:
+         - ReadWriteOnce
+        resource:
+          requests:
+            storage: 500Mi
+     ------------------------------------------------------------------
+       kubectl create -f pvc-def.yml
+       kubectl get persistentvolumeclaim
+       kubectl delete persistentvolumeclaim myclaim
+      
+    -------------------pod-def-with-pvc.yml-------------------
+     apiVersion: v1
+     kind: Pod
+     metadata:
+       name: mypod
+     spec:
+       containers:
+         - name: myfrontend
+            image: nginx
+            volumeMounts:
+                - mountPath: "/var/www/html"
+                   name: mypd
+       volumes:
+          - name: mypd
+             persistentVolumeClaim:
+             claimName: myclaim
+       
 
 --- Others
  # List all pods in ps output format.
