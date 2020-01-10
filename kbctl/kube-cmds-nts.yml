@@ -1781,6 +1781,11 @@ NodeUpgrade:
        
      Authorization:
        - RBAC (Role Based Authorization Control)
+       - ABAC (Attributes Based Authorization Control)
+       - NODE Authorization
+       - Webhook Mode 
+
+       RBAC:
           #To create role based authentications: RBAC:
              ------------------deveolper-role.yaml--------------  
               apiVersion: rbac.autherization.k8s.io/v1
@@ -1884,13 +1889,86 @@ NodeUpgrade:
                    
                 ----------------------------------------------------------
                 kubectl create -f  cluster-admin-role-binding.yaml
+         
+         IMAGE SECURITY:
+          - public registries:
+              docker.io/nginx/nginx
+              gcr.io/kubernetes-e2e-test-images/
+          - private registries:
+             DOCKER WAY:
+              #To use private registry:
+               docker login private-registry.io
+              #To run the image as container in private rigstry 
+               docker run private-registry.io/apps/internal-app
+             KUBERNETES WAY:
+               -----------------------------------------------------
+               #To use private registry in kubernetes in pod-def.yaml
+                apiVersion: v1
+                kind: Pod
+                metadata:
+                  name: nginx-pod
+                spec:
+                  container:
+                    - name: nginx
+                      image: private-registry.io/apps/internal-app
+                  imagePullSecret:
+                    - name: regcred #check below command to create regcred
+               -----------------------------------------------------
+               kubectl create secret docker-registery regcred \
+               --docker-server=private-registry.io
+               --docker-username=registry-user
+               --docker-password=registry-pass
+               --docker-email=registry-user@org.com
+               -----------------------------------------------------
 
- 
+         SECURITY CONTEXTS:
+          container-security:
+            docker run --user=1001 ubuntu sleep 3600
+            docker run --cap-add MAC_ADMIN ubuntu
+          kubernetes-security-contexts:
 
-       - ABAC (Attributes Based Authorization Control)
-       - NODE Authorization
-       - Webhook Mode 
-    Pod Communication is controlled by network policies
+           - pod-level-security:
+             -----------------------------------------------------
+               #To use security contexts in pod level in kubernetes in pod-def.yaml
+                apiVersion: v1
+                kind: Pod
+                metadata:
+                  name: nginx-pod
+                spec:
+                  securityContext:
+                    runAsUser: 1001
+                    capabilities: 
+                      add: [ "MAC_ADMIN" ]
+                  container:
+                    - name: nginx
+                      image: private-registry.io/apps/internal-app
+                  imagePullSecret:
+                    - name: regcred #check below command to create regcred
+               -----------------------------------------------------
+
+            - container-level-security:
+              -----------------------------------------------------
+               #To use security contexts in container level in kubernetes in pod-def.yaml
+                apiVersion: v1
+                kind: Pod
+                metadata:
+                  name: nginx-pod
+                spec:                 
+                  container:
+                    - name: nginx
+                      image: private-registry.io/apps/internal-app
+                      securityContext:
+                         runAsUser: 1001
+                         capabilities: 
+                           add: [ "MAC_ADMIN" ]
+                  imagePullSecret:
+                    - name: regcred #check below command to create regcred
+               -----------------------------------------------------
+
+
+
+
+     Pod Communication is controlled by network policies
 
 
 
