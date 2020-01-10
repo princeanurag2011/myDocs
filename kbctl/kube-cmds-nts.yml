@@ -1773,7 +1773,7 @@ NodeUpgrade:
                    #To see the list of APIs available:
                      kubectl proxy	#it will start the server 127.0.0.1:8001
                      curl https://localhost:8001 -k
-                       
+                RBAC:      
                 #To create role based authentications: RBAC:
                    ------------------deveolper-role.yaml--------------  
                     apiVersion: rbac.autherization.k8s.io/v1
@@ -1784,10 +1784,12 @@ NodeUpgrade:
                      - apiGroups: [ "" ]
                         resources: [ "pods" ]
                         verbs: [ "list", "get", "create", "update", "delete" ]
+                       # resourceNames: [ "blue", "green" ] #to give access to particular pods use this  resourceNames 
                      - apiGroups: [ "" ]
                         resources: [ "ConfigMaps" ]
                         verbs: [ "list", "get", "create", "update", "delete" ]
                   ----------------------------------------------------------
+                   kubectl create -f    deveolper-role.yaml.yaml
                 #To create role binding with users
                   ------------------devuser-developer-role-binding.yaml--------------  
                     apiVersion: rbac.autherization.k8s.io/v1
@@ -1806,7 +1808,26 @@ NodeUpgrade:
                         resources: [ "pods" ]
                         verbs: [ "list", "get", "create", "update", "delete" ]
                   ----------------------------------------------------------
-                        
+                  kubectl create -f    devuser-developer-role-binding.yaml
+                  
+                 #To view the roles
+                   kubectl get roles
+                 #To view rolebinding:
+                   kubectl get rolebindings  
+                  #To view detailed role:
+                   kubectl describe role developer 
+                  #To view detailed rolebinding
+                   kubectl describe rolebinding devuser-developer-binding
+                  #To check access (to self)
+                   kubectl auth can-i create deployments
+                   kubectl auth can-i delete nodes
+                  #To check access to (other users) 
+                   kubectl auth can-i create deployments --as dev-user
+                   kubectl auth can-i create pods --as dev-user
+                   #To check access to (other users)  in different namespaces
+                   kubectl auth can-i create deployments --as dev-user
+                   kubectl auth can-i create pods --as dev-user --namespace test
+                   
                             
        - External Authentication Providers LDAP:
        
