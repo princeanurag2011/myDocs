@@ -589,7 +589,7 @@ kubectl create -f namespace-dev.yml #check the yaml file below
  
 --------------------------------------------------------------------------
 =======================================================================
-                                                                     			APP LIFE CYCLE MANAGEMENT
+                          APP LIFE CYCLE MANAGEMENT
 =======================================================================
 
 appConfiguration:
@@ -935,7 +935,7 @@ EVENTS:
      netstat -natulp | grep <portNo>
                
 =======================================================================
-                                                                     			Metrics Server
+                      			Metrics Server
 =======================================================================
 
 MetricsServer:
@@ -956,7 +956,7 @@ MetricsServer:
    kubectl logs -f <podName>	<containerName>
    
 =======================================================================
-                                                                     			CLUSTER MAINTAINANCE
+                        		CLUSTER MAINTAINANCE
  =======================================================================
  
 BackupAndRestore:
@@ -1067,7 +1067,7 @@ NodeUpgrade:
       kubectl uncordon node01
     
  =======================================================================
-                                                                     			NETWORK 
+                               			NETWORK 
  =======================================================================
     for basic networking check ntwrk.yml file
     
@@ -1200,8 +1200,8 @@ NodeUpgrade:
               containerPort: 80
            - name: https
               containerPort: 443
-    -----------------------------------------------------------------------------------------------
-  ----------------------nginx-ingress-service-----------------------------------------
+    ------------------------------------------------------------------------------
+  ----------------------nginx-ingress-service-----------------------------------
    apiVersion: v1
    kind: Service
    metadata:
@@ -1269,7 +1269,8 @@ NodeUpgrade:
                servicePort: 80 
     
    ------------------------------------------  
- ------------------Ingress-wear.yml-------for multiple backend service with hostname------------------
+
+------------------Ingress-wear.yml----for multiple backend service with hostname--------
   apiVersion: extensions/v1beta1
   kind: Ingress
   metadata: 
@@ -1339,7 +1340,7 @@ NodeUpgrade:
      -------------------------------------------------------------------           
   PersistentVolumes:
      
-     ---------------------pv-def.yml---------in dev--------------
+    ---------------------pv-def.yml---------in dev--------------
       apiVersion: v1
       kind: PersistentVolume
       metadata: 
@@ -1407,10 +1408,10 @@ NodeUpgrade:
              persistentVolumeClaim:
              claimName: myclaim
      ------------------------------------------------------------------------  
+=======================================================================
+                        		SECURITY 
  =======================================================================
-                                                                     			SECURITY 
- =======================================================================
-    ------------------------------------------------------------------------
+ ------------------------------------------------------------------------
      Security on host:
        - disable password based authentication
        - enable only ssh authetication	
@@ -1439,122 +1440,122 @@ NodeUpgrade:
                  #Setup Role Based authentication for new users.
                    check basic-auth-kube.yaml for full details 
        - Certificates:
-                - certificate public key -> *.crt , *.pem
-                -  certificate Private key --> *.key, *>key.pem
-                  
-                   RSA:
-                #TO generate RSA  it generates combination of private and public.key
-                     openssl genrsa -out mykey.key 1024
-                     openssl rsa -in mykey.key -pubout> mykey.pem            
+              - certificate public key -> *.crt , *.pem
+              -  certificate Private key --> *.key, *>key.pem
+                
+                 RSA:
+              #TO generate RSA  it generates combination of private and public.key
+                   openssl genrsa -out mykey.key 1024
+                   openssl rsa -in mykey.key -pubout> mykey.pem            
               #To request for signed certificate
-                    #send Certificate signing request CSR
-                    openssl req -new -key mykey.key -out mykey.csr \
-                   -subj "/C=US/ST=CA/O=MYORG, Inc./CN=mywebsite.com"    
-                   
-                   
-                #Certificates Authorities: 
-                    - symantec
-                    - Digicert
-                    - Comodo
-                    - GlobalSign
-                    
-                - #TO generate certificates we have different tools:
-                        - Easy RSA
-                        - OPENSSL
-                        - CFSSL	
-                        
-                - OPENSSL:
-                      -  1.We are using openssl  to create CA 
-                 	           # 1. Generate keys using open ssl 
-                                     openssl genrsa \ 
-                                     -out ca.key 2048
-                                     #outputs ca.key
-                               # 2. Certificate signing request
-                                      openssl req -new \ 
-                                     -key ca.key \ 
-                                     -subj "/CN=KUBERNETES-CA" \ 
-                                     -out ca.csr
-                                       #outputs ca.key, ca.csr
-                               # 3. Sign the cetificates 
-                                     openssl x509 -req \ 
-                                     -in  ca.csr  \
-                                     -signkey ca.key \ 
-                                     -out ca.crt
-                                      #outputs ca.crt
-                      - 2.Generate certificate for admin using CA
-                               # 1. Generate keys using open ssl 
-                                     openssl genrsa \ 
-                                     -out admin.key 2048
-                                     #outputs admin.key
-                               # 2. Certificate signing request
-                                      openssl req -new \ 
-                                     -key admin.key \ 
-                                #  -subj "/CN=Kube-admin/O=system:masters" \  #User masters
-                                     -subj "/CN=Kube-admin" \ 
-                                     -out admin.csr
-                                       # outputs admin.key, admin.csr
-									   # check the NOTE section belwo for more info
-                               # 3. Sign the cetificates 
-                                     openssl x509 -req \ 
-                                     -in  admin.csr  \
-                                     -CA ca.crt
-                                     -CAkey ca.key
-                                     -out admin.crt
-                                      #outputs admin.crt
-                       - Repeat step 2 for all others  and generate *.key and *.crt for 'client certificates'
-                                  - scheduler  and generate 'scheduler.key' 'scheduler.crt'
-                                  - controller and generate 'controller.key' 'controller.crt'
-                                  - kube-proxy and generate 'kube-proxy.key' 'kube-proxy.crt'
-                                  - api-server-kubelet and generate 'api-server-kubelet.key' 'api-server-kubelet.crt'
-                                  - api-server-etcd and generate 'api-server-etcd.key' 'api-server-etcd.crt'
-                                  - kubelet-client and generate 'kubelet-client.key' 'kubelet-client.crt'
-                                  
-                                  note:  #  -subj "/CN=Kube-admin/O=system:node" \  #for nodes
-                                  
-                        - Repeat step 2 for all others  and generate *.key and *.crt for 'server certificates'
-                                  - api-server and generate 'api-server.key' 'api-server.crt'
-                                  - etcd-server and generate 'etcd-server.key' 'etcd-server.crt'
-                                  - kubelet and generate 'kubelet.key' 'kubelet.crt'
-                                  
-                         NOTE: #to sign certificates for different DNS names
-											  openssl req -new \ 
-		                                     -key api-server.key \ 
-		                                     -subj "/CN=Kube-admin" \ 
-                                   		     -out api-server	.csr
-                                   		     -config openssl.cnf #check below for openssl.cnf
-                                   		     
-                            #create opensslconfig file for SSL
-                                --> openssl.cnf
-                                ---------------openssl.cnf---------------------------
-                                [ req ]
-                                 req_extension = v3_req
-                                [ v3_req ]
-                                 basicConstraints = CA : False
-                                 keyUsage = nonRepudiation,
-                                 subjectAltName = @alt_names
-                                [ alt_names ]
-                                DNS.1 = Kubernetes
-                                DNS.2 = Kubernetes.default
-                                DNS.3 = Kubernetes.default.svc
-                                DNS.4 = Kubernetes.default.svc.cluster.local
-                                IP.1 =10.96.0.1 #give your ip
-                                IP.2 = 172.17.0.87 #give your ip 
-                                -------------------------------------------
-                          # Sign the certificates
-									 openssl x509 -req \ 
-                                     -in  api-server.csr  \
-                                     -CA ca.crt
-                                     -CAkey ca.key
-                                     -out api-server.crt
-                                      #outputs api-server.crt
-                              
-                        #to connect using cetificates
-                        curl https://kube-apiserver:6443/api/v1/pods/ \
-                        --key admin.key
-                        --cert admin.crt
-                        --cacert ca.crt        
-                        
-                        - Other way is update in kube-config.yaml
+                  #send Certificate signing request CSR
+                  openssl req -new -key mykey.key -out mykey.csr \
+                 -subj "/C=US/ST=CA/O=MYORG, Inc./CN=mywebsite.com"    
+                 
+                 
+              #Certificates Authorities: 
+                  - symantec
+                  - Digicert
+                  - Comodo
+                  - GlobalSign
+                  
+              #TO generate certificates we have different tools:
+                      - Easy RSA
+                      - OPENSSL
+                      - CFSSL	
+                      
+              - OPENSSL:
+                - 1.We are using openssl  to create CA 
+           	           # 1. Generate keys using open ssl 
+                               openssl genrsa \ 
+                               -out ca.key 2048
+                               #outputs ca.key
+                         # 2. Certificate signing request
+                                openssl req -new \ 
+                               -key ca.key \ 
+                               -subj "/CN=KUBERNETES-CA" \ 
+                               -out ca.csr
+                                 #outputs ca.key, ca.csr
+                         # 3. Sign the cetificates 
+                               openssl x509 -req \ 
+                               -in  ca.csr  \
+                               -signkey ca.key \ 
+                               -out ca.crt
+                                #outputs ca.crt
+                - 2.Generate certificate for admin using CA
+                         # 1. Generate keys using open ssl 
+                               openssl genrsa \ 
+                               -out admin.key 2048
+                               #outputs admin.key
+                         # 2. Certificate signing request
+                                openssl req -new \ 
+                               -key admin.key \ 
+                          #  -subj "/CN=Kube-admin/O=system:masters" \  #User masters
+                               -subj "/CN=Kube-admin" \ 
+                               -out admin.csr
+                                 # outputs admin.key, admin.csr
+    				   # check the NOTE section below for more info
+                         # 3. Sign the cetificates 
+                               openssl x509 -req \ 
+                               -in  admin.csr  \
+                               -CA ca.crt
+                               -CAkey ca.key
+                               -out admin.crt
+                                #outputs admin.crt
+                 - Repeat step 2 for all others  and generate *.key and *.crt for 'client certificates'
+                            - scheduler  and generate 'scheduler.key' 'scheduler.crt'
+                            - controller and generate 'controller.key' 'controller.crt'
+                            - kube-proxy and generate 'kube-proxy.key' 'kube-proxy.crt'
+                            - api-server-kubelet and generate 'api-server-kubelet.key' 'api-server-kubelet.crt'
+                            - api-server-etcd and generate 'api-server-etcd.key' 'api-server-etcd.crt'
+                            - kubelet-client and generate 'kubelet-client.key' 'kubelet-client.crt'
+                            
+                            note:  #  -subj "/CN=Kube-admin/O=system:node" \  #for nodes
+                            
+                  - Repeat step 2 for all others  and generate *.key and *.crt for 'server certificates'
+                            - api-server and generate 'api-server.key' 'api-server.crt'
+                            - etcd-server and generate 'etcd-server.key' 'etcd-server.crt'
+                            - kubelet and generate 'kubelet.key' 'kubelet.crt'
+                                
+                    NOTE: #to sign certificates for different DNS names
+										  openssl req -new \ 
+	                                     -key api-server.key \ 
+	                                     -subj "/CN=Kube-admin" \ 
+                                 		     -out api-server	.csr
+                                 		     -config openssl.cnf #check below for openssl.cnf
+                                 		     
+                          #create opensslconfig file for SSL
+                              --> openssl.cnf
+                              ---------------openssl.cnf---------------------------
+                              [ req ]
+                               req_extension = v3_req
+                              [ v3_req ]
+                               basicConstraints = CA : False
+                               keyUsage = nonRepudiation,
+                               subjectAltName = @alt_names
+                              [ alt_names ]
+                              DNS.1 = Kubernetes
+                              DNS.2 = Kubernetes.default
+                              DNS.3 = Kubernetes.default.svc
+                              DNS.4 = Kubernetes.default.svc.cluster.local
+                              IP.1 =10.96.0.1 #give your ip
+                              IP.2 = 172.17.0.87 #give your ip 
+                              -------------------------------------------
+                        # Sign the certificates
+								          openssl x509 -req \ 
+                           -in  api-server.csr  \
+                           -CA ca.crt
+                           -CAkey ca.key
+                           -out api-server.crt
+                            #outputs api-server.crt
+                            
+                      #to connect using cetificates
+                      curl https://kube-apiserver:6443/api/v1/pods/ \
+                      --key admin.key
+                      --cert admin.crt
+                      --cacert ca.crt        
+                      
+                      - Other way is update in kube-config.yaml
                       ----------------------kube-config.yaml----------------------------------
                         apiVersion: v1
                         kind: Config
@@ -1575,8 +1576,8 @@ NodeUpgrade:
                         #if installed in kubeadm way check that in 
                               cat /etc/kuberntes/manifest/kube-apiserver.yaml 
                               #check it under containers command section
-              - TROUBLESHOOTING TLS issues:
-                        - failed to dial<ip> : connection error: transport:authetication handshake failed	
+             - TROUBLESHOOTING TLS issues:
+                 - failed to dial<ip> : connection error: transport:authetication handshake failed	
                      #TO decrypt the cetificate and check the details 
                        openssl x509 -in /etc/kubernetes/pki/apiserver.crt -text -noout   
                        #check
@@ -1637,11 +1638,11 @@ NodeUpgrade:
                         echo <copy the certificate code shown above > | base64 decode
                         #copy the contetn and paste in adminuser.crt and it's done
                       
-               NOTE: certificate signing is done by Kube-controller-manager with certificate api
-                      It has CSR-APPROVING and CSR-SIGNING
-                      #check it here :  cat /etc/kubernetes/manifests/kube-controller-manager.yaml and look for 
-                       cluster-signing-cert-file=/etc/kubernetes/pki/ca.crt 
-                       cluster-signing-key-file=/etc/kubernetes/pki/ca.key
+            NOTE: certificate signing is done by Kube-controller-manager with certificate api
+                  It has CSR-APPROVING and CSR-SIGNING
+                  #check it here :  cat /etc/kubernetes/manifests/kube-controller-manager.yaml and look for 
+                   cluster-signing-cert-file=/etc/kubernetes/pki/ca.crt 
+                   cluster-signing-key-file=/etc/kubernetes/pki/ca.key
                - 1. Command to see the list of pods:
                     curl https://my-kube-playground:6443/api/v1/pods \
                     --key admin.key
@@ -1773,66 +1774,67 @@ NodeUpgrade:
                    #To see the list of APIs available:
                      kubectl proxy	#it will start the server 127.0.0.1:8001
                      curl https://localhost:8001 -k
-                RBAC:      
-                #To create role based authentications: RBAC:
-                   ------------------deveolper-role.yaml--------------  
-                    apiVersion: rbac.autherization.k8s.io/v1
-                    kind: Role
-                    metadata:
-                      name: developer
-                    rules:
-                     - apiGroups: [ "" ]
-                        resources: [ "pods" ]
-                        verbs: [ "list", "get", "create", "update", "delete" ]
-                       # resourceNames: [ "blue", "green" ] #to give access to particular pods use this  resourceNames 
-                     - apiGroups: [ "" ]
-                        resources: [ "ConfigMaps" ]
-                        verbs: [ "list", "get", "create", "update", "delete" ]
-                  ----------------------------------------------------------
-                   kubectl create -f    deveolper-role.yaml.yaml
-                #To create role binding with users
-                  ------------------devuser-developer-role-binding.yaml--------------  
-                    apiVersion: rbac.autherization.k8s.io/v1
-                    kind: RoleBinding
-                    metadata:
-                      name: devuser-developer-binding
-                    roleRef:
-                      kind: Role
-                      name: devuser
-                      apiGroup: rbac.autherization.k8s.io
-                    subjects:
-                     - kind: User
-                        name: devuser
-                        apiGroup:  rbac.autherization.k8s.io
-                     - apiGroups: [ "" ]
-                        resources: [ "pods" ]
-                        verbs: [ "list", "get", "create", "update", "delete" ]
-                  ----------------------------------------------------------
-                  kubectl create -f    devuser-developer-role-binding.yaml
-                  
-                 #To view the roles
-                   kubectl get roles
-                 #To view rolebinding:
-                   kubectl get rolebindings  
-                  #To view detailed role:
-                   kubectl describe role developer 
-                  #To view detailed rolebinding
-                   kubectl describe rolebinding devuser-developer-binding
-                  #To check access (to self)
-                   kubectl auth can-i create deployments
-                   kubectl auth can-i delete nodes
-                  #To check access to (other users) 
-                   kubectl auth can-i create deployments --as dev-user
-                   kubectl auth can-i create pods --as dev-user
-                   #To check access to (other users)  in different namespaces
-                   kubectl auth can-i create deployments --as dev-user
-                   kubectl auth can-i create pods --as dev-user --namespace test
+               
                    
                             
        - External Authentication Providers LDAP:
        
      Authorization:
        - RBAC (Role Based Authorization Control)
+          #To create role based authentications: RBAC:
+             ------------------deveolper-role.yaml--------------  
+              apiVersion: rbac.autherization.k8s.io/v1
+              kind: Role
+              metadata:
+                name: developer
+              rules:
+               - apiGroups: [ "" ]
+                  resources: [ "pods" ]
+                  verbs: [ "list", "get", "create", "update", "delete" ]
+                 # resourceNames: [ "blue", "green" ] #to give access to particular pods use this  resourceNames 
+               - apiGroups: [ "" ]
+                  resources: [ "ConfigMaps" ]
+                  verbs: [ "list", "get", "create", "update", "delete" ]
+            ----------------------------------------------------------
+             kubectl create -f    deveolper-role.yaml.yaml
+          #To create role binding with users
+            ------------------devuser-developer-role-binding.yaml--------------  
+              apiVersion: rbac.autherization.k8s.io/v1
+              kind: RoleBinding
+              metadata:
+                name: devuser-developer-binding
+              roleRef:
+                kind: Role
+                name: devuser
+                apiGroup: rbac.autherization.k8s.io
+              subjects:
+               - kind: User
+                  name: devuser
+                  apiGroup:  rbac.autherization.k8s.io
+               - apiGroups: [ "" ]
+                  resources: [ "pods" ]
+                  verbs: [ "list", "get", "create", "update", "delete" ]
+            ----------------------------------------------------------
+            kubectl create -f    devuser-developer-role-binding.yaml
+            
+           #To view the roles
+             kubectl get roles
+           #To view rolebinding:
+             kubectl get rolebindings  
+            #To view detailed role:
+             kubectl describe role developer 
+            #To view detailed rolebinding
+             kubectl describe rolebinding devuser-developer-binding
+            #To check access (to self)
+             kubectl auth can-i create deployments
+             kubectl auth can-i delete nodes
+            #To check access to (other users) 
+             kubectl auth can-i create deployments --as dev-user
+             kubectl auth can-i create pods --as dev-user
+             #To check access to (other users)  in different namespaces
+             kubectl auth can-i create deployments --as dev-user
+             kubectl auth can-i create pods --as dev-user --namespace test   
+        
        - ABAC (Attributes Based Authorization Control)
        - NODE Authorization
        - Webhook Mode 
