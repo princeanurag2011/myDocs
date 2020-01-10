@@ -1555,7 +1555,7 @@ NodeUpgrade:
                         --cacert ca.crt        
                         
                         - Other way is update in kube-config.yaml
-                       ----------------------kube-config.yaml----------------------------------
+                      ----------------------kube-config.yaml----------------------------------
                         apiVersion: v1
                         kind: Config
                         clusters:
@@ -1570,7 +1570,7 @@ NodeUpgrade:
                                client-certificate: admin.crt
                                clinet-key: admin.key
                          -----------------------------------------------------------------------------
-                         #to verify kube-api server certificates check it in (#if the installation is done in a hard way )
+                        #to verify kube-api server certificates check it in (#if the installation is done in a hard way )
                                /usr/local/bin/kube-apiserver
                         #if installed in kubeadm way check that in 
                               cat /etc/kuberntes/manifest/kube-apiserver.yaml 
@@ -1591,6 +1591,222 @@ NodeUpgrade:
                        # if the server is down: Then try using docker command i.e., docker logs
                               docker ps -a #and then 
                               docker logs <contianer-id>                             
+                            #https://github.com/mmumshad/kubernetes-the-hard-way 
+                                # for more info check tools folder in it 
+                 
+                 # To create certificate for another admin user..
+                       openssl genrsa \ 
+                       -out adminuser.key 2048;
+                       
+                        openssl req -new \ 
+                         -key adminuser.key \ 
+                         -subj "/CN=adminuser" \ 
+                         -out adminuser.csr;
+                         
+                         cat adminuser.csr | base64
+                         #copy the generated key and paste it under request section of yaml file below
+                         -------------adminuser-csr.yaml-----------------------
+                          apiVersion: certificates.k8s.io/v1beta1
+                          kind: CertificateSsigningRequest
+                          metadata:
+                            name: adminuser
+                          spec:
+                            groups:
+                               - system: authenticated
+                            usages:
+                               - digital signatures
+                               - key encipherment
+                               - server auth
+                            request:
+                                     h349h8r9h3hqh4fnenvqOHNVVVVDLKSVHH0h09f30f=4f3-fjh943fhnchp2nch930nceh
+                                     3hqh4fnenvqOHN3hqh4fnenvqOHNVVVVDLKSVHH0h09f30f=4f3-fjh943fhncVachsa9
+                                 
+                              
+                            
+                         
+                         ---------------------------------------------------------
+                        #to create CSR
+                        kubectl create -f adminuser-csr.yml
+                        #to look for CSR
+                        kubectl get csr
+                        #to approve CSR
+                        kubectl certificate approve <csrname> #ex: kubectl certificate approve adminuser  
+                        #to view Certificate
+                        kubectl get csr  <csrname> -o yaml
+                       # decode the certificate 
+                        echo <copy the certificate code shown above > | base64 decode
+                        #copy the contetn and paste in adminuser.crt and it's done
+                      
+               NOTE: certificate signing is done by Kube-controller-manager with certificate api
+                      It has CSR-APPROVING and CSR-SIGNING
+                      #check it here :  cat /etc/kubernetes/manifests/kube-controller-manager.yaml and look for 
+                       cluster-signing-cert-file=/etc/kubernetes/pki/ca.crt 
+                       cluster-signing-key-file=/etc/kubernetes/pki/ca.key
+               - 1. Command to see the list of pods:
+                    curl https://my-kube-playground:6443/api/v1/pods \
+                    --key admin.key
+                    --cert admin.crt
+                    --cacert ca.crt 
+               - 2. Command to see the list of pods using Kubectl
+                   kubectl get pods \
+                   --server 	my-kube-playground:6443
+                   --client-key admin.key
+                   --client-certificate admin.crt
+                   --certificate-authority ca.crt
+               1. NOTE: above two steps are automated by creating a kube-config file and tags in step 2 are moved to config file  (default)
+                         --> $HOME/.kube/config  
+                         #check the below file it has maintly 3 sections:
+                                      - cluster: 
+                                           - it can be Development or Test or Production or  my-kube-playground 
+                                      - contexts:
+                                          - Admin@Productions  Dev@Test
+                                      - users: 
+                                          - Admin
+                                          - Dev user
+                                          - Prod user
+                                          
+                         ----------------------Kube-config-----------------------
+                          apiVersion: v1
+                          kind: Config
+                          clusters:
+                            - name: my-kube-playground
+                               cluster: 
+                                certificate-authority: ca.crt #here provide the file path
+                                #certificate-authority-data:  #here paste the encrypted ca.crt using base 64
+
+                                server: https://my-kube-play:6443
+                          contexts:
+                            - name: my-kube-admin@my-kube-playground
+                               contexts:
+                                  cluster: my-kube-play
+                                  user: mu-kube-admin
+                                  namespace: finance # if namespace is not mentioned it goes to default namespace
+                          users:
+                           - name: my-kube-admin
+                              user:
+                                client-certificate: admin.crt
+                                client-key: admin.key
+                           ------------------------------------------------------
+                      
+               2. Custom config file ..
+                         ----------------------my-custom-kube-config-----------------------
+                          apiVersion: v1
+                          kind: Config
+                          #this is default login to connect to environment
+                          current-context: devUser@google 
+                           
+                          clusters:
+                            - name: my-kube-playground
+                            - name: development
+                            - name: production
+                            - name: google
+                          contexts:
+                            - name: my-kube-admin@my-kube-playground
+                            - name: devUser@google
+                            - name: prodUser@production                   
+                          users:
+                           - name: my-kube-admin
+                           - name: devUser
+                           - name: prodUser
+
+                           ------------------------------------------------------
+                           #To view the config files:
+                             kubectl config view
+                           
+                           #To view the custom-kube-config file
+                            kubectl config view --kubeconfig=my-custom-kube-config
+                            
+                          #To change the current context: (say work in prod env)
+                            kubectl config   use-context prod-user@production
+                         
+                         #TO see other kubeconfig options:
+                              kubectl config -h
+                           ------------------------------------------------------
+                 API GROUPS:
+                    - #to see the version using rest api url
+                        curl http://kube-master:6443/version 
+                    - #to see the pods using rest api url
+                        curl http://kube-master:6443/api/v1/pods
+                    - Different APIs availabel in Kuberentes
+                        - /health 
+                        - /metrics
+                        - /logs
+                        - /version
+                        - /api
+                        - /apis    
+                      #Here 'api' (core group) and 'apis' (named group) are responsilbe for cluster functionality.
+                 API:
+                   /api/v1: (core group)
+                      - namespaces
+                      - pods
+                      - rc
+                      - namespaces
+                      - nodes
+                      - endpoints
+                      - events
+                      - bindings
+                      - PVC
+                      - PV
+                      - configmaps
+                      - secrets
+                      - services
+                      
+                 APIS: (named groups) #All features will be released under named groups in future. and these are more organized
+                   /apis
+                     API GROUPS:
+                      - /apps:
+                          - /v1:  #for these we can use the verbs --> list, get, create, delete, update, watch
+                               - /deployments
+                               - /replicasets
+                               - /statefulsets
+                      - /extensions
+                      - /networking.k8s.io
+                        - /v1:
+                            - networking policies
+                      - /storage.k8s.io
+                      - /authentication.k8s.io
+                      - /certificates.k8s.io
+                       - /v1:
+                            - certificatessigningrequests
+                    
+                 NOTE: 
+                   #To see the list of APIs available:
+                     kubectl proxy	#it will start the server 127.0.0.1:8001
+                     curl https://localhost:8001 -k
+                       
+                #To create role based authentications: RBAC:
+                   ------------------deveolper-role.yaml--------------  
+                    apiVersion: rbac.autherization.k8s.io/v1
+                    kind: Role
+                    metadata:
+                      name: developer
+                    rules:
+                     - apiGroups: [ "" ]
+                        resources: [ "pods" ]
+                        verbs: [ "list", "get", "create", "update", "delete" ]
+                     - apiGroups: [ "" ]
+                        resources: [ "ConfigMaps" ]
+                        verbs: [ "list", "get", "create", "update", "delete" ]
+                  ----------------------------------------------------------
+                #To create role binding with users
+                  ------------------devuser-developer-role-binding.yaml--------------  
+                    apiVersion: rbac.autherization.k8s.io/v1
+                    kind: RoleBinding
+                    metadata:
+                      name: devuser-developer-binding
+                    roleRef:
+                      kind: Role
+                      name: devuser
+                      apiGroup: rbac.autherization.k8s.io
+                    subjects:
+                     - kind: User
+                        name: devuser
+                        apiGroup:  rbac.autherization.k8s.io
+                     - apiGroups: [ "" ]
+                        resources: [ "pods" ]
+                        verbs: [ "list", "get", "create", "update", "delete" ]
+                  ----------------------------------------------------------
+                        
                             
        - External Authentication Providers LDAP:
        
