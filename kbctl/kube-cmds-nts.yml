@@ -1441,47 +1441,159 @@ NodeUpgrade:
        - Certificates:
                 - certificate public key -> *.crt , *.pem
                 -  certificate Private key --> *.key, *>key.pem
-                - #TO generate certificates we have different tools:
-                        - Easy RSA
-                        - OPENSSL
-                        - CFSSL	
-                - OPENSSL:
-                       We are using openssl  to create CA 
-                      # 1. Generate keys using open ssl 
-                             openssl genrsa \ 
-                             -out ca.key 2048
-                             #outputs ca.key
-                      # 2. Certificate signing request
-                             openssl req -new \ 
-                             -key ca.key \ 
-                             -subj "/CN=KUBERNETES-CA" \ 
-                             -out ca.csr
-                             #outputs ca.key, ca.csr
-                       # 3. Sign the cetificates 
-                             openssl x509 -req \ 
-                             -in  ca.csr  \
-                             -signkey ca.key \ 
-                             -out ca.crt
-                             #outputs ca.crt
-                       # 4.   
-               
-              RSA:
+                  
+                   RSA:
                 #TO generate RSA  it generates combination of private and public.key
                      openssl genrsa -out mykey.key 1024
-                     openssl rsa -in mykey.key -pubout> mykey.pem
-                     
-               #Certificates Authorities: 
+                     openssl rsa -in mykey.key -pubout> mykey.pem            
+              #To request for signed certificate
+                    #send Certificate signing request CSR
+                    openssl req -new -key mykey.key -out mykey.csr \
+                   -subj "/C=US/ST=CA/O=MYORG, Inc./CN=mywebsite.com"    
+                   
+                   
+                #Certificates Authorities: 
                     - symantec
                     - Digicert
                     - Comodo
                     - GlobalSign
                     
-              #To request for signed certificate
-                    #send Certificate signing request CSR
-                    openssl req -new -key mykey.key -out mykey.csr \
-                   -subj "/C=US/ST=CA/O=MYORG, Inc./CN=mywebsite.com"    
-              
-       - External Authentication Providers LDAP
+                - #TO generate certificates we have different tools:
+                        - Easy RSA
+                        - OPENSSL
+                        - CFSSL	
+                        
+                - OPENSSL:
+                      -  1.We are using openssl  to create CA 
+                 	           # 1. Generate keys using open ssl 
+                                     openssl genrsa \ 
+                                     -out ca.key 2048
+                                     #outputs ca.key
+                               # 2. Certificate signing request
+                                      openssl req -new \ 
+                                     -key ca.key \ 
+                                     -subj "/CN=KUBERNETES-CA" \ 
+                                     -out ca.csr
+                                       #outputs ca.key, ca.csr
+                               # 3. Sign the cetificates 
+                                     openssl x509 -req \ 
+                                     -in  ca.csr  \
+                                     -signkey ca.key \ 
+                                     -out ca.crt
+                                      #outputs ca.crt
+                      - 2.Generate certificate for admin using CA
+                               # 1. Generate keys using open ssl 
+                                     openssl genrsa \ 
+                                     -out admin.key 2048
+                                     #outputs admin.key
+                               # 2. Certificate signing request
+                                      openssl req -new \ 
+                                     -key admin.key \ 
+                                #  -subj "/CN=Kube-admin/O=system:masters" \  #User masters
+                                     -subj "/CN=Kube-admin" \ 
+                                     -out admin.csr
+                                       # outputs admin.key, admin.csr
+									   # check the NOTE section belwo for more info
+                               # 3. Sign the cetificates 
+                                     openssl x509 -req \ 
+                                     -in  admin.csr  \
+                                     -CA ca.crt
+                                     -CAkey ca.key
+                                     -out admin.crt
+                                      #outputs admin.crt
+                       - Repeat step 2 for all others  and generate *.key and *.crt for 'client certificates'
+                                  - scheduler  and generate 'scheduler.key' 'scheduler.crt'
+                                  - controller and generate 'controller.key' 'controller.crt'
+                                  - kube-proxy and generate 'kube-proxy.key' 'kube-proxy.crt'
+                                  - api-server-kubelet and generate 'api-server-kubelet.key' 'api-server-kubelet.crt'
+                                  - api-server-etcd and generate 'api-server-etcd.key' 'api-server-etcd.crt'
+                                  - kubelet-client and generate 'kubelet-client.key' 'kubelet-client.crt'
+                                  
+                                  note:  #  -subj "/CN=Kube-admin/O=system:node" \  #for nodes
+                                  
+                        - Repeat step 2 for all others  and generate *.key and *.crt for 'server certificates'
+                                  - api-server and generate 'api-server.key' 'api-server.crt'
+                                  - etcd-server and generate 'etcd-server.key' 'etcd-server.crt'
+                                  - kubelet and generate 'kubelet.key' 'kubelet.crt'
+                                  
+                         NOTE: #to sign certificates for different DNS names
+											  openssl req -new \ 
+		                                     -key api-server.key \ 
+		                                     -subj "/CN=Kube-admin" \ 
+                                   		     -out api-server	.csr
+                                   		     -config openssl.cnf #check below for openssl.cnf
+                                   		     
+                            #create opensslconfig file for SSL
+                                --> openssl.cnf
+                                ---------------openssl.cnf---------------------------
+                                [ req ]
+                                 req_extension = v3_req
+                                [ v3_req ]
+                                 basicConstraints = CA : False
+                                 keyUsage = nonRepudiation,
+                                 subjectAltName = @alt_names
+                                [ alt_names ]
+                                DNS.1 = Kubernetes
+                                DNS.2 = Kubernetes.default
+                                DNS.3 = Kubernetes.default.svc
+                                DNS.4 = Kubernetes.default.svc.cluster.local
+                                IP.1 =10.96.0.1 #give your ip
+                                IP.2 = 172.17.0.87 #give your ip 
+                                -------------------------------------------
+                          # Sign the certificates
+									 openssl x509 -req \ 
+                                     -in  api-server.csr  \
+                                     -CA ca.crt
+                                     -CAkey ca.key
+                                     -out api-server.crt
+                                      #outputs api-server.crt
+                              
+                        #to connect using cetificates
+                        curl https://kube-apiserver:6443/api/v1/pods/ \
+                        --key admin.key
+                        --cert admin.crt
+                        --cacert ca.crt        
+                        
+                        - Other way is update in kube-config.yaml
+                       ----------------------kube-config.yaml----------------------------------
+                        apiVersion: v1
+                        kind: Config
+                        clusters:
+                          - cluster:
+                               certification-authority: ca.crt
+                               server: https://kuber-apiserver:6443/
+                             name: Kubernetes
+                       
+                        users:
+                          - name: kubernetes-admin
+                             user: 
+                               client-certificate: admin.crt
+                               clinet-key: admin.key
+                         -----------------------------------------------------------------------------
+                         #to verify kube-api server certificates check it in (#if the installation is done in a hard way )
+                               /usr/local/bin/kube-apiserver
+                        #if installed in kubeadm way check that in 
+                              cat /etc/kuberntes/manifest/kube-apiserver.yaml 
+                              #check it under containers command section
+              - TROUBLESHOOTING TLS issues:
+                        - failed to dial<ip> : connection error: transport:authetication handshake failed	
+                     #TO decrypt the cetificate and check the details 
+                       openssl x509 -in /etc/kubernetes/pki/apiserver.crt -text -noout   
+                       #check
+                                 - issuer: CN=kubernetes 
+                                 - subject: CN=
+                                 - validity: (generally 1year valid)
+                                 -  ip address, DNS Names 
+                       # to inspect server logs (if installed in a hardway)
+                                     journalctl -u etcd.service -l
+                       # to inspect server logs (if insalled in kubeadm way)
+                                   kubectl logs etc-master                 
+                       # if the server is down: Then try using docker command i.e., docker logs
+                              docker ps -a #and then 
+                              docker logs <contianer-id>                             
+                            
+       - External Authentication Providers LDAP:
+       
      Authorization:
        - RBAC (Role Based Authorization Control)
        - ABAC (Attributes Based Authorization Control)
