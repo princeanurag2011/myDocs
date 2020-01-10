@@ -1406,7 +1406,90 @@ NodeUpgrade:
           - name: mypd
              persistentVolumeClaim:
              claimName: myclaim
-       
+     ------------------------------------------------------------------------  
+ =======================================================================
+                                                                     			SECURITY 
+ =======================================================================
+    ------------------------------------------------------------------------
+     Security on host:
+       - disable password based authentication
+       - enable only ssh authetication	
+     Security on KUBE_API Server:
+     
+       - Files - Usernames and Passwords:
+             #To enable basic authentication using password 
+                 kube-apiserver.service
+                  ExecStart=/usr/local/bin/kube-apiserver \\
+                  --basic-auth-file=user-details.csv ## storing usernames and password in csv file               
+             #If it is installed using Kubeadm tool
+                 go to /etc/kubernetes/manifests/kube-apiserver.yaml
+                 change the pod definition i.e. add the  --basic-auth-file=user-details.csv under command section
+             #To authenticate the api server using basic credentials
+                 curl -v -k https://master-node-ip:6443/api/v1/pods -u "username:password"
+             #sample csv file contains usernames,paswords, uid,gid
+
+       - FIles -Usernames and tokens:
+            - it is same like file based authentication shown above, instead of passwords it has tokens..
+                # add token auth file to kube api server using below tag
+                                      --basic-auth-file=user-details.csv 
+                #To authenticate the api server using tokens
+                 curl -v -k https://master-node-ip:6443/api/v1/pods --header "Authorization: Bearer <token>"
+                 #NOTE: above two methods are not recomended. 
+                 #Consider volume mounts while providing an authorization file in a kubeadm setup
+                 #Setup Role Based authentication for new users.
+                   check basic-auth-kube.yaml for full details 
+       - Certificates:
+                - certificate public key -> *.crt , *.pem
+                -  certificate Private key --> *.key, *>key.pem
+                - #TO generate certificates we have different tools:
+                        - Easy RSA
+                        - OPENSSL
+                        - CFSSL	
+                - OPENSSL:
+                       We are using openssl  to create CA 
+                      # 1. Generate keys using open ssl 
+                             openssl genrsa \ 
+                             -out ca.key 2048
+                             #outputs ca.key
+                      # 2. Certificate signing request
+                             openssl req -new \ 
+                             -key ca.key \ 
+                             -subj "/CN=KUBERNETES-CA" \ 
+                             -out ca.csr
+                             #outputs ca.key, ca.csr
+                       # 3. Sign the cetificates 
+                             openssl x509 -req \ 
+                             -in  ca.csr  \
+                             -signkey ca.key \ 
+                             -out ca.crt
+                             #outputs ca.crt
+                       # 4.   
+               
+              RSA:
+                #TO generate RSA  it generates combination of private and public.key
+                     openssl genrsa -out mykey.key 1024
+                     openssl rsa -in mykey.key -pubout> mykey.pem
+                     
+               #Certificates Authorities: 
+                    - symantec
+                    - Digicert
+                    - Comodo
+                    - GlobalSign
+                    
+              #To request for signed certificate
+                    #send Certificate signing request CSR
+                    openssl req -new -key mykey.key -out mykey.csr \
+                   -subj "/C=US/ST=CA/O=MYORG, Inc./CN=mywebsite.com"    
+              
+       - External Authentication Providers LDAP
+     Authorization:
+       - RBAC (Role Based Authorization Control)
+       - ABAC (Attributes Based Authorization Control)
+       - NODE Authorization
+       - Webhook Mode 
+    Pod Communication is controlled by network policies
+
+
 
 --- Others
  # List all pods in ps output format.
