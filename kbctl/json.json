@@ -1,0 +1,39 @@
+/*  sample json */
+{
+	"car": {
+		"color": "red",
+		"price": "1000inr",
+		"wheels": [
+			{
+				"model": "abcd",
+				"location": "front-right"
+			},
+			{
+				"model": "abcd",
+				"location": "back-right"
+			},
+			{
+				"model": "abcd",
+				"location": "front-left"
+			},
+			{
+				"model": "abcd",
+				"location": "back-left"
+			}
+		]
+	}
+}
+
+/*  SAMPLE  JSON
+  #to access data from json..
+  #to get car price
+    $.car.price
+    NOTE: here $ means root element starts with {
+   
+ #to get car front-right wheel model
+    $.car.wheels[?(@.location == "front-right")].model
+     NOTE: here ? is used to check and
+                      @ is used to point evry item in list 
+                      == is used to cmpare with given element  
+   */
+
