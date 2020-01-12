@@ -2005,6 +2005,83 @@ NodeUpgrade:
                       port: 3306
            ---------------------------------------------------------------
            kubectl create -f network-policy-def.yaml
+=======================================================================
+                            END TO END TESTING
+ =======================================================================
+ manual testing: (smoke-test)
+ https://github.com/princeanurag2011/kubernetes-the-hard-way/blob/master/docs/15-smoke-test.md/
+ e2e-testing:
+ https://github.com/princeanurag2011/kubernetes-the-hard-way/blob/master/docs/16-e2e-tests.md/
+ #To test whether nodes are healthy look for status
+   kubectl get nodes
+ #To test whether pods are healthy look for status
+   kubectl get pods
+ #TO test whether kubesystem if installed as pods using kubeadm. look for status if healthy
+   kubectl get pods -n kube-system
+ 
+ #IF kubeadm is installed in hardway as a service Then
+  service kube-apiserver status
+  service kube-controller-manager status
+  service kube-scheduler status
+  service kubelet status
+  service kube-proxy status
+ 
+ #Run the pods and scale them and expose them
+   kubectl run nginx
+   kubectl get pods
+   kubectl scale --replicas=3 deploy/nginx
+   kubectl get pods
+   kubectl expose deployment nginx --port=80 --type=NodePort
+   kubectl get service
+
+   curl http://clusterIP:portNo/
+  TestSuite:
+    - kuberntes/test-infra
+    - SONOBUOY - It's one of the tool to test the Kubernetes cluster
+    
+    There are e2e - 1000 tests  available
+    Any cluster must support 160 tests as a conformance tests to accept it and
+    then upload the test results to testgrid maintained by kubernetes 
+    If once approved and goes through paperwork . Then we can become 
+    CERTFIED KUBERNETES SOLUTION PROVIDER 
+
+    To complete e2e 1000 tests, it would take 12 hrs
+    to complete conformance tests 164 , it would take 1.5 to 2 hrs
+  
+  TEST-INFRA:
+    go get -u  k8s.io/test-infra/kubetest
+    kubetest --extract=v1.11.3
+
+    cd kubernetes
+
+    export KUBE_MASTER_IP=<CLUSTER-IP>:<PORTNO>
+    export KUBE_MASTER=kube-master
+    
+    #This below test would run 1000 e2e tests
+    kubetest --test --provider=skeleton > testout.txt
+    #To run specific test  alone provide in arguments
+    kubetest --test --provider=skeleton --test-args="--ginkgo.focus=Secrets" > testout.txt
+    #To run  Conforamnce test 164 tests and takes about 1.5hrs
+    kubetest --test --provider=skeleton --test-args="--ginkgo.focus=\[Conforamce\]" > testout.txt
+
+  
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --- Others
  # List all pods in ps output format.
