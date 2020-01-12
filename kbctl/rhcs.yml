@@ -32,12 +32,19 @@
             - |
             - wc
 
-
-
        - To see the n/w interfaces:
              ifconfig
              ip addr show
+       - To shift from GUI to console 
+           CTRL+ALT+F1  #GUI
+           CTRL+ALT+F2  #CONSOLE
+           .
+           .
 
+           .
+           CTRL+ALT+F6  #CONSOLE
+       - To see the file system hierarchy:
+           man hier
        - To see list of files:
           - to see detailed info of folders/directories and files:
               ls -l 
@@ -49,6 +56,26 @@
               ls -lrt
           - to see the files in a tre view:
               ls -R
+       - To read a file with line numbers:
+             nl file.txt
+             cat -n file.txt    
+         - To read a file with top 10 lines:
+             head file.txt
+         - To read a file with last 10 lines:
+             tail file.txt
+       - To create a folder :
+           mkdir mydata/
+         - To create a folder inside a folder :
+            mkdir -p folder1/folder2    
+         - To create a file:
+            touch file1
+            cat > file2
+            echo "" > file3
+            >file4
+            vi file5
+            vim file6 
+          - To create 100 text files at a time:
+            touch file{1..100}.txt   
        - To set the hostname:
               hostnamectl set-hostname <hostname> # ex: hostnamectl set-hostname web.company.com
        - To see time date and time zone:
@@ -91,7 +118,7 @@
             - to set the print format for history:
                export HISTTIMEFORMAT='%F %T '
             - to see the any linux OS version:
-               cat /etc/*-release
+                cat /etc/*-release
             - to see the redhat OS version:
                cat /etc/readhat-release
             - to print the kernel name:
@@ -106,6 +133,18 @@
                top
             - to see the virtual memory:
                vmstat
+            - to see the disk and partions:
+                cat /proc/partitions
+              - to see the file system type:
+                 file /dev/sda
+              - to see the disk and partitions:
+                 lsblk
+              - to see the detailed view of partitions:
+                 fdisk -l 
+              - to see the details of disk file type memory used etc..:
+                 df -h
+            - to see the hostname details:
+               hostnamectl
 
    - Keyboard shortcuts:
       - CTRL + u  # to clear the command and put the cursor at starting position
@@ -151,23 +190,37 @@
              tar -xvf filename.tar
            #to untar tar.gz 
              tar -xvzf filename.tar
+             # -f filename
+             # -v verbose
+             # -c create archive
+             # -j .bz2
+             # -z gzip
+             # -x extract
+             # -t list the content
+             # -C change dir ex: tar -xvzf abcd.tar.gz -C /home/ # to copy the extracted contetn
              
    - create and edit txt files:
       vi editor  
        - press i - to go to insert mode
        
        - go to x mode and then 
-           press R to go to REPLACE mode and type on the exisiting chars and it will be replaced
-           press dd - to cut and then p to paste
-           press y - to copy the lines and then p to paste
-           gg - to go to start of file
-           shft+GG to go to end of file
-           cc to cut the line and go to insert mode
-           type colon : and then below
+           - press R to go to REPLACE mode and type on the exisiting chars and it will be replaced
+           - press dd - to cut and then p to paste
+           - press y - to copy the lines and then p to paste
+           - cc to cut the line and go to insert mode
+           - delete a word (dw)
+           - delete a character (x)
+           - delete a line (dd)
+           - copy the last two lines (yy)
+           - paste the lines on the top of the file (p)
+           - Go to the bottom of the page (GG), then go to the top of the page (gg)
+          type colon : and then below
+           :%!fmt #to format the content
            :u to undo 
            :/searchword to find the matching lines #ex: if want to find hello in the test then
            :/hello
            :set nu  #to show line numbers
+           :10 #to go to line number 10
            :+line number #to go to next line number ex: :/+50 to go to 55oth line from present line where the cursor exists
            :%s/hello/how #to replace first occurance of word 'hello' with 'how'
            :%s/hello/how/g #to replace all occurances in the file
@@ -233,10 +286,26 @@
        rpm -qd <packagename> #q query and d doc
        find:
       
-   - finding files with locate and find
+   - finding files with locate and find:
         find /home/ec2-user  -max-depth 3 -name "*.sh" -type f -mtime +50  # find file upto 3 sub directores +50 more than 50 days ago, -50 leass than 50 days
          
         find /home/ec2-user  -max-depth 3 -name "*.sh" -type f -mtime 50
+
+        #to find the file 
+        find /etc/ -name "*.txt" #to find all the text files
+        find /Documents -type f -empty # to find the empty files
+        find /Documents -type f -empty -exec rm -rf {} + # to find the empty files and delete them.
+        find /Documents -type f -iname file1.txt -exec cat {} + # to find the file and read the content in it.
+        find /Documents -type f  -mmin -10 #to find files created 10 min ago.
+        find /home/ -user <username> #To see the files owned by user
+        find /home/ -type d #to find only directories
+
+
+        find <filepath>  -name file1.txt # -name is used to give the filename 
+        find <filepath>  -iname file1.txt # -iname is used to give the filename without case-sensitive
+        #ex: find /etc/ -name abcd.txt
+
+        
   Running-System-Operations:
    - boot/reboot/shutdown systems
      runlevel
