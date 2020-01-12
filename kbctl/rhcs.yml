@@ -398,7 +398,34 @@
    - Update kernel package appropriately to ensure bootable system
    - modify system boot loader
   Manage Users and Groups:
-   - Create/delete/modify Local user Accounts
+   - Create/delete/modify Local user Accounts:
+       useradd <username>  #To add an user
+       passwd <username> #to set password to username
+
+       userdel --remove <username> #to delete the username and useraccount fully
+     #NOTE:  before deleting user check the runnning process in that username
+       #to kill the running process 
+       ps -ef --pid $(pgrep -u <username>)  #To list all running process in that username
+       killall -9 -u <username> #to kill all the process for that user  -9 signal value -u for username
+
+
+       usermod -a <username> -G <groupname> #to add user to the group
+       id <username> #to see the user id and group name of username
+       cat /etc/passwd #this is the file where all usernames are stored
+       cat /etc/shadow # this is file where all the user passwords are stored in encrypted format.
+       #The above command is used to check whether user has any pasword
+       
+       chage -l <username> # to see the user account details or set password exp date etc..
+       usermod -e YYYY-MM-DD <username> #TO set the password exp date for user
+       usermod -m 7 <username> #to set the min. no. of days req. b/w the password change
+       usermod -M 7 <username> #to set the max. no. of days req. b/w the password change
+       usermod -I 10 <username> #to set no. of days required for an account to expire.
+       usermod -w 5 <username> #min. no. of daysrequired to warn before password exp.
+       usermod -L <username> #To lock the useraccount
+       usermod -U <username> #To unlock the useraccount
+       tar -cvzf user-backup/user1-home-dir-bak.tar.gz  /home/user1/ #to take the user backup
+       #in the above command tar -cvzf <dest> <src>
+
    - Change passwords and adjust passwords aging for specific users
    - Create/delete/modify Local groups and memberships
    - Using set GID on directories
