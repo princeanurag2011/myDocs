@@ -35,7 +35,7 @@
        - To see the n/w interfaces:
              ifconfig
              ip addr show
-       - To shift from GUI to console 
+       - To shift from GUI to console: 
            CTRL+ALT+F1  #GUI
            CTRL+ALT+F2  #CONSOLE
            .
@@ -63,7 +63,7 @@
              head file.txt
          - To read a file with last 10 lines:
              tail file.txt
-       - To create a folder :
+       - To create a folder:
            mkdir mydata/
          - To create a folder inside a folder :
             mkdir -p folder1/folder2    
@@ -117,34 +117,34 @@
                 !!
             - to set the print format for history:
                export HISTTIMEFORMAT='%F %T '
-            - to see the any linux OS version:
-                cat /etc/*-release
-            - to see the redhat OS version:
-               cat /etc/readhat-release
-            - to print the kernel name:
-               uname -s
-            - to print the node name:
-               uname -n 
-            - to see the cpu info:
-               cat /proc/cpuinfo #or lscpu
-            - to see the memory details:
-               cat /proc/meminfo #or free -h 
-            - to see the list of running process:
-               top
-            - to see the virtual memory:
-               vmstat
-            - to see the disk and partions:
-                cat /proc/partitions
-              - to see the file system type:
-                 file /dev/sda
-              - to see the disk and partitions:
-                 lsblk
-              - to see the detailed view of partitions:
-                 fdisk -l 
-              - to see the details of disk file type memory used etc..:
-                 df -h
-            - to see the hostname details:
-               hostnamectl
+       - to see the any linux OS version:
+            cat /etc/*-release
+       - to see the redhat OS version:
+           cat /etc/readhat-release
+       - to print the kernel name:
+           uname -s
+       - to print the node name:
+           uname -n 
+       - to see the cpu info:
+           cat /proc/cpuinfo #or lscpu
+       - to see the memory details:
+           cat /proc/meminfo #or free -h 
+       - to see the list of running process:
+           top
+       - to see the virtual memory:
+           vmstat
+       - to see the disk and partions:
+            cat /proc/partitions
+          - to see the file system type:
+             file /dev/sda
+          - to see the disk and partitions:
+            lsblk
+          - to see the detailed view of partitions:
+             fdisk -l 
+          - to see the details of disk file type memory used etc..:
+             df -h
+       - to see the hostname details:
+           hostnamectl
 
    - Keyboard shortcuts:
       - CTRL + u  # to clear the command and put the cursor at starting position
@@ -154,8 +154,8 @@
       - CTRL + k 
       - CTRL + c # to stop the running process
       - CTRL + r # to search for previous command
-   - I/O REDIRECTION
-   - GREP
+   - I/O REDIRECTION:
+   - GREP:
    - access remote systems SSH:
      ssh: to connect to remote systems 
       ssh user@IPaddress
@@ -167,8 +167,8 @@
         - get: to download file
         - put: to upload file
        
-   - LOG-IN AND SWITH USERIN MULTI USER TARGETS
-   - UN/ARCHIVE , UN/COPMRESS UN/PACK files using tar.gz,star,gzip,bgip/2
+   - LOG-IN AND SWITH USERIN MULTI USER TARGETS:
+   - UN/ARCHIVE , UN/COPMRESS UN/PACK files using tar.gz,star,gzip,bgip/2:
        - gzip:  
             #used to compress only files and can't compress directories         
             create .gz file
@@ -230,50 +230,61 @@
        
    - create hard and soft links:
      soft link:
-      ln -s <file> filename
+       ln -s <file> filename
      hard link:
-      ln <file> <filename>    
+       ln <file> <filename>    
       
    - List , set changes standards UGO/RWX PREMISSIONS -UNMASK:
-     file ownership permission: these are given to u g o
+   - file ownership permission: these are given to u g o
           u - user/owner
           g - group
           o - others 
           chown user:group -R <directory/> # to give access to u , g for directory and sub directories
           
          file operations: r w x s t 
-          normal mode:          
-           chmod o+rwx <filename> #to give permissions to others rwx
-           chmod o-rwx <filename> #to remove permissions to others rwx
-           chmod u+rwx <filename> #to give permissions to user rwx
-           chmod u-rwx <filename> #to remove permissions to user rwx
-           chmod ug+rwx <filename> #to give permission to user and group rwx
-           chmod u+rws <filename> #to give permissions to user rws
-           chmod a+rwx <filename> #to give permission to user and group and others rwx
-           chmod o+rwx -R <filename> #to give permissions to others rwx including sub directories
-           chmod +t <filename> #to set sticky bit to user
-         octal Mode:
-           rwx - read write execute
-           r = 4 
-           w = 2 
-           x = 1
-           no permission = 0
+           normal mode:
+             chmod o+rwx <filename> #to give permissions to others rwx
+             chmod o-rwx <filename> #to remove permissions to others rwx
+             chmod u+rwx <filename> #to give permissions to user rwx
+             chmod u-rwx <filename> #to remove permissions to user rwx
+             chmod ug+rwx <filename> #to give permission to user and group rwx
+             chmod u+rws <filename> #to give permissions to user rws
+             chmod a+rwx <filename> #to give permission to user and group and others rwx
+             chmod o+rwx -R <filename> #to give permissions to others rwx including sub directories
+             chmod +t <filename> #to set sticky bit to user
+           octal Mode:
+             rwx - read write execute
+             r = 4 
+             w = 2 
+             x = 1
+             no permission = 0
           
-           chmod 777 <filename> #to give full access rwxrwxrwx to user group others
-           chmod 764 <filename> #to give full access rwxrwxrwx to user, rw to group, r to others
-           chmod 764 -R <filename> #to give full access rwx to user, rw to group, r to others
-           including all the files inside directory
-           chmod 4777 <filename> #to give full access rwsrwxrwx to user group other and set uid to user
-           chmod 2777 <filename> #to give full access rwxrwSrwx to user group other and set gid to group
-           chmod 6777 <filename> #to give full access rwsrwSrwx to user group other and set uid and gid to user and group
-           chmod 1777 <filename> #to give full access rwxrwxrwT to user group other and sticky bit only to user
-           chmod 7777 <filename> #to give full access rwx to user group other and set and sticky bit to user,owner,group
+             chmod 777 <filename> #to give full access rwxrwxrwx to user group others
+             chmod 764 <filename> #to give full access rwxrwxrwx to user, rw to group, r to others
+             chmod 764 -R <filename> #to give full access rwx to user, rw to group, r to others
+             including all the files inside directory
+             chmod 4777 <filename> #to give full access rwsrwxrwx to user group other and set uid to user
+             chmod 2777 <filename> #to give full access rwxrwSrwx to user group other and set gid to group
+             chmod 6777 <filename> #to give full access rwsrwSrwx to user group other and set uid and gid to user and group
+             chmod 1777 <filename> #to give full access rwxrwxrwT to user group other and sticky bit only to user
+             chmod 7777 <filename> #to give full access rwx to user group other and set and sticky bit to user,owner,group
          
          t - sticky bit:
              it is used to prevent premissions for other users. other than owner no one can modify it
          s - set uid/ gid:     
            user/owner permission bit means it runs with that set id
-   - locate Read and use System documentation with man, info and  usr/share/doc
+   - ACCESS CONTROL LIST:
+       # This is used to set the special permissions to the users. This is done using
+       # facl command - facl -"file access control list"
+       #NOTE: if we try to find the list of files using ls -l  with any user other than permitted user
+          #nothing will be displayed.
+         setfacl -m  u:<username>:rwx <dir> #to set special permissions to user on a dir
+         setfacl -m  g:<groupname>:rwx <dir> #to set special permissions to group on a dir
+         setfacl -x  g:<groupname>:rwx <dir> #to remove special permissions to group on a dir
+        
+         getfacl <dir>  #to see the special permission set on particular directory
+
+   - locate Read and use System documentation with man, info and  usr/share/doc:
        mandb:
        apropos:
        info:
@@ -284,8 +295,7 @@
        which:
        whereis:
        rpm -qd <packagename> #q query and d doc
-       find:
-      
+       find:   
    - finding files with locate and find:
         find /home/ec2-user  -max-depth 3 -name "*.sh" -type f -mtime +50  # find file upto 3 sub directores +50 more than 50 days ago, -50 leass than 50 days
          
@@ -303,9 +313,7 @@
 
         find <filepath>  -name file1.txt # -name is used to give the filename 
         find <filepath>  -iname file1.txt # -iname is used to give the filename without case-sensitive
-        #ex: find /etc/ -name abcd.txt
-
-        
+        #ex: find /etc/ -name abcd.txt  
   Running-System-Operations:
    - boot/reboot/shutdown systems
      runlevel
@@ -366,7 +374,7 @@
         
    - interrupt the boot process and gain access to system
    - adjust process priority and kill process
-   - locate a dn interpret system log files
+   - locate and interpret system log files
    - start/stop/check the status of system network services
    - securely transfer files between systems
   Configure-local-storage:
@@ -374,6 +382,10 @@
    - using LVM
    - Configure systems to mount FILE SYSTEMS at boot by using UUID or label
    - Add new partition and logical volumes and swap to a system NON destructively
+   - increase security for disks and drives:
+      LUKS - Linux Unified Key Setup on disk format:
+        - This  is used to encrypt the data and provides passphrase stregthening against disk attacks        
+
   Create and configure FILE SYSTEMS:
    - Create/mount/unmount  and use VFAT/EXT4/XFS File Systems
    - Mount/Unmount CIFS/NFS network file systems
@@ -383,16 +395,77 @@
    - Diagonise and correct File permission problems
   Deploy Configure and Maintain System:
    - Configure networking and host name resolutions statically/dynamically :troubles
-   - networking and host name resolutions statically/dynamically : Network Manager
-   - networking and host name resolutions statically/dynamically : host Name configuration
-   - Schedule task using at and cron
+   - networking and host name resolutions statically/dynamically : 
+      - Network Manager
+   - networking and host name resolutions statically/dynamically : 
+      - Host Name configuration
+   - Schedule task using at and cron jobs:
+      touch file1.txt
+      echo "HELLO! JOB DONE" >> file1.txt | at now +1min #to run the job in next 1 min.
+      at -l # To list jobs
+      atq # To list jobs
+      atrm <jobNo> #to remove the job
+
+      - #TO CREATE A JOB at teatime tommorow i.e default teatime is 16:00hrs tomorrow
+        at -q g teatime tomorrow #this will open a command line below as shown. write the task in it 
+        at> touch /home/ec2-user/myjob.txt
+        at><EOT> #press CTRL+d TO fiinish writing
+
+      - #TO CREATE A JOB at specific time (say 16:05 tomorow)
+        at -q b 16:05 tomorrow #this will open a command line below as shown. write the task in it 
+        at> touch /home/ec2-user/myjob.txt
+        at><EOT> #press CTRL+d TO fiinish writing
+     
+      CRON:
+        - #TO see the format of CRONTAB
+           cat /etc/crontab
+          #format of CRONETAB:
+           <min> <hour> <date of month> <month> <day of week> <username> <write command here>
+        - #TO see list of cron jobs:
+          crontab -l
+        - #TO remove a cron job:
+          crontab -e # then delete that job in that file.
+        - #TO remove all cron jobs:
+          crontab -r
+      
+        - #To write a cron job:
+          crontab -e #This will open up a vi editor write ur commands  here 
+                     # to see the format -->  cat /etc/crontab
+
+        -  #To run a job to store the details of memory at 12:14 hrs today 
+          13 12 * * * touch /tmp/meminfo.log #to create file at 12:13 hrs  #here * means current date/time/month/week
+          14 12 * * * cat /proc/meminfo >> /tmp/meminfo.log #to write the meminfo details at 12:14 hrs
+        
+        -  #To run a job to store the details of memory at 'dec 15 sat 12:14 hrs'
+           13 12 15 12 6 touch /tmp/meminfo.log #to create file at dec 15 sat 12:13 hrs
+           13 12 15 12 6  cat /proc/meminfo >> /tmp/meminfo.log #to write the meminfo details dec 15 sat 12:14 hrs
+           #NOTE: in the above mentioned command
+           #13th min
+           #12th hrs
+           #15th date
+           #12th month (0-12) jan-dec
+           #6 - sat  #(0-6) sun-sat
+
+
+
+
+
+
    - Start/stop/configure services automatically at boot
    - Configre systems to boot into specific target automatically
    - install RHEL automatically using quick start
    - Configure a physical machine to host virtual guests
    - configure a sytem to use Time Services
-   - Install and update packages from redhat n/w YUM/RPM REPO 
-   - Managing repositories
+   - Install and update packages from redhat n/w YUM/RPM REPO :
+      yum upgrade
+      yum update 
+   - Managing repositories:
+      yum info <packagename>
+      yum list installed
+      yum list available
+      yum remove <packagename>
+      yum deplist <packagename> #To see the list of dependencies
+
    - Configuring local repositories
    - Configuring local repositories using GPG keys
    - Update kernel package appropriately to ensure bootable system
@@ -403,18 +476,21 @@
        passwd <username> #to set password to username
 
        userdel --remove <username> #to delete the username and useraccount fully
-     #NOTE:  before deleting user check the runnning process in that username
+       #NOTE:  before deleting user check the runnning process in that username
        #to kill the running process 
        ps -ef --pid $(pgrep -u <username>)  #To list all running process in that username
        killall -9 -u <username> #to kill all the process for that user  -9 signal value -u for username
-
 
        usermod -a <username> -G <groupname> #to add user to the group
        id <username> #to see the user id and group name of username
        cat /etc/passwd #this is the file where all usernames are stored
        cat /etc/shadow # this is file where all the user passwords are stored in encrypted format.
        #The above command is used to check whether user has any pasword
-       
+
+       tar -cvzf user-backup/user1-home-dir-bak.tar.gz  /home/user1/ #to take the useracount data backup
+       #in the above command tar -cvzf <dest> <src>
+
+   - Change passwords and adjust passwords aging for specific users:
        chage -l <username> # to see the user account details or set password exp date etc..
        usermod -e YYYY-MM-DD <username> #TO set the password exp date for user
        usermod -m 7 <username> #to set the min. no. of days req. b/w the password change
@@ -423,14 +499,15 @@
        usermod -w 5 <username> #min. no. of daysrequired to warn before password exp.
        usermod -L <username> #To lock the useraccount
        usermod -U <username> #To unlock the useraccount
-       tar -cvzf user-backup/user1-home-dir-bak.tar.gz  /home/user1/ #to take the user backup
-       #in the above command tar -cvzf <dest> <src>
+   - Create/delete/modify Local groups and memberships:
+       groupadd developers #To create developers group
+       cat /etc/group | grep developers #to see the added group       
+       usermod -G <group-name> <username> #To add an exisiting user to the group
+       groupdel developers #TO delete the developers group
+   - Using set GID on directories:
 
-   - Change passwords and adjust passwords aging for specific users
-   - Create/delete/modify Local groups and memberships
-   - Using set GID on directories
   Manage Securities:
-   - Configure firewall settings usign availabel firewall utilities
+   - Configure firewall settings usign available firewall utilities
    - Configure key based authentication for SSH
    - Intro to SE Linux
    - Set Enforcing and permissive modes for SE Linux
@@ -453,7 +530,6 @@
    - List, set, and change standard file permissions
    - Read, and use system documentation
    - Manage access to the root account
-   
   Operation of Running Systems – 20%:
    - Boot, reboot, and shut down a system safely
    - Boot or change system into different operating modes
@@ -471,7 +547,6 @@
    - List and identify SELinux/AppArmor file and process contexts 
    - Manage Software 
    - Identify the component of a Linux distribution that a file belongs to
-   
   User and Group Management – 10%:
    - Create, delete, and modify local user accounts
    - Create, delete, and modify local groups and group memberships
@@ -480,7 +555,6 @@
    - Configure user resource limits
    - Manage user privileges
    - Configure PAM
-  
   Networking – 12%:
    - Configure networking and hostname resolution statically or dynamically
    - Configure network services to start automatically at boot
@@ -488,7 +562,6 @@
    - Start, stop, and check the status of network services
    - Statically route IP traffic
    - Synchronize time using other network peers
-  
   Service Configuration – 20%:
    - Configure a caching DNS server
    - Maintain a DNS zone
@@ -503,7 +576,6 @@
    - Restrict access to a web page
    - Manage and configure containers
    - Manage and configure Virtual Machines
-  
   Storage Management – 13%:
    - List, create, delete, and modify physical storage partitions
    - Manage and configure LVM storage
@@ -515,9 +587,8 @@
    - Create, manage and diagnose advanced file system permissions
    - Setup user and group disk quotas for filesystems
    - Create and configure file systems
-
 ---
-Scripting:
+ Scripting:
  echo $PATH
  echo PATH=$PATH:$(pwd)
  
