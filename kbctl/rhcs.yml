@@ -315,7 +315,7 @@
         find <filepath>  -iname file1.txt # -iname is used to give the filename without case-sensitive
         #ex: find /etc/ -name abcd.txt  
   Running-System-Operations:
-   - boot/reboot/shutdown systems
+   - boot/reboot/shutdown systems:
      runlevel
       0 – Halt
       1 – Single-user text mode
@@ -365,36 +365,37 @@
           --version               output version information and exit
 
        
-   - boot system into differetn targets
+   - boot system into differetn targets:
        #to check the current target 
         systemctl get-default
       #to see list of targets 
         systemctl list-units --type=target
         
         
-   - interrupt the boot process and gain access to system
-   - adjust process priority and kill process
-   - locate and interpret system log files
-   - start/stop/check the status of system network services
-   - securely transfer files between systems
+   - interrupt the boot process and gain access to system:
+   - adjust process priority and kill process:
+   - locate and interpret system log files:
+   - start/stop/check the status of system network services:
+   - securely transfer files between systems:
   Configure-local-storage:
-   - list create/delete partitions on MBR/GPT disks
-   - using LVM
-   - Configure systems to mount FILE SYSTEMS at boot by using UUID or label
-   - Add new partition and logical volumes and swap to a system NON destructively
+   - list create/delete partitions on MBR/GPT disks:
+   - using LVM:
+   - Configure systems to mount FILE SYSTEMS at boot by using UUID or label:
+   - Add new partition and logical volumes and swap to a system NON destructively:
    - increase security for disks and drives:
       LUKS - Linux Unified Key Setup on disk format:
         - This  is used to encrypt the data and provides passphrase stregthening against disk attacks        
 
   Create and configure FILE SYSTEMS:
-   - Create/mount/unmount  and use VFAT/EXT4/XFS File Systems
-   - Mount/Unmount CIFS/NFS network file systems
-   - Extend existing logical volumes
-   - create and confgure set -GID directories and colloborations
-   - Create and manage ACL
-   - Diagonise and correct File permission problems
+   - Create/mount/unmount  and use VFAT/EXT4/XFS File Systems:
+   - Mount/Unmount CIFS/NFS network file systems:
+   - Extend existing logical volumes:
+   - create and confgure set -GID directories and colloborations:
+   - Create and manage ACL:
+   - Diagonise and correct File permission problems:
   Deploy Configure and Maintain System:
-   - Configure networking and host name resolutions statically/dynamically :troubles
+   - Configure networking and host name resolutions statically/dynamically:
+        troubles
    - networking and host name resolutions statically/dynamically : 
       - Network Manager
    - networking and host name resolutions statically/dynamically : 
@@ -445,12 +446,6 @@
            #15th date
            #12th month (0-12) jan-dec
            #6 - sat  #(0-6) sun-sat
-
-
-
-
-
-
    - Start/stop/configure services automatically at boot
    - Configre systems to boot into specific target automatically
    - install RHEL automatically using quick start
@@ -507,14 +502,115 @@
    - Using set GID on directories:
 
   Manage Securities:
-   - Configure firewall settings usign available firewall utilities
-   - Configure key based authentication for SSH
-   - Intro to SE Linux
-   - Set Enforcing and permissive modes for SE Linux
-   - List and identify SELinux Files and Process Contexts
-   - Restore default file Contexts
-   - Use boolean Setting to modify Systems SELinux Settings
-   - Diagnose and address Routine SELinux Policy Violations
+   - Configure firewall settings using available firewall utilities:
+      - firewall is n/w security device that monitors incoming and outgoing traffic
+        firewalld is firewall daemon, is a complete firewall solution avilable by default
+        firewall zones:
+          drop:
+            - The lowest level of trust. All incoming connections are dropped by default and 
+              only outgoing connections are allowed.
+      
+          Block:
+            - similar to drop , but rejected with icmp-host-prohibited or icmp6-adm-prohibited 
+              message .
+          Public: 
+            - untrusted networks, You dont trust other computers but allow selected incoming connections
+              case-by-case
+          External:
+            - Using firewall as a gateway. It is configured using NAT masquerading so that internal n/w
+              remains private but reachable.
+          Internal:
+            - The other side of  external zone, used for internal portion of the gateway. The computers 
+               are fairly trustworth and some additional services are available.
+          home:
+            - default internal private network zone. Doesn't allow incoming from outside network.
+          dmz:
+            - Used for computer lcated in DMZ (isolated computer that will not have access to the 
+              rest of the network). A few more services might be allowed.
+          Work:
+            - used for work machines. trust most of the computers in the network. 
+              A few more service might be allowed
+          Trusted:
+            - Trust all of the machines in the network. The most open of the available options 
+              and should be  used sparingly.
+
+
+      #To check the status of firewall
+        systemctl status firewalld
+        #or 
+        firewall-cmd --state
+      #To stop the firewall 
+        systemctl stop firewalld
+      #To start the firewall
+        systemctl start firewalld.service
+      #To restart the firewall service
+         systemctl restart firewalld.service
+      #To start GUI of firewall
+        firewall-config
+      #To see the list of firewall zones
+        firewall-cmd --get-zones
+      #To see the  configuraion of specific firewall zone (say block)
+        firewall-cmd --zone=block --list-all
+
+      #To make temporary change the firewall configuration.
+      #If the firewall service are restarted these changes will not last.
+        firewall-cmd --zone=home --change-interface=eth0
+      #To make the changes permanent
+        vim /etc/sysconfig/network-scripts/ifcfg-<interfaceName>
+        #add the below text in it
+        ZONE=home
+        #and then restart the network and firewall  service
+        systemctl restart network.service #To restart network service
+        systemctl restart firewalld.service #To restart firewall service
+
+      #To set the default firewall zone
+       firewall-cmd --get-default-zone #to see the default firewall zone
+       firewall-cmd --set-default-zone=home
+
+      #To create custom firewall zone
+       firewall-cmd --permanent --new-zone=myPublicZone
+       firewall-cmd --permanent --new-zone=myPrivateDNS
+       firewall-cmd --reload #if not reload it won't show newly created zones in the list.
+
+      PORT FORWARDING:
+        - port forwarding or port mapping used to send the comm. req to computers that
+          are traversing the gateway network
+        - #To do the port forwaring using firwall from 80 to 5555
+           firewall-cmd --permanent --add-masquerade
+           firewall-cmd --permanent --add-forward-port=port=5555:proto=tcp:toport:80
+           firewall-cmd --reload
+      nmap:
+        - it is used as a network monitoring tool
+        - #To see the open ports
+          nmap <ip-address>
+      vsftpd:
+        - very secure file tranfer protocol daemon. it support ipv6 and ssl
+          yum install -y vsftpd #TO install it
+
+          vim /etc/selinux/config #To disable selinux
+          #check the SELINUX=disabled 
+          
+          #to make the files available for download in the network through ftp
+          #put the files in this below location 
+           cd /var/ftp/pub/text123.txt
+          #To start the ftp service 
+           systemctl status vsftpd  #To check the status of the ftp server
+           systemctl start vsftpd #TO start the service
+
+          #To download the files from FTP server to client
+          #then goto client machine use below command
+            wget ftp://<ipaddess of server>/pub/filename
+          Troubleshooting vsftpd:
+             vim /etc/vsftpd/vsftpd.conf #default location of config file.
+
+
+   - Configure key based authentication for SSH:
+   - Intro to SE Linux:
+   - Set Enforcing and permissive modes for SE Linux:
+   - List and identify SELinux Files and Process Contexts:
+   - Restore default file Contexts:
+   - Use boolean Setting to modify Systems SELinux Settings:
+   - Diagnose and address Routine SELinux Policy Violations:
 ---
  LFCS: 3 years
   Essential Commands – 25%:
@@ -588,7 +684,7 @@
    - Setup user and group disk quotas for filesystems
    - Create and configure file systems
 ---
- Scripting:
+Scripting:
  echo $PATH
  echo PATH=$PATH:$(pwd)
  
