@@ -4,11 +4,32 @@ CSOPA - Certified SysOPS Administrator
 CSAP - Certified Solution Architect Professional
 
 CSAA-8-topics:
-  - Compute
-  - Storage
-  - DB
-  - Networking and content delivery
-  - Security Identity and Compliance
-  - Mgmt and Governance
-  - Analytics 
-  - Application Integrations
+  - Compute:
+      - EC2
+      - Elastic Beanstalk
+      - Lambda
+  - Storage:
+      - S3
+      - Glacier
+  - DB:
+      - RDS
+      - DyanamoDB
+      - Redshift
+  - Networking and content delivery:
+      - VPC
+      - CloudFront
+      - Route53
+      - Direct Connect
+      - Elastic Load Balancer
+  - Security Identity and Compliance:
+      - IAM
+  - Mgmt and Governance:
+      - Cloud Watch 
+      - Cloud Formation
+      - AutoScaling
+      - Config
+      - Cloud trail
+      - Trsuted Advisor
+  - Analytics:
+      - Kinesis
+  - Application Integrations:
