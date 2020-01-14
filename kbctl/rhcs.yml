@@ -583,7 +583,10 @@
         - it is used as a network monitoring tool
         - #To see the open ports
           nmap <ip-address>
+      httpd:
+        - To setup webserver
       vsftpd:
+        - To setup file server
         - very secure file tranfer protocol daemon. it support ipv6 and ssl
           yum install -y vsftpd #TO install it
 
@@ -602,6 +605,37 @@
             wget ftp://<ipaddess of server>/pub/filename
           Troubleshooting vsftpd:
              vim /etc/vsftpd/vsftpd.conf #default location of config file.
+      
+      ldap:
+        - light weight directory access protocol
+          #to install LDAP SERVER
+           yum install -y *openldap* migrationtools
+          #to setup ldap admin/root password
+           slappasswd #enter the password
+          #then password is printed in the console. copy it and save it in a file.
+
+          #to setup LDAP server config
+           cd /etc/openldap/slapd.d/cn\=config
+          #open the database file 
+             vim olcDatabase\=\{2\}hdb.ldif
+             #then add below line at bottom
+             olcRootPW: <password #add the password heres
+             olcTLSCertificateFile: /etc/pki/certs/example.pem
+             olcTLSCertificateKeyFile: /etc/pki/certs/examplekey.pem
+             #then change the following
+             olcSuffix: dc=example,dc=com
+             olcRootDN: cn=Manager, dc=example, dc=com
+             #then save the file
+          #to test whether file is ok
+            slaptest -u
+          #then change the monitor file in the same loc. and change the domain name
+            slaptest -u
+          #then restart and enable the slapd
+            systemctl restart slapd
+            systemctl enable slapd
+          #to check the runnning status
+            systemctl status slapd
+
 
 
    - Configure key based authentication for SSH:
@@ -1039,6 +1073,32 @@ Scripting:
      s/regexp/replacement/[flags] # substitute regexp with replacement text.
 
 
+Others-MISC:
+  - RESET ROOT PASSWORD:
+     - On the boot menu - press e to interrupt the process.
+     - Press down arrow and search for linux 16
+     - Then press the END key on keyboard to go to the end of the line.
+     - Then type 'rd.break' at the end of line without quotes. 
+     - and then press CTRL+X
+     - Then type -> mount -o remount, rw /sysroot
+     - Then type -> chroot /sysroot
+     - psswd root #to set the root password. then set the password
+     - touch /.autorelabel 
+     - exit 
+     - exit
+
+  - Configure IP Address, Gateway and hostname of your Virtual Machine:
+     - set ip address 192.168.0.3
+     - set hostname web.example.com
+     - set gateway 192.168.0.2
+     NOTE: these changes can be done using single command nmtui
+       - in the console type -> nmtui
+       - it will open a graphical UI and enter the details there
+       - and then activate them 
+       - and then reboot the system to make the changes permanent
+
+
+ 
 
 
 
