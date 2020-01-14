@@ -1,3 +1,5 @@
+#https://aws.amazon.com/certification/certified-solutions-architect-associate/
+#https://aws.amazon.com/faqs/
 CSAA -   Certified Solution Architect Associate
 CDA - Certified Developer Associate
 CSOPA - Certified SysOPS Administrator
@@ -5,20 +7,25 @@ CSAP - Certified Solution Architect Professional
 
 CSAA-8-topics:
   - Compute:
-      - EC2
+      - EC2:
+         #https://aws.amazon.com/ec2/faqs/
       - Elastic Beanstalk
       - Lambda
   - Storage:
-      - S3
+      - S3:
+          #https://aws.amazon.com/s3/faqs/
       - Glacier
   - DB:
-      - RDS
+      - RDS:
+          #https://aws.amazon.com/rds/faqs/
       - DyanamoDB
       - Redshift
   - Networking and content delivery:
-      - VPC
+      - VPC:
+          #https://aws.amazon.com/vpc/faqs/
       - CloudFront
-      - Route53
+      - Route53:
+          #https://aws.amazon.com/route53/faqs/
       - Direct Connect
       - Elastic Load Balancer
   - Security Identity and Compliance:
