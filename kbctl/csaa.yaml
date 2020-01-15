@@ -30,13 +30,65 @@ CSAA-8-topics:
       - Elastic Load Balancer
   - Security Identity and Compliance:
       - IAM
+      - WAF
   - Mgmt and Governance:
       - Cloud Watch 
       - Cloud Formation
       - AutoScaling
       - Config
       - Cloud trail
-      - Trsuted Advisor
+      - Trusted Advisor
   - Analytics:
       - Kinesis
   - Application Integrations:
+      - SQS
+      - SNS
+      - SWF
+  - Others:
+     - AWS WHITEPAPERS
+     - WELL ARCHITECTED FRAMEWORK
+     - Security BEST PRACTISES
+
+
+IAM:
+   - Identity Access Mgmt:
+       #when we create user/group by default it wont have any access to aws resources.
+       #This is called default deny or Non-Explicit -Deny
+       #IAM Users and Groups should be given least access(only the required)  to AWS resources
+      - ARN - amazon resource name
+      - arn:partition:service:region:account:resource #format
+      - we can use arn for 
+        users(IAM and federated),groups,policies, instance profiles, vMFA devices, server certificates
+      - These are important part of IAM Polices to identify them easily.
+      - IAM POLICY:
+          - This is attached to either principals or Identity (users, groups, roles)  or resources(s3 bucket)
+          - These are stored in JSON format
+          - Identity Policies:
+              - Managed Policies:
+                  - AWS Managed Polices
+                  - Customer Managed Policies
+              - Inline Policies:
+                 - These are attached to particular users,roles
+          - Resource Policies:
+              - These are attached to the resources like S3 directly.
+          - POLICY EVALUATION LOGIC:
+              - Explicit-deny --> Explicit-allow --> default deny
+      - IAM ROLES:
+          - Users in AWS account access resources which they dont have access usually.
+          - Users in one AWS account to access resource in another AWS account.
+          - a mobile app  to use aws resources withoutany aws keys
+          - Users who has identities outside of the AWS   
+          - Third parties to perform temporary audits.
+          - example:
+             -  AWS EC2 to access to S3 (No need to store keys in EC2 if IAM roles are used)
+             -  users in different aws accounts
+             -  Users from externally authenticated Users (web Identity Federation) - google, facebook etc.
+             -  Provide AWS  account owned by third party SAML 2.0 
+             -  WE CAN ATTCH ONLY ONE IAM ROLE TO EC2  Instance AT this time:
+                  - It can be attached to running/stopped instance.
+                  - free of cost
+             - can't be aded to groups
+             - can't make direct request to AWS services; they are meant to be used by authorized entities
+               such as IAM USER , apps , AWS service like EC2     
+
+

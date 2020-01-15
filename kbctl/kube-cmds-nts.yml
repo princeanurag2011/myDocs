@@ -45,6 +45,12 @@ kubectl create -f namespace-dev.yml #check the yaml file below
   metadata:
     name: dev
 -------------------------------    
+# To access the services with in the same namespace (default).
+# We can refer to them directly by using their Names
+  example: mysql.connect(db-service)
+# if different namespace (dev) in the same cluster
+ example: mysql.connect(db-service.dev.svc.cluster.local)
+
 
 ================Namespace-quotas==============================
  quota limits: Set resource limits to namespace
