@@ -55,7 +55,7 @@ kubectl create -f namespace-dev.yml #check the yaml file below
 ================Namespace-quotas==============================
  quota limits: Set resource limits to namespace
  
- # To create namespace usign YML file:
+ # To create namespace using YML file:
   --- 
   #namespace-dev-with-quota-limits.yml
   apiVersion: v1
@@ -114,7 +114,7 @@ kubectl create -f namespace-dev.yml #check the yaml file below
      
 ------------commands to create pods--------------------------
 #By default pods gets created in default namespace
-#To create pod using above file
+#To create pod using above file in default namespace
  kubectl create -f pod-definition.yml
 #note: here -f is used to provide file as input
 #or
@@ -2038,7 +2038,12 @@ NodeUpgrade:
    kubectl scale --replicas=3 deploy/nginx
    kubectl get pods
    kubectl expose deployment nginx --port=80 --type=NodePort
+  #kubectl expose pod redis --port=6379 --name redis-service
+  #kubectl create deployment webapp --image=kodekloud/webapp-color
+  #kubectl scale deployment/webapp --replicas=3
+  #kubectl expose deployment webapp --type=NodePort --port=8080 --name=webapp-service --dry-run -o yaml > webapp-service.yaml
    kubectl get service
+
 
    curl http://clusterIP:portNo/
   TestSuite:
