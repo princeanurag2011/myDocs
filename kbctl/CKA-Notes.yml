@@ -379,3 +379,10 @@ STORAGE:
               - DELL MC
               - GLUSTER FS 
          - In CSI volue creation and deletion is done by RPC (remote procedural calls) 
+
+
+        tips:
+          set nu
+          set expandtab
+          set shiftwidth=2
+          set tabstop=2

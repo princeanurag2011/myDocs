@@ -811,7 +811,10 @@ NodeSelector:
      - Tolerations are applied to Pods:
    #To apply taints to nodes:
      kubectl taint nodes <node-name> <key>=<value>:taint-effect
+     
      #ex: kubectl taint nodes node01 app=blue:NoSchedule
+     #ex: kubectl taint node master node-role.kubernetes.io/master:NoSchedule #to apply taints
+     #ex: kubectl taint node master node-role.kubernetes.io/master:NoSchedule- #to remove taints
  #To apply taints to pod -definition:
   ---------------------------------------------------------------------------------------------
   ---
@@ -827,7 +830,7 @@ NodeSelector:
       - key: "app"
          operator: "Equal"
          value: "blue"
-         effect: "No Schedule"
+         effect: "NoSchedule"
    ---------------------------------------------------------------------------------------------
 
 NodeSelector:
@@ -856,12 +859,12 @@ NodeAffinity:
       - requiredDuringSchedulingRequiredDuringExecution (#may come in future)
 
    note: - DuringScheduling -> pod is created for the first time on that node
-             - DuringScheduling - > pod already running on the node   
+             - DuringExecution - > pod already running on the node   
 ---          
   #pod-def-with-nodeaffinity.yml
         apiVersion:
         kind:
-  		metadata:
+  		  metadata:
  
         spec:
           containers:
@@ -2116,6 +2119,31 @@ kubectl get pv --sort-by=.spec.capacity.storage -o=custom-columns=NAME:.metadata
 
 kubectl config view --kubeconfig=my-kube-config -o jsonpath="{.contexts[?(@.context.user=='aws-user')].name}" > /opt/outputs/aws-context-name
 
+=====================================================================
+                     Service Account
+=====================================================================
+
+---
+ apiVersion: v1
+ kind: ServiceAccount
+ metadata:
+    creationTimestamp: 2020-01-20T13:40:02Z
+    name: default
+    namespace: default
+    resourceVersion: "322"
+    selfLink: /api/v1/namespaces/default/serviceaccounts/default
+    uid: 5c02a25a-3b8a-11ea-ab89-0242ac110028
+ secrets:
+    - name: default-token-b6bft
+
+#TO create service account
+ kubectl create serviceaccount <serviceaccountname>
+#TO see list of service accounts
+ kubectl get serviceaccounts
+#To see detailed view  of service
+ kubectl describe serviceaccount <serviceaccountname>
+#To view the secret of serviceaccount
+ kubectl describe secret <serviceaccountname>
 
 
 

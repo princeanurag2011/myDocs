@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webapp-green
+  labels: 
+    name: webapp-green
+spec:
+  containers:
+    - name: redis-image
+      image: kodekloud/webapp-color
+      command: 
+       - "color"
+       - "green"
