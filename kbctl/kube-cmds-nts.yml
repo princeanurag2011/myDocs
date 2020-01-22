@@ -135,18 +135,6 @@ kubectl create -f namespace-dev.yml #check the yaml file below
 #To see list of pods with sort order 
  kubectl get pods -o wide --sort-by="{.spec.nodename}"
 
-#To see list of pods with labels 
- kubectl get pods -o wide --show-labels
- 
-#To assign labels to nodes
- kubectl label nodes <node-name> tagname=tagvalue
- #ex: kubectl label nodes ip-123.23.123.12 availabiltyZone=1a
- 
-#To remove the label assignd to pod
- kubectl label pods <pod-name> <tagname> -
- #ex: to remove the tag availabiltyZone=1a then
- # kubectl label pods myapp-pod availabiltyZone -
- 
 #To see detailed information of pods like labels, containers, created time, events etc.
  kubectl describe pods myapp-pod
 
@@ -200,7 +188,30 @@ appConfiguration:
      cloud.google.com/gke-local-ssd: "true"
 
 ---------------------------------------------------------------
+====================== ====================== ====================== 
+                       LABELS SELECTORS AND ANNOTATIONS
+====================== ====================== ====================== 
 
+#To see list of pods with labels 
+ kubectl get pods -o wide --show-labels
+
+
+#To see list of nodes with labels 
+ kubectl get nodes -o wide --show-labels
+ 
+ 
+#To assign labels to nodes
+ kubectl label nodes <node-name> <label-name>=<label-value>
+ #ex: kubectl label nodes ip-123.23.123.12 availabiltyZone=1a
+ 
+#To remove the label assignd to pod
+ kubectl label pods <pod-name> <label-name> -
+ #ex: to remove the label availabiltyZone=1a then
+ # kubectl label pods myapp-pod availabiltyZone -
+ 
+#To see the list of pods using Selector
+ kubectl get pods --selector <label-name>=<label-value>
+#ex: kubectl get pods --selector availabiltyZone=1a
 
 ====================== ====================== ====================== 
                        REPLICATION CONTROLLER
@@ -386,7 +397,7 @@ appConfiguration:
 --------------------------------------------------------------------
 
 ====================== ====================== ====================== 
-                              DEPLOY
+                              DEPLOYMENTS
 ====================== ====================== ====================== 
 
 ----------------nginx-deploy.yml-----no.of replicas=1
@@ -430,7 +441,8 @@ appConfiguration:
          terminationMessagePath: /dev/termination-log
          terminationMessagePolicy: File
        dnsPolicy: ClusterFirst
-       restartPolicy: Always
+       restartPolicy: Always # incase the containers stops execution of process inside it, it will try to restart always
+     # restartPolicy: Never # incase the containers stops execution of process inside it, it will not restart
        schedulerName: default-scheduler
        securityContext: {}
        terminationGracePeriodSeconds: 30
@@ -604,6 +616,81 @@ appConfiguration:
  ####other updates like scaling the deployment don't create  deployment revision.
  
 --------------------------------------------------------------------------
+=======================================================================
+                         JOBS AND CRON JOBS
+=======================================================================
+
+JOBS:
+
+-----------------------------job-def.yaml----------------------------
+ apiVersion: batch/v1
+ kind: Job
+ metadata: 
+    name: sample-addition-job
+ spec:
+  backoffLimit: 4 #to specify the number of retries before considering a Job as failed. 
+  #The back-off limit is set by default to 6
+  completions: 3 #To make sure 3 job are in completed status
+  #if parallelism is not used then it ceates pod sequentially
+  parallelism: 3 #To make sure 3 pods are created at a time and ensures the status is completed
+   #if  1/3 failed to complete the job , then it will not create 3 next time only 1 pod is created to get 3 completed.
+  template:
+    spec:
+       contianers:
+         - name: math-add
+           image: ubuntu
+           command: ['expr', '3', '+', '2']
+       restartPolicy: Never
+---------------------------------------------------------
+#To create a job 
+ kubectl create -f job-def.yaml
+
+#To see the list of jobs
+ kubectl get jobs
+
+#To see the list of pods created by job
+ kubectl get pods #look at the status 
+
+#To see the output of the executed job we can use logs
+ kubectl logs <job-pod-name>
+ #ex: kubectl logs sample-addition-job
+
+#To delete the jobs 
+ kubectl delete job <job-name>
+ #ex: kubectl delete job sample-addition-job
+---------------------------------------------------------------
+
+CRON-JOBS:
+-----------------------------cronjob-def.yaml----------------------------
+ apiVersion: batch/v1beta1
+ kind: CronJob
+ metadata: 
+    name: sample-addition-job
+ spec:
+    schedule:   "*/1 * * * * " #check cat /etc/crontab #to view the format
+      #  #format of CRONETAB:
+      #  <min> <hour> <date of month> <month> <day of week> <username> <write command here>
+    jobTemplate:
+       spec:
+        completions: 3 #To make sure 3 job are in completed status
+        #if parallelism is not used then it ceates pod sequentially
+        parallelism: 3 #To make sure 3 pods are created at a time and ensures the status is completed
+         #if  1/3 failed to complete the job , then it will not create 3 next time only 1 pod is created to get 3 completed.
+        template:
+          spec:
+            contianers:
+              - name: math-add
+                image: ubuntu
+                command: ['expr', '3', '+', '2']
+            restartPolicy: Never
+---------------------------------------------------------
+
+#To create a cronjob 
+ kubectl create -f cronjob-def.yaml
+
+#To see the list of jobs
+ kubectl get cronjobs
+
 =======================================================================
                           APP LIFE CYCLE MANAGEMENT
 =======================================================================
@@ -1213,11 +1300,11 @@ NodeUpgrade:
                valueFrom:
                  fieldRef:
                    fieldPath: meatada.namespace
-          port:
+          ports:
            - name: http
-              containerPort: 80
+             containerPort: 80
            - name: https
-              containerPort: 443
+             containerPort: 443
     ------------------------------------------------------------------------------
   ----------------------nginx-ingress-service-----------------------------------
    apiVersion: v1
@@ -1273,7 +1360,7 @@ NodeUpgrade:
   apiVersion: extensions/v1beta1
   kind: Ingress
   metadata: 
-    name: ingress-wear
+    name: ingress-wear-watch
   spec: 
     rules: 
      - http:
@@ -1292,7 +1379,7 @@ NodeUpgrade:
   apiVersion: extensions/v1beta1
   kind: Ingress
   metadata: 
-    name: ingress-wear
+    name: ingress-wear-watch
   spec: 
     rules: 
      - host: wear.my-online-store.com
@@ -1308,9 +1395,31 @@ NodeUpgrade:
                serviceName: watch-service
                servicePort: 80
   ------------------------------------------ 
+#To see detailed info Ingress..
+  kubectl describe ingress ingress-wear-watch
+
+-----------------ingress-rewrite.yaml--------------------------------------
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: critical-space
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /pay
+        backend:
+          serviceName: pay-service
+          servicePort: 8282
+-------------------------------------------------------
+-------------------------------------------------------
+
 
  =======================================================================
-                                                                     			STORAGE VOLUMES
+                          STORAGE VOLUMES
   =======================================================================
   Volumes and Mounts:
      
@@ -2003,7 +2112,7 @@ NodeUpgrade:
         - To create network policies for pods
            -----------network-policy-def.yaml------------------------------
            #this netwrok policy is to allow only ingree traffic from api-pod to db-pod
-            apiVersion: v1
+            apiVersion: networking.k8s.io/v1
             kind: NetworkPolicy
             metadata:
               name: db-policy
@@ -2023,6 +2132,43 @@ NodeUpgrade:
                       port: 3306
            ---------------------------------------------------------------
            kubectl create -f network-policy-def.yaml
+
+-------------------------------------------------------------------
+#To allow  egress traffic 
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: internal-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      name: internal
+  policyTypes:
+  - Egress
+  - Ingress
+  ingress:
+    - {}
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          name: mysql
+    ports:
+    - protocol: TCP
+      port: 3306
+
+  - to:
+    - podSelector:
+        matchLabels:
+          name: payroll
+    ports:
+    - protocol: TCP
+      port: 8080
+-------------------------------------------------------------------
+#TO see the  list of network policies
+ kubectl get networkpolicy
+
 =======================================================================
                             END TO END TESTING
  =======================================================================
@@ -2151,6 +2297,60 @@ kubectl config view --kubeconfig=my-kube-config -o jsonpath="{.contexts[?(@.cont
 
 
 =====================================================================
+               Readiness and Liveness
+=====================================================================
+
+apiVerision:
+kind:
+metadata:
+spec:
+  containers:
+    -name:
+     image:
+
+     readninessProbe:
+       httpGet:
+         path: /api/ready
+         port:8080
+     # readninessProbe:
+     #   tcpSocket:
+     #     port:8080
+     # readninessProbe:
+     #   exec:
+     #     command:
+     #       - cat 
+     #       - /app/is_ready
+
+     livenessProbe:
+       httpGet:
+         path: /api/ready
+         port:8080
+       initialDelaySeconds: 10
+       periodSeconds: 5
+       failureThreshold: 8
+     # livenessProbe:
+     #   tcpSocket:
+     #     port:8080
+     #   initialDelaySeconds: 10
+     #   periodSeconds: 5
+     #   failureThreshold: 8
+     # livenessProbe:
+     #   exec:
+     #     command:
+     #       - cat 
+     #       - /app/is_ready
+     #   initialDelaySeconds: 10
+     #   periodSeconds: 5
+     #   failureThreshold: 8
+
+
+=====================================================================
+
+
+
+
+
+
 
 --- Others
  #To see the Kuberentes cluster info

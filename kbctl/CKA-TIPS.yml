@@ -20,6 +20,32 @@ CertificationTip:
       You must verify your work yourself. For example, if the question is to create a pod with a specific image,
       you must run the the kubectl describe pod command to verify the pod is created with the correct name and correct image.
    
+
+
+vim ~/.vimrc
+set nu
+set expandtab
+set shiftwidth=2
+set tabstop=2
+
+
+#To set the alias in linux
+alias k=kubectl
+#to view the alias
+type k #then o/p of this command: k is aliased to `kubectl'
+#or
+alias k  #then o/p of this command: alias k='kubectl'
+
+
+#TO avoid typing the full commands u an use shortcuts
+export ns=default #Use this set your namespace
+alias k='kubectl -n $ns' # This helps when namespace in question doesn't have a friendly name 
+alias kdr='kubectl -n $ns -o yaml --dry-run'.  # run commands in dry run mode and generate yaml.
+alias kgp='kubectl -n $ns get pods -o wide' #to view the pods
+alias kga='kubectl -n $ns get all -o wide' #to view all
+
+
+
    
 POD:
  
@@ -78,3 +104,8 @@ Service:
   # I would recommend going with the `kubectl expose` command. 
   #If you need to specify a node port, generate a definition file using the same command and
    # manually input the nodeport before creating the service.
+
+   # testing
+   # for i in {1..35}; do
+   # kubectl exec --namespace=kube-public curl -- sh -c 'test=`wget -qO- -T 2  http://webapp-service.default.svc.cluster.local:8080/info 2>&1` && echo "$test OK" || echo "Failed"';
+   # echo ""
