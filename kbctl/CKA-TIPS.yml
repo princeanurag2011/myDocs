@@ -21,13 +21,13 @@ CertificationTip:
       you must run the the kubectl describe pod command to verify the pod is created with the correct name and correct image.
    
 
-
+-------------------------------
 vim ~/.vimrc
 set nu
 set expandtab
 set shiftwidth=2
 set tabstop=2
-
+--------------------------------
 
 #To set the alias in linux
 alias k=kubectl
@@ -35,7 +35,7 @@ alias k=kubectl
 type k #then o/p of this command: k is aliased to `kubectl'
 #or
 alias k  #then o/p of this command: alias k='kubectl'
-
+-----------------------------------------
 
 #TO avoid typing the full commands u an use shortcuts
 export ns=default #Use this set your namespace
@@ -43,7 +43,20 @@ alias k='kubectl -n $ns' # This helps when namespace in question doesn't have a 
 alias kdr='kubectl -n $ns -o yaml --dry-run'.  # run commands in dry run mode and generate yaml.
 alias kgp='kubectl -n $ns get pods -o wide' #to view the pods
 alias kga='kubectl -n $ns get all -o wide' #to view all
+-----------------------------------------------
+shortcuts:
+ po -pods
+ deploy -deployments
+ svc -service
+ ns -namespace
+ rs -repicaSets
+ pv -persistent volumes
+ pvc -persistentvolume claims
+ sa - servie accounts
+ netpol - network policies
 
+
+----------------------------------------------
 
 
    
@@ -54,6 +67,42 @@ POD:
      
  #Generate POD Manifest YAML file (-o yaml). Don't create it(--dry-run) :
      kubectl run --generator=run-pod/v1 nginx --image=nginx --dry-run -o yaml
+
+  
+  TIPS:
+    kubectl run nginx --image=nginx  #deployment
+    kubectl run nginx --image=nginx  --restart=Never #POD
+    kubectl run nginx --image=nginx  --restart=OnFailure #Job
+    kubectl run nginx --image=nginx  --restart=OnFailure --schedule='* * * *' #cron Job
+
+
+   #ex-1 : Generate Pod 
+     kubectl run nginx \
+     --image=nginx  \
+     --restart=Never \
+     --port=80 \
+     --command \
+     --serviceaccount=mysal \
+     --env=HOSTNAME=local \
+     --labels=bu=finance,env=dev \
+     --limits='cpu=200m,memory=512Mi' \
+     --dry-run -o yaml -- /bin/sh -c 'echo hello-world'
+
+  #ex-2 Scaling
+    kubectl run frontend \
+     --replicas=2 \
+     --labels=run=load-balancer-example \
+     --image=busybox \
+     --port=8080 
+  
+  #ex-3 Expose
+    kubectl expose deployment frontend \
+    --type=NodePort \
+    --name=frontend-service \
+    --port=6767 \
+    --targetPort=80
+
+
  
 Deployment:
     
