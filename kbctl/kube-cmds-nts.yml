@@ -1492,7 +1492,7 @@ spec:
       metadata: 
         name: pv-vol1
       spec:
-        accessmode:
+        accessmodes:
            - ReadWriteOnce
          #- ReadOnlyMany
          #- ReadWriteMany
@@ -1508,9 +1508,9 @@ spec:
       metadata:
         name: myclaim
       spec: 
-        accessMode:
+        accessModes:
          - ReadWriteOnce
-        resource:
+        resources:
           requests:
             storage: 500Mi
      ------------------------------------------------------------------
@@ -1533,7 +1533,7 @@ spec:
        volumes:
           - name: mypd
              persistentVolumeClaim:
-             claimName: myclaim
+               claimName: myclaim
      ------------------------------------------------------------------------  
 =======================================================================
                         		SECURITY 
