@@ -1,0 +1,37 @@
+=======================================================================
+                          APP LIFE CYCLE MANAGEMENT
+=======================================================================
+
+ Configuring Command and Arguments on applications:
+  -------------------------------------------------
+   ---
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: webapp
+      labels:
+        app: webapp
+        tier: frontend
+    spec:
+      contianers:
+         - name: ubuntu
+           image: ubuntu
+           command: ["sleep2.0"]  #similar to ENTRYPOINT
+           args: ["10"] #similar to CMD
+  --------------------------------------------------
+ Configuring Environment Variables:
+    ---
+     apiVersion: v1
+     kind: Pod
+     metadata:
+       name: webapp
+       labels:
+         app: webapp
+         tier: frontend
+     spec:
+       contianers:
+         - name: ubuntu
+           image: ubuntu
+           env:
+              - name: APP_COLOR
+                value: pink

@@ -396,9 +396,9 @@ appConfiguration:
  kubectl delete svc <service-name>
 --------------------------------------------------------------------
 
-====================== ====================== ====================== 
+================================================================== 
                               DEPLOYMENTS
-====================== ====================== ====================== 
+================================================================== 
 
 ----------------nginx-deploy.yml-----no.of replicas=1
  apiVersion: apps/v1
@@ -584,7 +584,7 @@ appConfiguration:
  kubectl rollout status deploy <deployment-name>
  
 # To check the no of replicas sets created
- kubectl get rc <replicaset-name> -o wide
+ kubectl get rs <replicaset-name> -o wide
 
 # To check the history i.e REVISION NO. and CHANGE CAUSE of roll out deployments
  kubectl rollout history deploy <deployment-name>
@@ -722,11 +722,11 @@ CRON-JOBS:
          metadata:
          spec:
            contianers:
-            - name:
+             - name:
                image:
                env:
-                  - name:  APP_COLOR
-                     value: pink
+                  - name: APP_COLOR
+                    value: pink
         #To see the list of configMaps:
            kubectl get configmaps
            
@@ -867,7 +867,7 @@ InitContainers:
 
 
 =======================================================================
-                                                                     			Scheduling 
+                      			Scheduling 
 =======================================================================
 ---
 ManualSheduling:
@@ -876,7 +876,7 @@ ManualSheduling:
    To schedule pods manually we need to specify 'nodeName' in the definition file.
    note: we can't specify the nodeName to the running pod. We need to delete recreate deleted pod.
   ---------------------------------------------------------------------------------------------
-NodeSelector:
+NodeName:
  ---
  apiVersion:
  kind:
@@ -930,7 +930,7 @@ NodeSelector:
    
  #To add labels to nodes
    kubectl label nodes <node-name> <label-key>=<label-value>
-    #ex: kubectl label nodes node-1 size=large
+    #ex: kubectl label nodes node01 size=large
 
  #To add nodeSelector in pod definition files:
  ---
@@ -1013,17 +1013,17 @@ StaticPods:
 MultipleSchedulers:
   - multiple schedulers can be configured in master
   - kube-scheduler.service -> contains '--config=/etc/kubernetes/config/kube-scheduler.yml'
-                                                                  '--scheduler-name=default-scheduler'
-   - To create custom scheduler -> create  new service (copy content in default once)
-       my-custom-.service -> change the contents  '--config=/etc/kubernetes/config/my-custom-scheduler.yml'
-                                                                                     '--scheduler-name=my-custom-scheduler'  
+                                       '--scheduler-name=default-scheduler'
+  - To create custom scheduler -> create  new service (copy content in default once)
+    my-custom-.service -> change the contents  '--config=/etc/kubernetes/config/my-custom-scheduler.yml'
+                                               '--scheduler-name=my-custom-scheduler'  
   
 --- my-custom-scheduler.yml ---
 
   in the yaml file change the following under 'command:'
- --leader-elect=true
- --lock-object-namespace=lock-object-namespace
- --lock-object-name=lock-object-name
+   --leader-elect=true
+   --lock-object-namespace=lock-object-namespace
+   --lock-object-name=lock-object-name
 
   # To use the custom scheduler to schedule pods 
    -> add 'schedulerName:' under containers:
@@ -1291,10 +1291,10 @@ NodeUpgrade:
           labels: 
              name: nginx-ingress
        spec:
-           containers:
+          containers:
                - name:  nginx-ingress-controller
                   image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.21.0
-           args:
+          args:
              - /nginx-ingress-controller
              #- --configmap=$(POD_NAMESPACE)/nginx-configuration
           env:
@@ -1550,31 +1550,31 @@ spec:
        - enable only ssh authetication	
      Security on KUBE_API Server:
      
-       - Files - Usernames and Passwords:
-             #To enable basic authentication using password 
-                 kube-apiserver.service
-                  ExecStart=/usr/local/bin/kube-apiserver \\
-                  --basic-auth-file=user-details.csv ## storing usernames and password in csv file               
-             #If it is installed using Kubeadm tool
-                 go to /etc/kubernetes/manifests/kube-apiserver.yaml
-                 change the pod definition i.e. add the  --basic-auth-file=user-details.csv under command section
-             #To authenticate the api server using basic credentials
-                 curl -v -k https://master-node-ip:6443/api/v1/pods -u "username:password"
-             #sample csv file contains usernames,paswords, uid,gid
+         - Files - Usernames and Passwords:
+               #To enable basic authentication using password 
+                   kube-apiserver.service
+                    ExecStart=/usr/local/bin/kube-apiserver \\
+                    --basic-auth-file=user-details.csv ## storing usernames and password in csv file               
+               #If it is installed using Kubeadm tool
+                   go to /etc/kubernetes/manifests/kube-apiserver.yaml
+                   change the pod definition i.e. add the  --basic-auth-file=user-details.csv under command section
+               #To authenticate the api server using basic credentials
+                   curl -v -k https://master-node-ip:6443/api/v1/pods -u "username:password"
+               #sample csv file contains usernames,paswords, uid,gid
 
-       - FIles -Usernames and tokens:
-            - it is same like file based authentication shown above, instead of passwords it has tokens..
-                # add token auth file to kube api server using below tag
-                                      --basic-auth-file=user-details.csv 
-                #To authenticate the api server using tokens
-                 curl -v -k https://master-node-ip:6443/api/v1/pods --header "Authorization: Bearer <token>"
-                 #NOTE: above two methods are not recomended. 
-                 #Consider volume mounts while providing an authorization file in a kubeadm setup
-                 #Setup Role Based authentication for new users.
-                   check basic-auth-kube.yaml for full details 
-       - Certificates:
+         - FIles -Usernames and tokens:
+              - it is same like file based authentication shown above, instead of passwords it has tokens..
+                  # add token auth file to kube api server using below tag
+                                        --basic-auth-file=user-details.csv 
+                  #To authenticate the api server using tokens
+                   curl -v -k https://master-node-ip:6443/api/v1/pods --header "Authorization: Bearer <token>"
+                   #NOTE: above two methods are not recomended. 
+                   #Consider volume mounts while providing an authorization file in a kubeadm setup
+                   #Setup Role Based authentication for new users.
+                     check basic-auth-kube.yaml for full details 
+         - Certificates:
               - certificate public key -> *.crt , *.pem
-              -  certificate Private key --> *.key, *>key.pem
+              -  certificate Private key --> *.key, *.key.pem
                 
                  RSA:
               #TO generate RSA  it generates combination of private and public.key
@@ -1715,13 +1715,13 @@ spec:
                        openssl x509 -in /etc/kubernetes/pki/apiserver.crt -text -noout   
                        #check
                                  - issuer: CN=kubernetes 
-                                 - subject: CN=
+                                 - subject: CN=kubernetes 
                                  - validity: (generally 1year valid)
                                  -  ip address, DNS Names 
                        # to inspect server logs (if installed in a hardway)
                                      journalctl -u etcd.service -l
                        # to inspect server logs (if insalled in kubeadm way)
-                                   kubectl logs etc-master                 
+                                   kubectl logs etcd-master                 
                        # if the server is down: Then try using docker command i.e., docker logs
                               docker ps -a #and then 
                               docker logs <contianer-id>                             

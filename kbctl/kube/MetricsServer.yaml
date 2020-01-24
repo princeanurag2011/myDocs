@@ -1,0 +1,19 @@
+=======================================================================
+                            Metrics Server
+=======================================================================
+
+MetricsServer:
+ #To install metrics server:
+   git clone https://github.com/kubernetes-incubator/metrics-server.git
+ #then run 
+   kubectl create -f deploy/1.8+/
+
+ after installation:
+ #To see details of cluster metrics of nodes
+   kubectl top node
+
+ #To see the details of pods metrics 
+   kubectl top pods
+
+ #To see logs of conainers
+   kubectl logs -f <podName> <containerName>

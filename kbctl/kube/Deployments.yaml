@@ -1,0 +1,142 @@
+================================================================== 
+                              DEPLOYMENTS
+================================================================== 
+
+----------------nginx-deploy.yml-----no.of replicas=1
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   labels:
+     app: nginx-1
+   name: nginx-1
+   namespace: default
+ spec:
+ #  progressDeadlineSeconds: 600
+   replicas: 1
+ #  revisionHistoryLimit: 10
+   selector:
+     matchLabels:
+       app: nginx-1
+   strategy:
+     rollingUpdate:
+       maxSurge: 25%
+       maxUnavailable: 25%
+     type: RollingUpdate
+   template:
+     metadata:
+       creationTimestamp: null
+       labels:
+         app: nginx-1
+     spec:
+       containers:
+       - image: nginx:latest
+         imagePullPolicy: Always
+         name: nginx
+         resources: {}
+         terminationMessagePath: /dev/termination-log
+         terminationMessagePolicy: File
+       dnsPolicy: ClusterFirst
+       restartPolicy: Always 
+       # incase the containers stops execution of process inside it, 
+       #it will try to restart always
+     # restartPolicy: Never 
+     # incase the containers stops execution of process inside it, it will not restart
+       schedulerName: default-scheduler
+       securityContext: {}
+       terminationGracePeriodSeconds: 30
+
+--------------------------------------------------------------------
+
+----------------------KUBECTL DEPLOY COMMANDS ------------
+
+ Deployments has the strategy of deployments:
+    - recreate strategy:
+        Terminate old version and release new versions. ALL happens at once
+    - rolling Updates:
+        release the updates in incremental fashion 
+        one batch after other
+        once new batch is formed one by one. old batch gets terminated one by one
+    - Other strategy:
+        - BLUE_GREEN:
+            release new version along with old version and switching traffic    
+        - Canary:
+            release a new version to a subset of users(say  25% users), 
+            then proceed to a full rollout(remaning %75 )
+        - A/B Testing:
+            Routing subset of users to a new fucntionality under specific verison 
+            based on certain decisions 
+        
+
+ Reasons for deployment failures :
+   - insufficinet permission
+   - insufficinet quota of resources
+   - Image pull error
+   - Application run time misconfigurations
+   - Readiness probe failures
+   
+     
+# To create deployment
+ kubectl create -f nginx-deploy.yml
+ 
+# To see the list of deployments and their status
+ kubectl get deploy <deployment-name> 
+ #Ex: kubectl get deploy nginx-1
+
+# To update the no. of replicas 
+ #or version no. etc.,
+ #do make changes in the above yml file and use below command to apply the changes
+ kubectl apply -f nginx-deploy.yml
+ 
+# To update the deployment and keep a track record of every deployment 
+# this is done beacuase in case of any issue with deployed version we can rollback immediately.
+ kubectl apply -f nginx-deploy.yml --record=true
+ 
+# To check rolling updates deployments status
+ kubectl rollout status deploy <deployment-name>
+ 
+# To check the no. of replica sets created
+ kubectl get rs <replicaset-name> -o wide
+
+# To check the history i.e REVISION NO. and CHANGE CAUSE of roll out deployments
+ kubectl rollout history deploy <deployment-name>
+ 
+# To check the detailed history of revision
+ kubectl rollout history deploy <deployment-name> --revision=1
+ 
+#To add our own message to the CHANGE CAUSE after applying changes using below command
+ kubectl apply -f nginx-deploy.yml --record=true
+ #run the next command to update change cause we can do this using 'kubectl annotate'
+ kubectl annotate deployment.v1.apps/<deployment-name> kubernetes.io/change-cause="add your message here"
+  
+# To roll back the deployment to immediate pevious version 
+ kubectl rollout undo deploy <deployment-name>
+
+# To roll back the deployment to specific version or revision (say 1) 
+ kubectl rollout undo deploy <deployment-name> --to-revision=1
+
+# TO pause the deployments
+ kubectl rollout pause deploy <deployment-name>
+ 
+# TO resume the deployments
+ kubectl rollout resume deploy <deployment-name>
+ 
+#note:
+ ####Deployment revision is triggered only when the 'rollout' is triggered
+ ####In the deployment revision/version history only changes made to template like
+ ####changing version no. and labels etc., then only deployment revision is created 
+ ####other updates like scaling the deployment don't create  deployment revision.
+ 
+#To generate YAML file for deployment with image nginx along with 3 replicas
+ kubectl run <deploymentname> --image=nginx --replicas=3 --restart=Always -o yaml --dry-run
+ #or
+ kubectl run <deploymentname> \
+     --replicas=2 \
+     --labels=app=webapp \
+     --image=nginx \
+     --port=80  \
+     --restart=Always \
+     -o yaml \
+     --dry-run
+ 
+ 
+--------------------------------------------------------------------------

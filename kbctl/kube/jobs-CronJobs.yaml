@@ -1,0 +1,74 @@
+=======================================================================
+                         JOBS AND CRON JOBS
+=======================================================================
+
+JOBS:
+
+-----------------------------job-def.yaml----------------------------
+ apiVersion: batch/v1
+ kind: Job
+ metadata: 
+    name: sample-addition-job
+ spec:
+  backoffLimit: 4 #to specify the number of retries before considering a Job as failed. 
+  #The back-off limit is set by default to 6
+  completions: 3 #To make sure 3 job are in completed status
+  #if parallelism is not used then it ceates pod sequentially
+  parallelism: 3 #To make sure 3 pods are created at a time and ensures the status is completed
+   #if  1/3 failed to complete the job , then it will not create 3 next time only 1 pod is created to get 3 completed.
+  template:
+    spec:
+       contianers:
+         - name: math-add
+           image: ubuntu
+           command: ['expr', '3', '+', '2']
+       restartPolicy: Never
+---------------------------------------------------------
+#To create a job 
+ kubectl create -f job-def.yaml
+
+#To see the list of jobs
+ kubectl get jobs
+
+#To see the list of pods created by job
+ kubectl get pods #look at the status 
+
+#To see the output of the executed job we can use logs
+ kubectl logs <job-pod-name>
+ #ex: kubectl logs sample-addition-job
+
+#To delete the jobs 
+ kubectl delete job <job-name>
+ #ex: kubectl delete job sample-addition-job
+---------------------------------------------------------------
+
+CRON-JOBS:
+-----------------------------cronjob-def.yaml----------------------------
+ apiVersion: batch/v1beta1
+ kind: CronJob
+ metadata: 
+    name: sample-addition-job
+ spec:
+    schedule:   "*/1 * * * * " #check cat /etc/crontab #to view the format
+      #  #format of CRONETAB:
+      #  <min> <hour> <date of month> <month> <day of week> <username> <write command here>
+    jobTemplate:
+       spec:
+        completions: 3 #To make sure 3 job are in completed status
+        #if parallelism is not used then it ceates pod sequentially
+        parallelism: 3 #To make sure 3 pods are created at a time and ensures the status is completed
+         #if  1/3 failed to complete the job , then it will not create 3 next time only 1 pod is created to get 3 completed.
+        template:
+          spec:
+            contianers:
+              - name: math-add
+                image: ubuntu
+                command: ['expr', '3', '+', '2']
+            restartPolicy: Never
+---------------------------------------------------------
+
+#To create a cronjob 
+ kubectl create -f cronjob-def.yaml
+
+#To see the list of jobs
+ kubectl get cronjobs

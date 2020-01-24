@@ -1,0 +1,57 @@
+================================================================== 
+                          Namespaces
+==================================================================
+
+NameSpaces:
+  kubeadm creates 3 namespaces by default:
+    - kube-system
+    - default
+    - kube-public
+  
+# namespaces
+#To see list of Namespaces:
+  kubectl get namespaces
+  #or 
+  kubectl get ns
+  
+# To create a namespace (say dev) 
+ kubectl create namespace dev
+ 
+# To create namespace usign YML file:
+ kubectl create -f namespace-dev.yml #check the yaml file below
+
+-------namespace-dev.yml-------------------------
+  --- 
+  #namespace-dev.yml
+  apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: dev
+-------------------------------    
+# To access the services with in the same namespace (default).
+# We can refer to them directly by using their Names
+  example: mysql.connect(db-service)
+# if different namespace (say dev) in the same cluster
+ example: mysql.connect(db-service.dev.svc.cluster.local)
+
+
+================Namespace-quotas==============================
+ quota limits: Set resource limits to namespace
+ 
+ # To create namespace using YAML file:
+  --- 
+  #namespace-dev-with-quota-limits.yaml
+  apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: dev
+  spec:
+    hard:
+      pods: "10"
+      requests.cpu: "4"
+      requests.memory: 5Gi
+      limits.cpu: "10"
+      limits.memory: "10Gi"
+ ==============================================================
+ # To create namespace using YAML file
+  kubectl create -f namespace-dev-with-quota-limits.yaml

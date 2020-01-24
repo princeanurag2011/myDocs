@@ -1,0 +1,61 @@
+================================================================== 
+                             SERVICES
+================================================================== 
+
+----------------------service-nginx.yml------external-load-balancer-------------
+ apiVersion: v1
+ kind: Service
+ metadata:   
+   labels:
+     app: nginx-1
+   name: nginx-1-service #service name is created with this name
+   namespace: default      
+ spec:
+   clusterIP: 10.0.1.163
+   externalTrafficPolicy: Cluster
+   ports:
+   - nodePort: 31672
+     port: 80
+     protocol: TCP
+     targetPort: 80
+   selector:
+     app: nginx-1
+     env: dev
+   sessionAffinity: None
+   type: LoadBalancer #for load balancing
+   #type: nodePort #for node port
+  
+ status:
+  loadBalancer:
+    ingress:
+    - ip: 35.193.18.231
+--------------------------commands to create services-------------------------------
+ services are used to access the application from:
+    - outside of the cluster:
+         <node-ip>:<nodePort>
+    - within the cluster:
+         <cluster-ip>:<targetPort>
+    - load balancer:
+        - provided by cloud services
+ 
+#To create service from service-nginx.yml file above
+ kubectl create -f service-nginx.yml
+ 
+#To see the created service 
+ kubectl get svc
+ 
+#To see the detailed info of services
+ kubectl describe svc <service-name> 
+#ex:kubectl describe svc nginx-1-service
+
+#TO delete service 
+ kubectl delete svc <service-name>
+
+#To generate service YAML file
+     kubectl expose deployment <deploymentName> \
+        --type=ClusterIP \
+        --name=frontend-service \
+        --port=8080 \
+        -o yaml \
+        --dry-run
+--------------------------------------------------------------------

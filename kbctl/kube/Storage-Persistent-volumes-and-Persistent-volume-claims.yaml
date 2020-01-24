@@ -1,0 +1,119 @@
+=======================================================================
+                          STORAGE VOLUMES 
+  =======================================================================
+ Volumes and Mounts:     
+    -------------------------pod-with-volume.yaml-----------------------
+     apiVersion: v1
+     kind: Pod
+     metadata:
+       name: random-number-generator
+     spec:
+       containers:
+         - name: alpine
+            image: alpine
+            command: ["/bin/sh", "-c"]
+            args: [ "shuf -i  0-100 -n 1 >> /opt/number.out;"]
+            volumeMounts: 
+              - mountPath: /opt
+                 name: data_volume
+       volumes: 
+          - name: data_volume
+             hostPath: 
+                path: /data
+                type: Directory
+     -------------------------------------------------------------------
+     there is drawback with above model , because it would create this volume copy on every node
+     -------------------------------------------------------------------
+     
+     
+    -------------------------pod-with-ext-volume-aws-ebs.yaml-----------------------
+     apiVersion: v1
+     kind: Pod
+     metadata:
+       name: random-number-generator
+     spec:
+       containers:
+         - name: alpine
+            image: alpine
+            command: ["/bin/sh", "-c"]
+            args: [ "shuf -i  0-100 -n 1 >> /opt/number.out;"]
+            volumeMounts: 
+              - mountPath: /opt
+                 name: data_volume
+       volumes: 
+          - name: data_volume
+            awsElasticBlockStore:
+              volumeID: <volume-id>
+              fsType: ext4
+     -------------------------------------------------------------------   
+     
+  PersistentVolumes:
+     
+    ---------------------pv-def.yml---------in dev--------------
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata: 
+        name: pv-vol1
+      spec:
+        accessmode:
+           - ReadWriteOnce
+         #- ReadOnlyMany
+         #- ReadWriteMany
+       capacity:
+          storage: 1Gi
+       hostPath:
+          path: /tmp/data   
+     -------------------------------------------------------------
+       
+       kubectl create -f pv-def.yml
+       kubectl get persistentvolume
+       
+     ---------------------pv-def.yml-----------in-prod------------
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata: 
+        name: pv-vol1
+      spec:
+        accessmodes:
+          - ReadWriteOnce
+         #- ReadOnlyMany
+         #- ReadWriteMany
+        capacity:
+          storage: 1Gi
+        awsElasticBlockStore:
+              volumeID: <volume-id>
+              fsType: ext4  
+     -------------------------------------------------------------
+     -------------pvc-def.yml----------------------------------
+      apiVersion: v1
+      kind: PersistenceVolumeClaim
+      metadata:
+        name: myclaim
+      spec: 
+        accessModes:
+         - ReadWriteOnce
+        resources:
+          requests:
+            storage: 500Mi
+     ------------------------------------------------------------------
+       kubectl create -f pvc-def.yml
+       kubectl get persistentvolumeclaim
+       kubectl delete persistentvolumeclaim myclaim
+      
+    -------------------pod-def-with-pvc.yml-------------------
+     apiVersion: v1
+     kind: Pod
+     metadata:
+       name: mypod
+     spec:
+       containers:
+         - name: myfrontend
+            image: nginx
+            volumeMounts:
+                - mountPath: "/var/www/html"
+                   name: mypd
+       volumes:
+          - name: mypod
+            persistentVolumeClaim:
+               claimName: myclaim
+     ------------------------------------------------------------------------  

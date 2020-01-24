@@ -1,0 +1,24 @@
+================================================================== 
+                       LABELS SELECTORS AND ANNOTATIONS
+================================================================== 
+
+#To see list of pods with labels 
+ kubectl get pods -o wide --show-labels
+
+
+#To see list of nodes with labels 
+ kubectl get nodes -o wide --show-labels
+ 
+ 
+#To assign labels to nodes
+ kubectl label nodes <node-name> <label-name>=<label-value>
+ #ex: kubectl label nodes ip-123.23.123.12 availabiltyZone=1a
+ 
+#To remove the label assignd to pod
+ kubectl label pods <pod-name> <label-name> -
+ #ex: to remove the label availabiltyZone=1a then
+ # kubectl label pods myapp-pod availabiltyZone -
+ 
+#To see the list of pods using Selector
+ kubectl get pods --selector <label-name>=<label-value>
+#ex: kubectl get pods --selector availabiltyZone=1a

@@ -1,0 +1,78 @@
+=======================================================================
+          SECURITY -  Kube-config
+		  
+		  TLS Authentication Using Certificates and Key	
+                (RECOMMENDED FOR PROD ENV)
+				
+ =======================================================================
+ (RECOMMENDED)
+Kube-config:
+    --> $HOME/.kube/config  
+
+ #check the below file it has maintly 3 sections:
+  - cluster: 
+       - it can be Development or Test or Production or  my-kube-playground 
+  - contexts:
+      - Admin@Productions  Dev@Test
+  - users: 
+      - Admin
+      - Dev user
+      - Prod user
+                                          
+                         ----------------------Kube-config-----------------------
+                          apiVersion: v1
+                          kind: Config
+                          clusters:
+                            - name: my-kube-playground
+                               cluster: 
+                                certificate-authority: ca.crt #here provide the file path
+                                #certificate-authority-data:  #here paste the encrypted ca.crt using base 64
+
+                                server: https://my-kube-play:6443
+                          contexts:
+                            - name: my-kube-admin@my-kube-playground
+                               contexts:
+                                  cluster: my-kube-play
+                                  user: mu-kube-admin
+                                  namespace: finance # if namespace is not mentioned it goes to default namespace
+                          users:
+                           - name: my-kube-admin
+                              user:
+                                client-certificate: admin.crt
+                                client-key: admin.key
+                           ------------------------------------------------------
+                      
+               2. Custom config file ..
+                         ----------------------my-custom-kube-config-----------------------
+                          apiVersion: v1
+                          kind: Config
+                          #this is default login to connect to environment
+                          current-context: devUser@google 
+                           
+                          clusters:
+                            - name: my-kube-playground
+                            - name: development
+                            - name: production
+                            - name: google
+                          contexts:
+                            - name: my-kube-admin@my-kube-playground
+                            - name: devUser@google
+                            - name: prodUser@production                   
+                          users:
+                           - name: my-kube-admin
+                           - name: devUser
+                           - name: prodUser
+
+                           ------------------------------------------------------
+                           #To view the config files:
+                             kubectl config view
+                           
+                           #To view the custom-kube-config file
+                            kubectl config view --kubeconfig=my-custom-kube-config
+                            
+                          #To change the current context: (say work in prod env)
+                            kubectl config   use-context prod-user@production
+                         
+                         #TO see other kubeconfig options:
+                              kubectl config -h
+                           ------------------------------------------------------

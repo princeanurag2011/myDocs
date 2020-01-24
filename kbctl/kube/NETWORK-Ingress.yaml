@@ -1,0 +1,154 @@
+=======================================================================
+                         NETWORK  - Ingress
+ =======================================================================
+ 
+ ----------------------------------------------------------------------------------------- 
+ INGRESS:
+   - It is service which acts as a load balancer along with SSL. 
+   - in Kubernetes to implemtn it we need to deploy the nginx pod and run that service.
+   
+  -------------------NGINX INGRESS CONTROLLER ----------------------------
+   apiVersion: extensions/v1beta1
+   kind: Deployment
+   metadata:
+     name: nginx-ingress-controller
+   spec:
+     replicas: 1
+     selector: 
+        matchLabels:
+           name: nginx-ingress
+    template: 
+       metadata: 
+          labels: 
+             name: nginx-ingress
+       spec:
+          containers:
+               - name:  nginx-ingress-controller
+                  image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.21.0
+          args:
+             - /nginx-ingress-controller
+             #- --configmap=$(POD_NAMESPACE)/nginx-configuration
+          env:
+            - name: POD_NAME
+              valueFrom:
+                 fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+               valueFrom:
+                 fieldRef:
+                   fieldPath: meatada.namespace
+          ports:
+           - name: http
+             containerPort: 80
+           - name: https
+             containerPort: 443
+    ------------------------------------------------------------------------------
+  ----------------------nginx-ingress-service-----------------------------------
+   apiVersion: v1
+   kind: Service
+   metadata:
+      name: nginx-ingress-service
+      labels:
+         name: nginx-ingress-service
+   spec:
+     type: NodePort
+     selector:
+       matchLabels:
+          name:  nginx-ingress
+     ports:
+       - port: 80
+          targetPort: 80
+          protocol: 	TCP
+          name: http
+       - port: 443
+          targetPort: 443
+          protocol: TCP
+          name: https
+     ----------------------------------------------------------------------     
+  ----------------------------configmap------------------------------
+   apiVersion: v1
+   kind: ConfigMap
+   metadata: 
+     name: nginx-configuration
+   -------------------------------------------------------------  
+  ----------------------------Auth------------------------------
+   apiVersion: v1
+   kind: ServiceAccount
+   metadata: 
+     name: nginx-configuration
+   -------------------------------------------------------------  
+ IngressRules: check the below yml files
+   - Single backend Service
+   - multiple backendservcies based on url 
+   - multiple backend services based on hostname
+   
+ ----------------Ingress-wear.yml-------for single backend service------------------
+  apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata: 
+    name: ingress-wear
+  spec: 
+    backend:
+       servicename: wear-service 
+       servicePort: 80
+  ------------------------------------------  
+  
+ -----------------Ingress-wear.yml-------for multiple backend service with url------------------
+  apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata: 
+    name: ingress-wear-watch
+  spec: 
+    rules: 
+     - http:
+         - path: /wear
+            backend: 
+               serviceName: wear-service
+               servicePort: 80
+         - path	: /watch
+            backend:
+               serviceName: watch-service
+               servicePort: 80 
+    
+   ------------------------------------------  
+
+------------------Ingress-wear.yml----for multiple backend service with hostname--------
+  apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata: 
+    name: ingress-wear-watch
+  spec: 
+    rules: 
+     - host: wear.my-online-store.com
+        http:
+         - path: 
+            backend: 
+               serviceName: wear-service
+               servicePort: 80
+     - host: watch.my-online-store.com
+        http:
+         - path: 
+            backend: 
+               serviceName: watch-service
+               servicePort: 80
+  ------------------------------------------ 
+#To see detailed info Ingress..
+  kubectl describe ingress ingress-wear-watch
+
+-----------------ingress-rewrite.yaml--------------------------------------
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: critical-space
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /pay
+        backend:
+          serviceName: pay-service
+          servicePort: 8282
+-------------------------------------------------------

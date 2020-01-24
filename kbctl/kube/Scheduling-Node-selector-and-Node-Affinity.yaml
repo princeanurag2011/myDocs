@@ -1,0 +1,64 @@
+=======================================================================
+                       Scheduling - Node Affinity
+ =======================================================================
+
+---
+ NodeSelector:
+   
+ #To add labels to nodes
+   kubectl label nodes <node-name> <label-key>=<label-value>
+   #ex: 
+     kubectl label nodes node01 size=large
+
+ #To add nodeSelector in pod definition files:
+  
+  #pod-def-with-nodeSelector.yml
+  --------------------------------------------------------------------
+   ---
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: my-app
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+        
+      nodeSelector:
+   ---------------------------------------------------------------------  
+   
+---
+ NodeAffinity:
+    
+    Types: (# availableNOW)
+      - requiredDuringSchedulingIgnoredDuringExecution
+      - preferredDuringSchedulingIgnoredDuringExecution
+      
+      - requiredDuringSchedulingRequiredDuringExecution (#may come in future)
+
+   note: - DuringScheduling -> pod is created for the first time on that node.
+         - DuringExecution - > pod already running on the node.
+
+  #pod-def-with-nodeaffinity.yml
+  ---------------------------------------------------------------------------------------
+   ---  
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: myapp
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpression:
+                   - key: size
+                     operator: Exists
+                    #operator: In
+                    #operator: NotIn
+                     values: 
+                       - Large
+  ------------------------------------------------------------

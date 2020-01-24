@@ -1,0 +1,15 @@
+=======================================================================
+                Scheduling - DaemonSets and StaticPods
+=======================================================================
+
+DaemonSets:
+ - it creates one replica of pod in each node.
+ - these are coreDNS (say weavenet) and KubeProxy
+
+StaticPods:
+  - kubelet can run static pods without any cluster or master arrangement.
+  - static pods can be deployed using yaml manifest files
+  - yaml files should be placed in this location for scheduling -> /etc/kubernetes/manifests
+  - kubelet.service  -> contains the 'pod-manifest-path' by default  
+  - kubelet.service  -> other way to  we can add '--config=kubeconfig.yml' and 
+     in the 'kubeconfig.yml' -> mention 'staticPodPath: /etc/kubernetes/manifests'

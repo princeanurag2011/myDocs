@@ -1,0 +1,70 @@
+=======================================================================
+                       Scheduling - TAINTS and TOLERATIONS
+ =======================================================================
+
+ManualSheduling:
+
+   If there is no scheduler, Then pods can't be placed on nodes.
+   To schedule pods manually we need to specify 'nodeName' in the definition file.
+   note: we can't specify the nodeName to the running pod. We need to delete recreate deleted pod.
+  ---------------------------------------------------------------------------------------------
+
+Node Selector using NodeName:
+ -----------------------------------
+ ---
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: myapp
+  spec:
+    nodeName: 
+ -----------------------------------
+---
+ TAINTS and TOLERATIONS:
+  In CLUSTER ENV:  
+    No pods are deployed/scheduled on Master default taint is applied on Master;
+    
+    #To check the taints on masternode (say MasterNodeName = kubemaster)
+      kubectl describe node kubemaster | grep Taint
+     
+    - Taints are applied to Nodes:
+        - taint-effect:
+               - NoSchedule: 
+                   pods will not be placed on node
+               - PreferNoSchedule:
+                   pods will not be placed on node (but no garuntee)
+               - NoExecute:
+                   - pods will not be placed if pods tolerance is not compatible
+                   - existing pods will be evicted that doesn't meet the tolerance 
+    - Tolerations are applied to Pods:
+     #To apply taints to nodes:
+        kubectl taint nodes <node-name> <key>=<value>:<taint-effect>     
+     #ex: 
+        kubectl taint nodes node01 app=blue:NoSchedule
+     #ex: 
+        kubectl taint node master node-role.kubernetes.io/master:NoSchedule #to apply taints
+     #ex: 
+        kubectl taint node master node-role.kubernetes.io/master:NoSchedule - #to remove taints
+ 
+---------------------------------------------
+ #To apply taints to pod -definition:
+  ------------------------------------------------------------------------------------
+  ---
+  #pod-def-with-tolerance.yml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+     name: my-app
+  spec:
+    containers:
+       - name: nginx
+         image: nginx
+    tolerations:
+       - key: "app"
+         operator: "Equal"
+         value: "blue"
+         effect: "NoSchedule"
+   ---------------------------------------------------------------------------------------------
+
+ 
+ 

@@ -1,0 +1,255 @@
+=======================================================================
+          SECURITY - TLS Authentication Using Certificates and Key	
+                (RECOMMENDED FOR PROD ENV)
+ =======================================================================
+ (RECOMMENDED)
+ Security on Host: 
+   - Disable password based authentication.
+   - Enable only SSH authetication.
+   
+ Security On KUBE-API-Server: 
+  
+   - Certificates:
+       - certificate public key -> *.crt 
+       - certificate Private key --> *.key
+       
+   - Certificates Authorities: 
+       - symantec
+       - Digicert
+       - Comodo
+       - GlobalSign
+                  
+   - TO generate certificates we have different tools:
+       - Easy RSA
+       - OPENSSL
+       - CFSSL	
+   
+   - OPENSSL:
+      - 1.We are using openssl  to create CA 
+      
+        # 1. Generate keys using open ssl 
+               openssl genrsa \ 
+               -out ca.key 2048
+               #outputs ca.key
+               
+         # 2. Certificate signing request
+                openssl req -new \ 
+               -key ca.key \ 
+               -subj "/CN=KUBERNETES-CA" \ 
+               -out ca.csr
+                 #outputs ca.key, ca.csr
+                 
+         # 3. Sign the cetificates 
+               openssl x509 -req \ 
+               -in  ca.csr  \
+               -signkey ca.key \ 
+               -out ca.crt
+                #outputs ca.crt
+                
+      - 2.Generate certificate for admin using CA
+      
+         # 1. Generate keys using open ssl 
+               openssl genrsa \ 
+               -out admin.key 2048
+               #outputs admin.key
+               
+         # 2. Certificate signing request
+               openssl req -new \ 
+               -key admin.key \ 
+            #  -subj "/CN=Kube-admin/O=system:masters" \  #User masters
+               -subj "/CN=Kube-admin" \ 
+               -out admin.csr
+                 # outputs admin.key, admin.csr
+                 
+         # check the NOTE section below for more info
+         # 3. Sign the cetificates 
+               openssl x509 -req \ 
+               -in  admin.csr  \
+               -CA ca.crt
+               -CAkey ca.key
+               -out admin.crt
+                #outputs admin.crt
+                    
+      - Repeat step 2 for all others  and generate *.key and *.crt for 'client certificates'
+            - scheduler  and generate 'scheduler.key' 'scheduler.crt'
+            - controller and generate 'controller.key' 'controller.crt'
+            - kube-proxy and generate 'kube-proxy.key' 'kube-proxy.crt'
+            - api-server-kubelet and generate 'api-server-kubelet.key' 'api-server-kubelet.crt'
+            - api-server-etcd and generate 'api-server-etcd.key' 'api-server-etcd.crt'
+            - kubelet-client and generate 'kubelet-client.key' 'kubelet-client.crt'
+            
+            note:  #  -subj "/CN=Kube-admin/O=system:node" \  #for nodes
+                
+      - Repeat step 2 for all others  and generate *.key and *.crt for 'server certificates'
+            - api-server and generate 'api-server.key' 'api-server.crt'
+            - etcd-server and generate 'etcd-server.key' 'etcd-server.crt'
+            - kubelet and generate 'kubelet.key' 'kubelet.crt'
+            
+      NOTE: #to sign certificates for different DNS names
+             openssl req -new \ 
+             -key api-server.key \ 
+             -subj "/CN=Kube-admin" \ 
+             -out api-server.csr \
+             -config openssl.cnf #check below for openssl.cnf
+                                		     
+          #create opensslconfig file for SSL
+              --> openssl.cnf
+             ---------------openssl.cnf--------------------
+              [ req ]
+               req_extension = v3_req
+              [ v3_req ]
+               basicConstraints = CA : False
+               keyUsage = nonRepudiation,
+               subjectAltName = @alt_names
+              [ alt_names ]
+              DNS.1 = Kubernetes
+              DNS.2 = Kubernetes.default
+              DNS.3 = Kubernetes.default.svc
+              DNS.4 = Kubernetes.default.svc.cluster.local
+              IP.1 =10.96.0.1 #give your ip
+              IP.2 = 172.17.0.87 #give your ip 
+             -------------------------------------------
+
+   
+=======================================================================
+             TLS Authentication - TROUBLESHOOTING                
+ =======================================================================  
+      
+- TROUBLESHOOTING TLS issues:
+ - failed to dial<ip> : connection error: transport:authetication handshake failed	
+     #TO decrypt the cetificate and check the details 
+       openssl x509 -in /etc/kubernetes/pki/apiserver.crt -text -noout   
+       #check:
+         - issuer: CN=kubernetes 
+         - subject: CN=kubernetes 
+         - validity: (generally 1year valid)
+         - ip address:
+         - DNS Names:
+       # to inspect server logs (if installed in a hardway)
+                     journalctl -u etcd.service -l
+       # to inspect server logs (if insalled in kubeadm way)
+                   kubectl logs etcd-master                 
+       # if the server is down: Then try using docker command i.e., docker logs
+              docker ps -a #and then 
+              docker logs <contianer-id>                             
+            #https://github.com/mmumshad/kubernetes-the-hard-way 
+                # for more info check tools folder in it 
+ 
+ # To create certificate for another admin user..
+       openssl genrsa \ 
+       -out adminuser.key 2048;
+       
+       openssl req -new \ 
+         -key adminuser.key \ 
+         -subj "/CN=adminuser" \ 
+         -out adminuser.csr;
+         
+       cat adminuser.csr | base64
+      #copy the generated key and paste it under request section of yaml file below
+         -------------adminuser-csr.yaml-----------------------
+          apiVersion: certificates.k8s.io/v1beta1
+          kind: CertificatesSigningRequest
+          metadata:
+            name: adminuser
+          spec:
+            groups:
+               - system: authenticated
+            usages:
+               - digital signatures
+               - key encipherment
+               - server auth
+            request:
+                     h349h8r9h3hqh4fnenvqOHNVVVVDLKSVHH0h09f30f=4f3-fjh943fhnchp2nch930nceh
+                     3hqh4fnenvqOHN3hqh4fnenvqOHNVVVVDLKSVHH0h09f30f=4f3-fjh943fhncVachsa9     
+         
+         ---------------------------------------------------------
+       #to create CSR
+         kubectl create -f adminuser-csr.yml
+       #to look for CSR
+         kubectl get csr
+       #to approve CSR
+         kubectl certificate approve <csrname> #ex: kubectl certificate approve adminuser  
+       #to view Certificate
+         kubectl get csr  <csrname> -o yaml
+       #decode the certificate 
+         echo <copy the certificate code shown above > | base64 decode
+       #copy the content and paste in adminuser.crt and it's done
+      
+NOTE: certificate signing is done by Kube-controller-manager with certificate api
+  It has CSR-APPROVING and CSR-SIGNING
+  #check it here :  cat /etc/kubernetes/manifests/kube-controller-manager.yaml and look for 
+   cluster-signing-cert-file=/etc/kubernetes/pki/ca.crt 
+   cluster-signing-key-file=/etc/kubernetes/pki/ca.key
+
+
+
+=======================================================================
+  TO connect to KUBE API SERVER 
+    using TLS Authentication Using Certificates and Key	                
+ =======================================================================
+
+  - 1. to connect using cetificates:
+  
+       curl https://kube-apiserver:6443/api/v1/pods/ \
+       --cacert ca.crt \
+       --cert admin.crt \
+       --key admin.key
+  
+  - 2. Command to see the list of pods:
+  
+        curl https://my-kube-playground:6443/api/v1/pods \
+        --key admin.key \
+        --cert admin.crt \
+        --cacert ca.crt 
+        
+  - 3. Command to see the list of pods using Kubectl:
+       kubectl get pods \
+       --server my-kube-playground:6443 \
+       --client-key admin.key \
+       --client-certificate admin.crt \
+       --certificate-authority ca.crt
+       
+  # NOTE: above  steps are automated by creating a kube-config file 
+     #and tags in step 2 are moved to config file  (default)
+     --> $HOME/.kube/config  
+     #check the below file it has mainly 3 sections:
+      - cluster: 
+           - it can be Development or Test or Production or  my-kube-playground 
+      - contexts:
+          - Admin@Productions  Dev@Test
+      - users: 
+          - Admin
+          - Dev user
+          - Prod user
+  
+  Other way is update in kube-config.yaml:
+  
+   ---------------------Kube-config.yaml-----------------------
+  ---
+   apiVersion: v1
+   kind: Config
+   clusters:
+    - name: my-kube-playground
+       cluster: 
+        certificate-authority: ca.crt #here provide the file path
+        #certificate-authority-data:  #here paste the encrypted ca.crt using base 64
+
+        server: https://my-kube-play:6443
+   contexts:
+    - name: my-kube-admin@my-kube-playground
+       contexts:
+          cluster: my-kube-play
+          user: mu-kube-admin
+          namespace: finance # if namespace is not mentioned it goes to default namespace
+   users:
+   - name: my-kube-admin
+      user:
+        client-certificate: admin.crt
+        client-key: admin.key
+   ------------------------------------------------------
+    #To verify kube-api server certificates check it in (#if the installation is done in a hard way )
+           /usr/local/bin/kube-apiserver
+           
+    #If installed in kubeadm way check that in 
+          cat /etc/kuberntes/manifest/kube-apiserver.yaml 
+          #check it under containers command section  

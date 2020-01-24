@@ -1,0 +1,89 @@
+=======================================================================
+                          APP LIFE CYCLE MANAGEMENT - ConfigMap
+=======================================================================
+ -----------------------  
+  #Config-Maps.yml:
+ ---
+     
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: my-config
+  data:
+    APP_COLOR: pink
+    APP_MOD: prod  
+ -----------------------  
+  #To see the list of configMaps:
+   kubectl get configmaps
+   
+  #TO create config Maps using literals
+   kubectl create configmap <config-name> --from-literal=<key>=<value>
+   #ex:  
+    kubectl create configmap my-config \
+     --from-literal=APP_COLOR=pink \ 
+     --from-literal=APP_MOD=prod
+     
+  #TO generate YAML file for config Maps using literals
+   kubectl create configmap <config-name> --from-literal=<key>=<value>
+   #ex:  
+    kubectl create configmap my-config \
+     --from-literal=APP_COLOR=pink \ 
+     --from-literal=APP_MOD=prod \
+     -o yaml \
+     --dry-run
+                																	   
+  #TO create config Maps from file
+    kubectl create configmap <config-name> --from-file=<path-to-file>
+    #ex:  
+    kubectl create configmap my-config --from-file=app_config.properties #check below files
+    
+   
+   #app_config.properties
+    -----------------------
+    ---     
+     APP_COLOR=pink
+     APP_MOD=prod
+    -----------------------
+   
+  #TO generate YAML file for config Maps from file
+    kubectl create configmap <config-name> --from-file=<path-to-file>
+    #ex:  
+    kubectl create configmap my-config \
+    --from-file=app_config.properties  \ #check below files
+    -o yaml \
+    --dry-run    
+   
+   #app_config.properties
+    -----------------------
+    ---     
+     APP_COLOR=pink
+     APP_MOD=prod
+    -----------------------
+   
+  #To use the ConfigMaps in POD-def: 
+ -----------------------
+ ---
+ #pod-def.yaml
+  ---
+  apiVersion: v1
+  kind: Pod
+  metadata: 
+    name: webapp
+    labels:
+      app: webapp
+      tier: frontend
+  spec:
+    contianers:
+      - name:
+        image:
+     #  env:
+     #  - name: APP_COLOR
+     #     valueFrom:
+     #       ConfigMapKeyRef:
+     #         name: my-config
+     #         key: APP_COLOR
+              
+        envFrom:
+         - configMapRef:
+                 name: my-config  
+  

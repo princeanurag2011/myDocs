@@ -1,0 +1,38 @@
+=======================================================================
+            SECURITY - Basic Authentication using Passwords / Tokens
+            (NOT RECOMMENDED IN CASE OF PRODUCTION ENV)
+ =======================================================================
+ ------------------------------------------------------------------------
+ (RECOMMENDED)
+ Security on Host: 
+   - disable password based authentication
+   - enable only SSH authetication	
+   
+   (NOT RECOMMENDED)
+ Security On KUBE-API-Server: 
+   - Files - Usernames and Passwords:
+     #To enable basic authentication using password 
+         kube-apiserver.service
+          ExecStart=/usr/local/bin/kube-apiserver \\
+          --basic-auth-file=user-details.csv ## storing usernames and password in csv file               
+     #If it is installed using Kubeadm tool
+         go to /etc/kubernetes/manifests/kube-apiserver.yaml
+         change the pod definition 
+           -> add the  --basic-auth-file=user-details.csv under 'command' section
+     #To authenticate the api server using basic credentials
+         curl -v -k https://master-node-ip:6443/api/v1/pods -u "username:password"
+     #sample csv file contains usernames,paswords, uid,gid
+     
+  (NOT RECOMMENDED)
+  - FIles -Usernames and tokens: 
+    - it is same like file based authentication shown above, instead of passwords it has tokens..
+    # Add token auth file to kube api server using below tag
+              --basic-auth-file=user-details.csv 
+    # To authenticate the api server using tokens
+         curl -v -k https://master-node-ip:6443/api/v1/pods --header "Authorization: Bearer <token>"         
+         
+    #NOTE: above two methods are not recomended. 
+    #Consider volume mounts while providing an authorization file in a kubeadm setup
+    #Setup Role Based authentication for new users.
+      check basic-auth-kube.yaml for full details 
+   

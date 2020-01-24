@@ -1,0 +1,41 @@
+=======================================================================
+                Scheduling - MultipleSchedulers / Custom Schedulers
+=======================================================================
+
+MultipleSchedulers:
+  - multiple schedulers can be configured in master
+  - kube-scheduler.service 
+      -> contains '--config=/etc/kubernetes/config/kube-scheduler.yml'
+                 '--scheduler-name=default-scheduler'
+  - To create custom scheduler 
+      -> create  new service (copy content in default once)
+         my-custom.service 
+          -> change the contents  '--config=/etc/kubernetes/config/my-custom-scheduler.yml'
+                                  '--scheduler-name=my-custom-scheduler'  
+  
+--- my-custom-scheduler.yml ---
+
+  In the yaml file change the following under 'command:'
+   --leader-elect=true
+   --lock-object-namespace=lock-object-namespace
+   --lock-object-name=lock-object-name
+
+  # To use the custom scheduler to schedule pods 
+   -> add 'schedulerName:' under containers:
+  ---
+   apiVersion:
+   kind:
+   metadata:
+   spec:
+      containers:
+      schedulerName:
+---------------------------------------
+#To see the logs of the custom scheduler:
+ kubectl logs my-custom-scheduler --namespace=kube-system
+ 
+EVENTS:
+  #To see list of events in the current Namespace:
+   kubectl get events
+  
+  #To check the running/empty ports (default port of scheduler: 10251)
+     netstat -natulp | grep <portNo>
