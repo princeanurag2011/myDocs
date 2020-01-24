@@ -1,0 +1,388 @@
+---
+CKA:
+
+  core_concepts:
+    - cluster architecture
+    - api premitives
+    - services and other Network primitives
+    
+  scheduling:
+    - labels and selectors
+    - resource limits
+    - manual scheduling
+    - Daemon sets
+    - Multiple Schedulers
+    - Schdeuler Events
+    - Configure Kubernetes Schdeuler
+    
+  logging:
+    - Monitoring:
+        - cluster components
+        - cluster components logs
+        - applications
+        - applications logs
+        
+  App Life Cycle management:
+    - Rolling Updates And Rollbacks in Deploy
+    - Configure Applications
+    - Scale Applications
+    - Self Healing Applications
+    
+  Cluster_mantainance:
+    - Cluster Upgrade Process
+    - Operating System Upgrades
+    - Backup and restore Methodologies
+    
+    Security:
+      - Authentication and Authorization
+      - TLS certificates for Cluster Components
+      - Kubernetes Security
+      - Images security
+      - Network Policies
+      - Security Contexts
+      - Secure Persistence and values store
+  
+  Storage:
+    - persistent volumes
+    - persistent volume claims
+    - Configure Applications with presistant stores
+    - Access Modes for volumes
+    - Kubernetes Storage Object
+  
+  Networking:
+     prerequisites:
+        - Network:
+           - switiching
+           - routing
+           - tools
+           - namespaces
+           - DNS and Core DNS
+           - Networking in Docker
+           
+    - Networking Configuration on cluster core
+    - Service Networking
+    - POD NETWORK CONCEPTS
+    - network load blancer
+    - Ingress
+    - Cluster DNS
+    - CNI: Container Networking Interface
+    
+  Installation_Configuration_validation:
+    - Design a Kubernetes Cluster
+    - Install Kunernetes Master and node
+    - secure cluster Communication
+    - HA Kubernetes Cluster
+    - Provision Infrastructure
+    - Choose a Network SOlution
+    - Run and analyse end to end test 
+    - node end to end test
+  TroubleShooting:
+    - Application Failure
+    - Worker Node Failure
+    - Control plane Failure
+    - Networking
+
+
+---
+CKA_EXAM: 
+  links:
+    - https://www.cncf.io/certification/cka/
+    - https://linuxacademy.com/course/cloud-native-certified-kubernetes-administrator-cka/
+  Application Lifecycle Management: 8%
+  - Installation, Configuration & Validation: 12%
+  - Core Concepts: 19%
+  - Networking: 11%
+  Scheduling: 5%
+  Security: 12%
+  Cluster Maintenance: 11%
+  Logging / Monitoring: 5%
+  Storage: 7%
+  Troubleshooting: 10%
+
+CKAD:
+  - Core Concepts: 13%
+  - Configuration: 18%
+    Multi-Container Pods: 10%
+    Observability: 18%
+    Pod Design: 20%
+  - Services & Networking: 13%
+    State Persistence: 8%
+#---------------cka-exam------------------------  
+#Chapter 1. Course Introduction
+#Chapter 2. Basics of Kubernetes
+#Chapter 3. Installation and Configuration
+#Chapter 4. Kubernetes Architecture
+#Chapter 5. APIs and Access
+#Chapter 6. OPI Objects
+#Chapter 7. Managing State with Deployments
+#Chapter 8. Services
+#Chapter 9. Volumes and Data
+#Chapter 10. Ingress
+#Chapter 11. Scheduling
+#Chapter 12. Logging and Troubleshooting
+#Chapter 13. Custom Resource Definitions
+#Chapter 14. Helm
+#Chapter 15. Security
+#Chapter 16. High Availability
+#-------------------------------------------
+# Installed using kubeadm cluster
+#--------------------------------------------------------------------------------------------------
+#master $ kubectl get pods -n kube-system
+#NAME                                       READY   STATUS             RESTARTS   AGE
+#coredns-fb8b8dccf-crfgc                    1/1     Running            0          64m
+#coredns-fb8b8dccf-jdlhp                    1/1     Running            1          64m
+#etcd-master                                1/1     Running            0          64m
+#katacoda-cloud-provider-664fb98784-j4nms   0/1     CrashLoopBackOff   19         64m
+#kube-apiserver-master                      1/1     Running            0          64m
+#kube-controller-manager-master             1/1     Running            0          63m
+#kube-keepalived-vip-x2xd2                  1/1     Running            0          64m
+#kube-proxy-gb6lb                           1/1     Running            0          #mube-proxy-rhkrj                           1/1     Running            0          64m
+#kube-scheduler-master                      1/1     Running            0          64m
+#weave-net-ndxc9                            2/2     Running            1          64m
+#weave-net-s9rv4                            2/2     Running            1          64m
+#----------------------------------------------------------------------------------------------------
+Kubernetes-Architecture:
+  - Master:
+     - ETCD CLUSTER: database
+     - Kube API server: accepts all requests and processing
+     - Kube Control manager: 
+            - Node controller: checks node  Availability
+            - Replication controller: checks desired no of containers runnning
+            - Deployemnt controller
+            - namespaces controller
+            - job controller
+            - endpoint controller
+            - service account controller
+            - PV-Protection controller
+            - PV-Binder controller
+            - Replica-set
+            - Stateful-set
+            - cron job
+     - Kube Schdeuler: places the right containers on right node based on available node resources like ram, cpu
+  - Worker:
+     - Kubelet: it is the agent runnning on the node
+         - it registers the node with kubernetes cluster
+         - create pods / containers
+         - Monitor nodes and pods and reports to api sever
+     - Kubeproxy: 
+         - create route tables
+         - enables service to connect with other pods using service namespaces
+
+
+ETCD CLUSTER:
+  - its a databae which store data in key:value Pair
+  - it runs on port no: 2379 (by default)
+   ExecStart =/usr/local/bin/etcd
+    --advertise-client-url https://${INTERNAL_IP}:2379
+  - To install ETCD:
+      - manual:
+          - download etcd from github:
+              wget -q --https-only \
+              "https://github.com/coreos/etcd/releases/download/v3.3.9/etcd-v3.3.9-linux-amd64.tar.gz"
+          - extract and install :
+              #to check /usr/local/bin/etcd
+              #  --advertise-client-url https://${INTERNAL-IP}:2379
+      - kubeadm:
+          - deploys as pod
+          - to check keys:
+               kubectl exec etcd-master -n kube-system etcdctl get --key-value
+  - To run etcd service:
+      ./etcd
+  - To know commands for etcdctl:
+      ./etcdctl
+  - To run etcd controller:
+      - To set value:
+           ./etcdctl set key1 value1
+      - To get the value:
+           ./etcdctl get key1
+
+  - The etcd cluster stores info about:
+      - nodes
+      - pods
+      - configs
+      - secrets
+      - Accounts
+      - Roles
+      - Bindings
+      - Others
+    #note: if we run -> kubectl get nodes
+    # it gets that info from etcd cluster.
+    # kubectl get pods -n kube-system
+    #this above command will  list only pods with namespace kube-system
+    # kubectl get pods -A 
+    # this above command return all pods with all namespaces
+
+Kube API server:
+  - To install kube-api-server:
+      - manual:
+          https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kube-api-server
+       # can inspect here: cat /etc/systemd/system/kube-apiserver.service
+      - kubeadm:
+          installs kube-api-server as a pod 
+          #can see file here->  cat /etc/kubernetes/manifests/kube-apiserver.yaml
+  - tasks done by kube-api-server:
+      - Authenticate User -> Validate request -> Retreive data
+      - Update ETCD -> Schedulers -> Kubelet -> 
+      - then pods and containers are created and run by Kubelet
+  - to check running process:
+      ps aux | grep kube-api-server
+
+Kube Control manager:
+  - Installation:
+      - manual:
+          https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kube-controller-manager
+          #to check : cat /etc/systemd/system/kube-controller-manager
+      - kubeadm:
+          - creates kube-controller-manager as a pod
+          #to check : cat /etc/kubernetes/manifests/kube-controller-manager
+  - node controller: node controller checks status of nodes
+      - watch status of nodes
+      - remidiate situtation
+      - Node Monitor period: 5s
+           - checks every 5 secs if not reachable then
+      - Node Monitor grace period: 40s
+           - waits for 40 sec to mark node as unhealthy/unreachable
+      - Pod eviction time: 5m
+           - waits for 5 min. to restore pods to normal state,
+           if not restored then 
+            remove pods and provision them to healthy node
+  - replication controller:
+      - ensures desires no of pods all the time
+       if any pods becomes unhealthy  recreates them on other nodes
+
+Kube Schdeuler:
+  - responsible for assigning nodes to the pods 
+  - Installation:
+       - manual: 
+           wget https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kube-scheduler
+           #to check : /usr/local/bin/kube-scheduler
+       - kubeadm:
+           create a pod
+           #to check : cat /etc/kubernetes/manifests/kube-scheduler.yaml
+Kubelet:
+   - An agent that runs on each node in the cluster. 
+   - It makes sure that containers are running in a pod.
+   - The kubelet takes a set of PodSpecs that are provided through various mechanisms 
+      and ensures that the containers described in those PodSpecs are running and healthy. 
+   - The kubelet doesn’t manage containers which were not created by Kubernetes.
+   - Installation: 
+       - manual:
+          wget https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kubelet
+       - kubeadm:
+          does not install, we have to install on node 
+KubeProxy:
+   - kube-proxy is a network proxy that runs on each node in your cluster, 
+      implementing part of the Kubernetes Service concept.
+   - kube-proxy maintains network rules on nodes. 
+   - These network rules allow network communication to yourPods from 
+      network sessions inside or outside of your cluster.
+   - Installation:
+       - manual: 
+         wget https://storage.googleapis.com/kubernetes-release/release/v1.13.0/bin/linux/amd64/kube-proxy
+       - kubeadm:
+           - creates pods and deploy them as a daemonset
+ ---
+CRI: 
+   - Kubernetes implemented CRI (Container Runtime Interface)
+         to support  different containers like 
+              - Docker
+              - CRI-O
+              - RKT
+                                                                       
+   
+NameSpaces:
+  kubeadm create 3 namespaces by default
+    - kube-system
+    - default
+    - kube-public
+    - To connect to namespace:
+         #within same namespace (default namespace)
+         mysql.connect("db-service")
+ 
+         #with other namespace (say namespace = dev)
+        mysql.connect("db-service.dev.svc.cluster.local")
+        #http://service-name.namespace.servicetype.domain-name/
+        #db-service = service-name
+        #dev =namespace
+        #svc = servicetype
+        # cluster.local =domain-name
+    
+Networking:
+  - Docker uses CNM (container network model)
+  - Kubernetes uses CNI (container network interface):
+      - WeaveWorks
+      - Flannel
+      - Cillium
+      
+      
+  PORT_NUMBERS:
+    - MASTER:
+       - kube-api: 6443
+       - kubelet: 10250
+       - Kube-scheduler: 10251
+       - Kube-controller-manager: 10252
+       - ETCD: 2379
+       - ETCD: 2380 #INCASE OF MULTIPLE MASTERS
+    - Node:
+        - Services: 30000-32767
+        - kubelet: 10250
+  
+  CNI:
+    - The details of CNI and IPAM are stored in 
+        /etc/cni/net.d/net-script.conf
+     -  weave net gives 10.32.0.1/12   i.e about 1M IP's
+  
+   KubePROXY:
+     - it supports 3 modes::
+       - userspaces
+       - ipvs
+       - iptables
+     - #we can change the proxy type usingthe command
+        kube-proxy --proxy-mode  [ userspace | iptables | ipvs ]
+        #by deafult it wil take iptables
+     - # to see the logs 
+         cat /var/log/kube-proxy.log	
+   coreDNS:
+      - before  v1.12 it is called kube-dns
+      - after v1.12 it is called coreDNS
+      - cat /etc/coredns/Corefile
+    
+   ingress:
+     - It is service which acts as a load balancer along with SSL 
+     - in Kubernetes to implemtn it we need to deploy the nginx pod and run that service
+ 
+STORAGE:
+   - Storage drivers for Docker  (docker wil choose best driver based on OS)
+        - AUFS (default for ubuntu) 
+        - ZFS
+        - BTRFS
+        - DEVICE MAPPER (fedora best option)
+        - Overlay
+        - Overlay2
+   - Volume Drivers:
+        - Local (default):  Here volume is used from local host
+        - Azure FILE STORAGE
+        - Convoy
+        - Digital Ocean Block Storage
+        - RexRay
+        - gceDocker
+     #TO use AWS EBS volume we can try rexray volume driver
+       ex: docker run -it  --name	mysql \
+                                      --volume-driver rexray/ebs \
+                                      --mount src=ebs-vol, target=/var/lib/mysql mysql
+                                      
+    - Storage for Kubernetes:
+         - To support multiple Storage solutions CSI (Container Storage Interface) was developed
+         -  CSI:
+              - port worx 
+              - AMAZON EBS
+              - DELL MC
+              - GLUSTER FS 
+         - In CSI volue creation and deletion is done by RPC (remote procedural calls) 
+
+
+        tips:
+          set nu
+          set expandtab
+          set shiftwidth=2
+          set tabstop=2
