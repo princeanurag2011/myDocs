@@ -1,0 +1,53 @@
+ =======================================================================
+          SECURITY - SECURITY CONTEXTS
+      POD-level-security & Container Level SECURITY
+ =======================================================================   
+ SECURITY CONTEXTS:
+  container-security:
+    docker run --user=1001 ubuntu sleep 3600
+    docker run --cap-add MAC_ADMIN ubuntu
+  kubernetes-security-contexts:
+
+   - pod-level-security:
+     -----------------------------------------------------
+       #To use security contexts in pod level in kubernetes in pod-def.yaml
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: nginx-pod
+        spec:
+          securityContext:
+            runAsUser: 1001            
+          container:
+            - name: nginx
+              image: private-registry.io/apps/internal-app
+          imagePullSecret:
+            - name: regcred #check below command to create regcred
+       -----------------------------------------------------
+
+- container-level-security:
+  -----------------------------------------------------
+   #To use security contexts in container level in kubernetes in pod-def.yaml
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: nginx-pod
+    spec:                 
+      container:
+        - name: nginx
+          image: private-registry.io/apps/internal-app
+          securityContext:
+             runAsUser: 1001
+             capabilities: 
+               add: [ "MAC_ADMIN" ]
+      imagePullSecret:
+        - name: regcred #check below command to create regcred
+   -----------------------------------------------------
+  -----------------------------------------------------
+  #To create Registry credentials
+   kubectl create secret docker-registery regcred \
+   --docker-server=private-registry.io
+   --docker-username=registry-user
+   --docker-password=registry-pass
+   --docker-email=registry-user@org.com
+   -----------------------------------------------------

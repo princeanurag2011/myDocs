@@ -1,0 +1,75 @@
+=====================================================================
+----------------Kubernetes Installation The hardway-------------------
+=====================================================================
+
+Purpose:
+   - education:
+       - minikube
+       single node cluster: 
+         kubeadm/GCP/AWS
+   - development and testing:
+        Multi node cluster with single master:
+           setup using kubeadm tool or quick provision on GCP, AWS or AKS
+           EX: 3 NODES of which
+            - 1 master and 2 worker nodes
+            - master node where control plane components are present
+            - worker nodes where pods are scheduled/deployed.
+   - hosting production applications:
+          High availability :  
+             Multi Node cluster with multiple master nodes.
+             Kubeadm, GCP, KOPS on AWS or other supported platforms
+             Upto 5000 nodes.
+             Upto 150000 pods in cluster
+             Upto 300000 Total containers
+             upto 100 pods per node.
+            - NODES = 1-5 : N1-standard-1  1vcpu 3.75GB     m3.medium
+                    = 5-10: N2-standard-2  2vcpu 7.5GB      m3.large
+                    = 11-100: "" -4        4     15         m3.xlarge
+                    = 101-250:   -8        8     30         m3.2xlarge
+                    = 251-500:   -16       16    60         C4.4xlarge  
+                    =>500:        -32      32    120        C4.8xlarge
+            - Storage:  
+                High Performance -- SSD Backed Storage
+                Multiple Concurrent Connections --Network based Storage
+                Persistent Shared Volumes --for shared access across Multiple pods
+                Label Node with --- Specific Disk Types
+                Use Node Selector-- to assign applications to nodes with specific disk types.
+
+Cloud or Prem:
+       Turnkey solutions:
+         - you provision VM's
+         - you configure VM's
+         - maintain VM's
+         - you use scripts to deploy Clusters
+         - ex: Kubernetes on AWS using KOPS
+         - OPEN SHIFT from REDHAT
+         - CLOUD FOUNDRY  CONTAINER RUNTIME (BOSH)
+         - VMWARE CLOUD PKS 
+         - VAGRANT 
+       Hosted Solutions (Managed Solutions) :
+         - Kubernetes as a Service
+         - Provider provisons VM's
+         - Provider Installs Kubernetes
+         - maintains VM's
+         - Ex: Google COntainer Engine GKE
+         - GKE -GOOGLE KUBERNETES Engine
+         - OPEN SHIFT ONLINE
+         - AKS - AZURE KUBERNETES SERVICE
+         - EKS AMAZON ELASTIC CONTIANER SERVICE FOR KUBERNETES
+Workloads:
+  - How many
+  - what kind:
+      - web
+      - big-data
+  - Application resource requirements:
+      - CPU intensive
+      - memory intensive
+  - Traffic:
+      - Heavy Traffic
+      - Burst Traffic
+
+Multiple master nodes:
+    kube-controller-manager --leader-elect true
+                            --leader-elect-lease-duration 15s #default 15 seconds
+                            --leader-elect-renew-deadlnine 10s
+                            --leader-elect-retry-period 2s

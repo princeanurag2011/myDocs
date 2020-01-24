@@ -1,0 +1,46 @@
+=====================================================================
+               Readiness and Liveness
+=====================================================================
+
+apiVerision:
+kind:
+metadata:
+spec:
+  containers:
+    -name:
+     image:
+
+     readninessProbe:
+       httpGet:
+         path: /api/ready
+         port:8080
+     # readninessProbe:
+     #   tcpSocket:
+     #     port:8080
+     # readninessProbe:
+     #   exec:
+     #     command:
+     #       - cat 
+     #       - /app/is_ready
+
+     livenessProbe:
+       httpGet:
+         path: /api/ready
+         port:8080
+       initialDelaySeconds: 10
+       periodSeconds: 5
+       failureThreshold: 8
+     # livenessProbe:
+     #   tcpSocket:
+     #     port:8080
+     #   initialDelaySeconds: 10
+     #   periodSeconds: 5
+     #   failureThreshold: 8
+     # livenessProbe:
+     #   exec:
+     #     command:
+     #       - cat 
+     #       - /app/is_ready
+     #   initialDelaySeconds: 10
+     #   periodSeconds: 5
+     #   failureThreshold: 8

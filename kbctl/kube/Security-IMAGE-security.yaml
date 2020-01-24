@@ -1,0 +1,33 @@
+ =======================================================================
+          SECURITY - IMAGE Security	
+ =======================================================================   
+ IMAGE SECURITY:
+  - public registries:
+      docker.io/nginx/nginx
+      gcr.io/kubernetes-e2e-test-images/
+  - private registries:
+     DOCKER WAY:
+      #To use private registry:
+       docker login private-registry.io
+      #To run the image as container in private rigstry 
+       docker run private-registry.io/apps/internal-app
+     KUBERNETES WAY:
+       -----------------------------------------------------
+       #To use private registry in kubernetes in pod-def.yaml
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: nginx-pod
+        spec:
+          container:
+            - name: nginx
+              image: private-registry.io/apps/internal-app
+          imagePullSecret:
+            - name: regcred #check below command to create regcred
+       -----------------------------------------------------
+       kubectl create secret docker-registery regcred \
+       --docker-server=private-registry.io
+       --docker-username=registry-user
+       --docker-password=registry-pass
+       --docker-email=registry-user@org.com
+       -----------------------------------------------------

@@ -1781,7 +1781,7 @@ spec:
                     --key admin.key
                     --cert admin.crt
                     --cacert ca.crt 
-               - 2. Command to see the list of pods using Kubectl
+               - 2. Command to see the list of pods using Kubectl:
                    kubectl get pods \
                    --server 	my-kube-playground:6443
                    --client-key admin.key
@@ -1789,73 +1789,73 @@ spec:
                    --certificate-authority ca.crt
                1. NOTE: above two steps are automated by creating a kube-config file and tags in step 2 are moved to config file  (default)
                          --> $HOME/.kube/config  
-                         #check the below file it has maintly 3 sections:
-                                      - cluster: 
-                                           - it can be Development or Test or Production or  my-kube-playground 
-                                      - contexts:
-                                          - Admin@Productions  Dev@Test
-                                      - users: 
-                                          - Admin
-                                          - Dev user
-                                          - Prod user
-                                          
-                         ----------------------Kube-config-----------------------
-                          apiVersion: v1
-                          kind: Config
-                          clusters:
-                            - name: my-kube-playground
-                               cluster: 
-                                certificate-authority: ca.crt #here provide the file path
-                                #certificate-authority-data:  #here paste the encrypted ca.crt using base 64
+                           #check the below file it has maintly 3 sections:
+                                        - cluster: 
+                                             - it can be Development or Test or Production or  my-kube-playground 
+                                        - contexts:
+                                            - Admin@Productions  Dev@Test
+                                        - users: 
+                                            - Admin
+                                            - Dev user
+                                            - Prod user
+                                            
+                           ----------------------Kube-config-----------------------
+                            apiVersion: v1
+                            kind: Config
+                            clusters:
+                              - name: my-kube-playground
+                                 cluster: 
+                                  certificate-authority: ca.crt #here provide the file path
+                                  #certificate-authority-data:  #here paste the encrypted ca.crt using base 64
 
-                                server: https://my-kube-play:6443
-                          contexts:
-                            - name: my-kube-admin@my-kube-playground
-                               contexts:
-                                  cluster: my-kube-play
-                                  user: mu-kube-admin
-                                  namespace: finance # if namespace is not mentioned it goes to default namespace
-                          users:
-                           - name: my-kube-admin
-                              user:
-                                client-certificate: admin.crt
-                                client-key: admin.key
-                           ------------------------------------------------------
-                      
-               2. Custom config file ..
-                         ----------------------my-custom-kube-config-----------------------
-                          apiVersion: v1
-                          kind: Config
-                          #this is default login to connect to environment
-                          current-context: devUser@google 
-                           
-                          clusters:
-                            - name: my-kube-playground
-                            - name: development
-                            - name: production
-                            - name: google
-                          contexts:
-                            - name: my-kube-admin@my-kube-playground
-                            - name: devUser@google
-                            - name: prodUser@production                   
-                          users:
-                           - name: my-kube-admin
-                           - name: devUser
-                           - name: prodUser
+                                  server: https://my-kube-play:6443
+                            contexts:
+                              - name: my-kube-admin@my-kube-playground
+                                 contexts:
+                                    cluster: my-kube-play
+                                    user: mu-kube-admin
+                                    namespace: finance # if namespace is not mentioned it goes to default namespace
+                            users:
+                             - name: my-kube-admin
+                                user:
+                                  client-certificate: admin.crt
+                                  client-key: admin.key
+                             ------------------------------------------------------
+                        
+                 2. Custom config file ..
+                           ----------------------my-custom-kube-config-----------------------
+                            apiVersion: v1
+                            kind: Config
+                            #this is default login to connect to environment
+                            current-context: devUser@google 
+                             
+                            clusters:
+                              - name: my-kube-playground
+                              - name: development
+                              - name: production
+                              - name: google
+                            contexts:
+                              - name: my-kube-admin@my-kube-playground
+                              - name: devUser@google
+                              - name: prodUser@production                   
+                            users:
+                             - name: my-kube-admin
+                             - name: devUser
+                             - name: prodUser
 
-                           ------------------------------------------------------
-                           #To view the config files:
-                             kubectl config view
+                             ------------------------------------------------------
+                             #To view the config files:
+                               kubectl config view
+                             
+                             #To view the custom-kube-config file
+                              kubectl config view --kubeconfig=my-custom-kube-config
+                              
+                            #To change the current context: (say work in prod env)
+                              kubectl config   use-context prod-user@production
                            
-                           #To view the custom-kube-config file
-                            kubectl config view --kubeconfig=my-custom-kube-config
-                            
-                          #To change the current context: (say work in prod env)
-                            kubectl config   use-context prod-user@production
-                         
-                         #TO see other kubeconfig options:
-                              kubectl config -h
-                           ------------------------------------------------------
+                           #TO see other kubeconfig options:
+                                kubectl config -h
+                             ------------------------------------------------------
                  API GROUPS:
                     - #to see the version using rest api url
                         curl http://kube-master:6443/version 
@@ -1934,7 +1934,7 @@ spec:
                   resources: [ "ConfigMaps" ]
                   verbs: [ "list", "get", "create", "update", "delete" ]
             ----------------------------------------------------------
-             kubectl create -f    deveolper-role.yaml.yaml
+             kubectl create -f    deveolper-role.yaml
           #To create role binding with users
             ------------------devuser-developer-role-binding.yaml--------------  
               apiVersion: rbac.autherization.k8s.io/v1
@@ -1943,7 +1943,7 @@ spec:
                 name: devuser-developer-binding
               roleRef:
                 kind: Role
-                name: devuser
+                name: developer
                 apiGroup: rbac.autherization.k8s.io
               subjects:
                - kind: User

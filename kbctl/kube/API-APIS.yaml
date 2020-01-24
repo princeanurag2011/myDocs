@@ -1,0 +1,57 @@
+ =======================================================================
+                         API GROUPS
+ =======================================================================
+ 
+ 
+ API GROUPS:
+ - #to see the version using rest api url
+    curl http://kube-master:6443/version 
+ - #to see the pods using rest api url
+    curl http://kube-master:6443/api/v1/pods
+ - Different APIs availabel in Kuberentes
+    - /health 
+    - /metrics
+    - /logs
+    - /version
+    - /api
+    - /apis    
+  #Here 'api' (core group) and 'apis' (named group) are responsilbe for cluster functionality.
+ API:
+   /api/v1: (core group)
+   - namespaces
+   - pods
+   - rc
+   - namespaces
+   - nodes
+   - endpoints
+   - events
+   - bindings
+   - PVC
+   - PV
+   - configmaps
+   - secrets
+   - services
+	  
+ APIS: (named groups) #All features will be released under named groups in future. and these are more organized
+   /apis
+   
+ API GROUPS:
+  - /apps:
+      - /v1:  #for these we can use the verbs --> list, get, create, delete, update, watch
+           - /deployments
+           - /replicasets
+           - /statefulsets
+  - /extensions
+  - /networking.k8s.io
+    - /v1:
+        - networking policies
+  - /storage.k8s.io
+  - /authentication.k8s.io
+  - /certificates.k8s.io
+  - /v1:
+        - certificatessigningrequests
+	
+ NOTE: 
+   #To see the list of APIs available:
+   kubectl proxy	#it will start the server 127.0.0.1:8001
+   curl https://localhost:8001 -k

@@ -1,0 +1,82 @@
+ =======================================================================
+          SECURITY - NETWORK Policies
+ =======================================================================  
+
+NETWORK POLICIES:
+- The network policies are 'SUPPORTED' by:
+    - Kube-router
+    - Calico
+    - Romana
+    - Weave-net
+- The network policies are 'NOT SUPPORTED' by:   
+    - FLANNEL
+
+- Pod Communication is controlled by network policies:
+
+  -->-ingress--[ web-server-pod ]--egress-->->-ingress--[ app-server-pod]--egress-->->-ingress---[db-server-pod ]--|
+  ----<--------------------------<------------------------------------------<----------------------------------|
+
+   NOTE: in the above shown map -> ingress - incoming traffic to the pod
+                                -> egress  - outgoing traffic from pod to other pod
+        
+    - To create network policies for pods
+       -----------network-policy-def.yaml------------------------------
+       #this netwrok policy is to allow only ingress traffic from api-pod to db-pod
+       ---
+        apiVersion: networking.k8s.io/v1
+        kind: NetworkPolicy
+        metadata:
+          name: db-policy
+        spec:
+          podSelector:
+            matchLabels:
+              role: db
+          policyTypes:
+            - ingress
+          ingress:
+            - from:
+                - podSelector:
+                   matchLabels:
+                   name: app-server-pod
+              ports:
+                - protocol: TCP
+                  port: 3306
+       ---------------------------------------------------------------
+       kubectl create -f network-policy-def.yaml
+
+-------------------------------------------------------------------
+   #To allow  egress traffic 
+   ---
+    apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: internal-policy
+      namespace: default
+    spec:
+      podSelector:
+        matchLabels:
+          name: internal
+      policyTypes:
+      - Egress
+      - Ingress
+      ingress:
+        - {}
+      egress:
+      - to:
+        - podSelector:
+            matchLabels:
+              name: mysql
+        ports:
+        - protocol: TCP
+          port: 3306
+
+      - to:
+        - podSelector:
+            matchLabels:
+              name: payroll
+        ports:
+        - protocol: TCP
+          port: 8080
+    -------------------------------------------------------------------
+    #TO see the  list of network policies
+     kubectl get networkpolicy

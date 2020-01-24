@@ -1,0 +1,25 @@
+=====================================================================
+                SECURITY - Service Account
+=====================================================================
+
+---
+ apiVersion: v1
+ kind: ServiceAccount
+ metadata:
+    creationTimestamp: 2020-01-20T13:40:02Z
+    name: default
+    namespace: default
+    resourceVersion: "322"
+    selfLink: /api/v1/namespaces/default/serviceaccounts/default
+    uid: 5c02a25a-3b8a-11ea-ab89-0242ac110028
+ secrets:
+    - name: default-token-b6bft
+
+#TO create service account
+ kubectl create serviceaccount <serviceaccountname>
+#TO see list of service accounts
+ kubectl get serviceaccounts
+#To see detailed view  of service
+ kubectl describe serviceaccount <serviceaccountname>
+#To view the secret of serviceaccount
+ kubectl describe secret <serviceaccountname>
