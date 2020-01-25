@@ -70,8 +70,8 @@ echo "https://kubernetes.io/docs/concepts/cluster-administration/addons/";
 echo "=================================================================";
 echo "Applying https://docs.projectcalico.org/v3.11/manifests/calico.yaml";
 echo "=================================================================";
-sudo wget https://docs.projectcalico.org/v3.11/manifests/calico.yaml
-sudo kubectl apply -f calico.yaml;
+wget https://docs.projectcalico.org/v3.11/manifests/calico.yaml
+kubectl apply -f calico.yaml;
 echo "=================================================================";
 echo " congrats!! Installing kube Master - successfully 10/10  ";
 echo "=================================================================";
