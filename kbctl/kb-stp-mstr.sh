@@ -56,7 +56,7 @@ sudo kubeadm init --pod-network-cidr=10.244.0.0/16;
 echo "=================================================================";
 echo "Creating a directory for kube configuration for current user!!";
 echo "=================================================================";
-sudo mkdir -p $HOME/.kube;
+mkdir -p $HOME/.kube;
 echo "=================================================================";
 echo "Copying the necessary admin configuration files...";
 echo "=================================================================";
