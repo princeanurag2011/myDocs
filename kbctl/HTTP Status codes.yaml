@@ -1,0 +1,118 @@
+=================================================================================
+                                   HTTP Status codes
+===================================================================================
+The server will respond with HTTP status codes that match the HTTP spec. See the section below for a breakdown of the types of status codes the server will send.
+
+The following HTTP status codes may be returned by the API.
+
+Success codes:  
+  200 StatusOK:
+    Indicates that the request completed successfully.
+
+  201 StatusCreated:
+    Indicates that the request to create kind completed successfully.
+
+  204 StatusNoContent:
+    Indicates that the request completed successfully, and the response contains no body.
+    Returned in response to HTTP OPTIONS requests.
+
+Error codes:
+  307 StatusTemporaryRedirect:
+
+    Indicates that the address for the requested resource has changed.
+    Suggested client recovery behavior
+    Follow the redirect.
+
+  400 StatusBadRequest:
+    Indicates the requested is invalid.
+    Suggested client recovery behavior:
+     Do not retry. Fix the request.
+  401 StatusUnauthorized:
+
+    Indicates that the server can be reached and understood the request, 
+    but refuses to take any further action, because the client must provide authorization.
+     If the client has provided authorization, the server is indicating the provided 
+     authorization is unsuitable or invalid.
+    Suggested client recovery behavior:
+        If the user has not supplied authorization information, prompt them for the appropriate credentials. If the user has supplied authorization information, inform them their credentials were rejected and optionally prompt them again.
+
+  403 StatusForbidden:
+
+    Indicates that the server can be reached and understood the request, 
+    but refuses to take any further action, because it is configured to deny access for
+    some reason to the requested resource by the client.
+    Suggested client recovery behavior:
+    Do not retry. Fix the request.
+
+  404 StatusNotFound:
+
+    Indicates that the requested resource does not exist.
+    Suggested client recovery behavior:
+        Do not retry. Fix the request.
+
+  405 StatusMethodNotAllowed:
+
+      Indicates that the action the client attempted to perform on the resource was not supported 
+      by the code.
+    Suggested client recovery behavior:
+        Do not retry. Fix the request.
+
+409 StatusConflict:
+
+    Indicates that either the resource the client attempted to create already exists or
+     the requested update operation cannot be completed due to a conflict.
+    
+    Suggested client recovery behavior:
+        If creating a new resource:
+            Either change the identifier and try again, or GET and compare the fields in the
+             pre-existing object and issue a PUT/update to modify the existing object.
+        If updating an existing resource:
+            See Conflict from the status response section below on how to retrieve more 
+            information about the nature of the conflict.
+            GET and compare the fields in the pre-existing object, merge changes 
+            (if still valid according to preconditions), and retry with the 
+            updated request (including ResourceVersion).
+410 StatusGone:
+
+       Indicates that the item is no longer available at the server and no forwarding address 
+       is known.
+    Suggested client recovery behavior:
+      Do not retry. Fix the request.
+
+422 StatusUnprocessableEntity:
+      Indicates that the requested create or update operation cannot be completed due to 
+      invalid data provided as part of the request.
+    Suggested client recovery behavior:
+        Do not retry. Fix the request.
+
+429 StatusTooManyRequests:
+
+    Indicates that the either the client rate limit has been exceeded or the server has 
+    received more requests then it can process.
+Suggested client recovery behavior:
+    Read the Retry-After HTTP header from the response, and wait at least that long before
+     retrying.
+
+500 StatusInternalServerError:
+
+    Indicates that the server can  be reached and understood the request, 
+    but either an unexpected internal error occurred and the outcome of the call is unknown, 
+    or the server cannot complete the action in a reasonable time 
+    (this may be due to temporary server load or a transient communication issue 
+    with another server).
+    Suggested client recovery behavior:
+        Retry with exponential backoff.
+
+503 StatusServiceUnavailable:
+
+    Indicates that required service is unavailable.
+    Suggested client recovery behavior:
+        Retry with exponential backoff.
+
+504 StatusServerTimeout:
+
+    Indicates that the request could not be completed within the given time. 
+    Clients can get this response ONLY when they specified a timeout param in the request.
+    Suggested client recovery behavior:
+        Increase the value of the timeout param and retry with exponential backoff.
+        Response Status Kind
