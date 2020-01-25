@@ -52,13 +52,7 @@ echo "=================================================================";
 echo "Installing Kube Master.. 9/9"
 echo "=================================================================";
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16;
-echo "Installing kube Master - core DNS - calico network and its policy step- 10/10";
-echo "https://kubernetes.io/docs/concepts/cluster-administration/addons/";
-echo "=================================================================";
-echo "Applying https://docs.projectcalico.org/v3.11/manifests/calico.yaml";
-echo "=================================================================";
-sudo wget https://docs.projectcalico.org/v3.11/manifests/calico.yaml
-sudo kubectl apply -f calico.yaml;
+
 echo "=================================================================";
 echo "Creating a directory for kube configuration for current user!!";
 echo "=================================================================";
@@ -71,6 +65,13 @@ echo "=================================================================";
 echo "Assigning proper permission to access the kube folder.";
 echo "=================================================================";
 sudo chown $(id -u):$(id -g) $HOME/.kube/config;
+echo "Installing kube Master - core DNS - calico network and its policy step- 10/10";
+echo "https://kubernetes.io/docs/concepts/cluster-administration/addons/";
+echo "=================================================================";
+echo "Applying https://docs.projectcalico.org/v3.11/manifests/calico.yaml";
+echo "=================================================================";
+sudo wget https://docs.projectcalico.org/v3.11/manifests/calico.yaml
+sudo kubectl apply -f calico.yaml;
 echo "=================================================================";
 echo " congrats!! Installing kube Master - successfully 10/10  ";
 echo "=================================================================";
