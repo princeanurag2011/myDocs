@@ -25,6 +25,7 @@
           image: nginx
         
       nodeSelector:
+        label-name: label-value
    ---------------------------------------------------------------------  
    
 ---

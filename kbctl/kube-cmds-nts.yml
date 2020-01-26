@@ -884,6 +884,7 @@ NodeName:
  
  spec:
     nodeName: 
+    container:
  
 ---------------------------------------------------------------------------------------------
   TAINTS and TOLERATIONS:
@@ -943,6 +944,7 @@ NodeSelector:
           containers:
             
           nodeSelector:
+            label-name: label-value
    --------------------------------------------------------------------------------------------------  
 NodeAffinity:
     

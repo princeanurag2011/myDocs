@@ -18,6 +18,7 @@ Node Selector using NodeName:
     name: myapp
   spec:
     nodeName: 
+    container:
  -----------------------------------
 ---
  TAINTS and TOLERATIONS:
@@ -44,7 +45,7 @@ Node Selector using NodeName:
      #ex: 
         kubectl taint node master node-role.kubernetes.io/master:NoSchedule #to apply taints
      #ex: 
-        kubectl taint node master node-role.kubernetes.io/master:NoSchedule - #to remove taints
+        kubectl taint node master node-role.kubernetes.io/master:NoSchedule- #to remove taints
  
 ---------------------------------------------
  #To apply taints to pod -definition:
