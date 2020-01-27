@@ -57,7 +57,8 @@ shortcuts:
 
 
 ----------------------------------------------
-
+ #To switch between clusters, we can use : 
+  kubectl config use-context <cluster>
 
    
 POD:
@@ -102,7 +103,17 @@ POD:
     --port=6767 \
     --targetPort=80
 
+ #ex:4 expose pod
 
+ kubectl expose pod redis --port=6379 --name redis-service
+
+ #ex-5
+
+    kubectl expose deployment webapp \
+      --type=NodePort \
+      --port=8080 \
+      --name=webapp-service \
+      --dry-run -o yaml > webapp-service.yaml
  
 Deployment:
     
@@ -158,3 +169,9 @@ Service:
    # for i in {1..35}; do
    # kubectl exec --namespace=kube-public curl -- sh -c 'test=`wget -qO- -T 2  http://webapp-service.default.svc.cluster.local:8080/info 2>&1` && echo "$test OK" || echo "Failed"';
    # echo ""
+
+
+master $ cat curl-test.sh
+for i in {1..35}; do
+   kubectl exec --namespace=kube-public curl -- sh -c 'test=`wget -qO- -T 2  http://webapp-service.default.svc.cluster.local:8080/info 2>&1` && echo "$test OK" || echo "Failed"';
+   echo ""  

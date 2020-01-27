@@ -1003,10 +1003,71 @@ ResourceLimits:
 DaemonSets:
  - it creates one replica of pod in each node.
  - these are coreDNS (say weavenet) and KubeProxy
+ - These are same like replicaSet only 'kind' feild is changed
+-------------------------------------------------------------------
+fluentd-elasticsearch-daemonset.yaml
+   
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd-elasticsearch
+  namespace: kube-system
+  labels:
+    k8s-app: fluentd-logging
+spec:
+  selector:
+    matchLabels:
+      name: fluentd-elasticsearch
+  template:
+    metadata:
+      labels:
+        name: fluentd-elasticsearch
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      containers:
+      - name: fluentd-elasticsearch
+        image: quay.io/fluentd_elasticsearch/fluentd:v2.5.2
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+
+
+
+-------------------------------------------------------------------
+
+ #To see the list of daemonsets:
+  kubectl get daemonsets -n <namespace>
+  #ex: 
+    kubectl get daemonsets -n kube-system
+
+ #To see the detailed view  of daemonsets:
+  kubectl describe daemonsets -n <namespace>
 
 StaticPods:
   - kubelet can run static pods without any cluster or master arrangement.
   - static pods can be deployed using yaml manifest files
+  - default config files location..
+      ps -aux | grep kubelet and look for below 
+    --config=/var/lib/kubelet/config.yaml
   - yaml files should be placed in this location for scheduling -> /etc/kubernetes/manifests
   - kubelet.service  -> contains the 'pod-manifest-path' by default  
   - kubelet.service  -> other way to  we can add '--config=kubeconfig.yml' and 
@@ -1079,6 +1140,7 @@ BackupAndRestore:
      https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/recovery.md
      ETCD BACKUP-RESTORE:
      https://github.com/mmumshad/kubernetes-the-hard-way/blob/master/practice-questions-answers/cluster-maintenance/backup-etcd/etcd-backup-and-restore.md
+
   - Bakckup ResourcesConfig:
       #To export all application deployments 
          kubectl get all --all-namespaces -o yaml > all-deploy-services.yml
@@ -1107,6 +1169,15 @@ BackupAndRestore:
       # Start the kube-api server
          service kube-apiserver stop
  
+      #To check the version of etcd controller
+       etcdctl -v
+      #To check the version of etcd-master
+       kubectl describe pod etcd-master -n kube-system
+       #or
+        kubectl logs etcd-master -n kube-system
+      #To see the etcd ENDPOINTs
+        kubectl describe pod etcd-master -n kube-system    #    and look for --listen-client-urls
+
 Drain: This is used to move pods from one node to other nodes. It is done in case of patching or OS Upgrades
 Cordon: This is used to prevent schedulng new pods on the node.
 Uncordon: This is used to resume scheduling of pods.
