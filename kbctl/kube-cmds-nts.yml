@@ -1517,10 +1517,10 @@ spec:
               - mountPath: /opt
                  name: data_volume
        volumes: 
-          - name: data_volume
-             hostPath: 
-                path: /data
-                type: Directory
+         - name: data_volume
+           hostPath: 
+              path: /data
+              type: Directory
      -------------------------------------------------------------------
      there is drawback with above model , because it would create this volume copy on every node
      -------------------------------------------------------------------
@@ -1604,7 +1604,7 @@ spec:
        name: mypod
      spec:
        containers:
-         - name: myfrontend
+          - name: myfrontend
             image: nginx
             volumeMounts:
                 - mountPath: "/var/www/html"
