@@ -1802,8 +1802,7 @@ spec:
                                 # for more info check tools folder in it 
                  
                  # To create certificate for another admin user..
-                       openssl genrsa \ 
-                       -out adminuser.key 2048;
+                       openssl genrsa  -out adminuser.key 2048;
                        
                         openssl req -new \ 
                          -key adminuser.key \ 
@@ -1843,7 +1842,32 @@ spec:
                        # decode the certificate 
                         echo <copy the certificate code shown above > | base64 decode
                         #copy the contetn and paste in adminuser.crt and it's done
-                      
+                      # To deny the scr request
+                        kubectl certificate deny <csrname>
+                      #To delete the csr req
+                        kubectl delete csr 
+      ----------------------------------------------------------------------------
+        #Sample CSR 
+        apiVersion: certificates.k8s.io/v1beta1
+        kind: CertificateSigningRequest
+        metadata:
+          creationTimestamp: 2020-01-28T05:56:14Z
+          name: agent-smith
+          resourceVersion: "9160"
+          selfLink: /apis/certificates.k8s.io/v1beta1/certificatesigningrequests/agent-smith
+          uid: e47eff2e-4192-11ea-9d12-0242ac110013
+        spec:
+          groups:
+          - system:masters
+          - system:authenticated
+          request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1dEQ0NBVUFDQVFBd0V6RVJNQThHQTFVRUF3d0libVYzTFhWelpYSXdnZ0VpTUEwR0NTcUdTSWIzRFFFQgpBUVVBQTRJQkR3QXdnZ0VLQW9JQkFRRE8wV0pXK0RYc0FKU0lyanBObzV2UklCcGxuemcrNnhjOStVVndrS2kwCkxmQzI3dCsxZUVuT041TXVxOTlOZXZtTUVPbnJEVU8vdGh5VnFQMncyWE5JRFJYall5RjQwRmJtRCs1eld5Q0sKeTNCaWhoQjkzTUo3T3FsM1VUdlo4VEVMcXlhRGtuUmwvanYvU3hnWGtvazBBQlVUcFdNeDRCcFNpS2IwVSt0RQpJRjVueEF0dE1Wa0RQUTdOYmVaUkc0M2IrUVdsVkdSL3o2RFdPZkpuYmZlek90YUF5ZEdMVFpGQy93VHB6NTJrCkVjQ1hBd3FDaGpCTGt6MkJIUFI0Sjg5RDZYYjhrMzlwdTZqcHluZ1Y2dVAwdEliT3pwcU52MFkwcWRFWnB3bXcKajJxRUwraFpFV2trRno4MGxOTnR5VDVMeE1xRU5EQ25JZ3dDNEdaaVJHYnJBZ01CQUFHZ0FEQU5CZ2txaGtpRwo5dzBCQVFzRkFBT0NBUUVBUzlpUzZDMXV4VHVmNUJCWVNVN1FGUUhVemFsTnhBZFlzYU9SUlFOd0had0hxR2k0CmhPSzRhMnp5TnlpNDRPT2lqeWFENnRVVzhEU3hrcjhCTEs4S2czc3JSRXRKcWw1ckxaeTlMUlZyc0pnaEQ0Z1kKUDlOTCthRFJTeFJPVlNxQmFCMm5XZVlwTTVjSjVURjUzbGVzTlNOTUxRMisrUk1uakRRSjdqdVBFaWM4L2RoawpXcjJFVU02VWF3enlrcmRISW13VHYybWxNWTBSK0ROdFYxWWllKzBIOS9ZRWx0K0ZTR2poNUw1WVV2STFEcWl5CjRsM0UveTNxTDcxV2ZBY3VIM09zVnBVVW5RSVNNZFFzMHFXQ3NiRTU2Q0M1RGhQR1pJcFVibktVcEF3a2ErOEUKdndRMDdqRytocGtueG11RkFlWHhnVXdvZEFMYUo3anUvVERJY3c9PQotLS0tLUVORCBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0K
+          usages:
+          - digital signature
+          - key encipherment
+          - server auth
+          username: agent-x
+        status: {}
+      -----------------------------------------------------------------------------    
             NOTE: certificate signing is done by Kube-controller-manager with certificate api
                   It has CSR-APPROVING and CSR-SIGNING
                   #check it here :  cat /etc/kubernetes/manifests/kube-controller-manager.yaml and look for 
@@ -1929,6 +1953,64 @@ spec:
                            #TO see other kubeconfig options:
                                 kubectl config -h
                              ------------------------------------------------------
+    ---------------------------------------------------------------------------------
+      #sample KUBECONFIG - /root/my-kube-config
+      apiVersion: v1
+      clusters:
+      - cluster:
+          certificate-authority: /etc/kubernetes/pki/ca.crt
+          server: https://172.17.0.10:6443
+        name: development
+      - cluster:
+          certificate-authority: /etc/kubernetes/pki/ca.crt
+          server: https://172.17.0.10:6443
+        name: kubernetes-on-aws
+      - cluster:
+          certificate-authority: /etc/kubernetes/pki/ca.crt
+          server: https://172.17.0.10:6443
+        name: production
+      - cluster:
+          certificate-authority: /etc/kubernetes/pki/ca.crt
+          server: https://172.17.0.10:6443
+        name: test-cluster-1
+      contexts:
+      - context:
+          cluster: kubernetes-on-aws
+          user: aws-user
+        name: aws-user@kubernetes-on-aws
+      - context:
+          cluster: test-cluster-1
+          user: dev-user
+        name: research
+      - context:
+          cluster: development
+          user: test-user
+        name: test-user@development
+      - context:
+          cluster: production
+          user: test-user
+        name: test-user@production
+      current-context: test-user@development
+      kind: Config
+      preferences: {}
+      users:
+      - name: aws-user
+        user:
+          client-certificate: /etc/kubernetes/pki/users/aws-user/aws-user.crt
+          client-key: /etc/kubernetes/pki/users/aws-user/aws-user.key
+      - name: dev-user
+        user:
+          client-certificate: /etc/kubernetes/pki/users/dev-user/developer-user.crt
+          client-key: /etc/kubernetes/pki/users/dev-user/dev-user.key
+      - name: test-user
+        user:
+          client-certificate: /etc/kubernetes/pki/users/test-user/test-user.crt
+          client-key: /etc/kubernetes/pki/users/test-user/test-user.key
+
+    ---------------------------------------------------------------------------------   
+        #to use the dev-user to access test-cluster-1 
+         kubectl config --kubeconfig=/root/my-kube-config use-context research
+    ----------------------------------------------------------------------------                         
                  API GROUPS:
                     - #to see the version using rest api url
                         curl http://kube-master:6443/version 
@@ -2037,6 +2119,23 @@ spec:
             #To view detailed rolebinding
              kubectl describe rolebinding devuser-developer-binding
 
+            # Create a Role named "pod-reader" that allows user to perform "get", "watch" and "list" on pods
+             kubectl create role pod-reader --verb=get --verb=list --verb=watch --resource=pods
+
+            # Create a Role named "pod-reader" with ResourceName specified
+             kubectl create role pod-reader --verb=get --resource=pods --resource-name=readablepod --resource-name=anotherpod
+
+            # Create a Role named "foo" with API Group specified
+             kubectl create role foo --verb=get,list,watch --resource=rs.extensions
+
+            # Create a Role named "foo" with SubResource specified
+             kubectl create role foo --verb=get,list,watch --resource=pods,pods/status
+
+            # Create a RoleBinding for user1, user2, and group1 using the admin ClusterRole
+             kubectl create rolebinding admin --clusterrole=admin --user=user1 --user=user2 --group=group1
+            #
+             kubectl create rolebinding  dev-user-binding --generator='rolebinding.rbac.authorization.k8s.io/v1alpha1' --role=developer -o yaml --dry-run
+
           CHECK ACCESS:
             #To check access (to self)
              kubectl auth can-i create deployments
@@ -2063,6 +2162,7 @@ spec:
                  - clusterrolesbindings
              
              cluster roles:
+                - These are not part of any namespace. These are global
                #To create  cluster role based authentications: RBAC:
                ------------------cluster-admin-role.yaml--------------  
                 apiVersion: rbac.autherization.k8s.io/v1
@@ -2071,13 +2171,15 @@ spec:
                   name: cluster-administrator
                 rules:
                  - apiGroups: [ "" ]
-                    resources: [ "nodes" ]
-                    verbs: [ "list", "get", "create", "delete" ]
+                   resources: [ "nodes" ]
+                   verbs: [ "list", "get", "create", "delete" ]
 
               ----------------------------------------------------------
                kubectl create -f  cluster-admin-role.yaml
 
               cluster roles bindings:
+                  - These are not part of any namespace. These are global
+
                  #To create role binding with users
                 ------------------cluster-admin-role-binding.yaml--------------  
                   apiVersion: rbac.autherization.k8s.io/v1
@@ -2090,12 +2192,139 @@ spec:
                     apiGroup: rbac.autherization.k8s.io
                   subjects:
                    - kind: User
-                      name: cluster-admin
-                      apiGroup:  rbac.autherization.k8s.io
+                     name: cluster-admin
+                     apiGroup:  rbac.autherization.k8s.io
                    
                 ----------------------------------------------------------
                 kubectl create -f  cluster-admin-role-binding.yaml
-         
+
+           -------------------------------------------------------------------
+           #sample cluster role:
+            apiVersion: rbac.authorization.k8s.io/v1
+            kind: ClusterRoleBinding
+            metadata:
+              annotations:
+                rbac.authorization.kubernetes.io/autoupdate: "true"
+              creationTimestamp: 2020-01-28T07:22:25Z
+              labels:
+                kubernetes.io/bootstrapping: rbac-defaults
+              name: cluster-admin
+              resourceVersion: "108"
+              selfLink: /apis/rbac.authorization.k8s.io/v1/clusterrolebindings/cluster-admin
+              uid: eed42cd8-419e-11ea-bf5b-0242ac110015
+            roleRef:
+              apiGroup: rbac.authorization.k8s.io
+              kind: ClusterRole
+              name: cluster-admin
+            subjects:
+            - apiGroup: rbac.authorization.k8s.io
+              kind: Group  
+              name: system:masters
+
+           -------------------------------------------------------------------
+            
+            #sample cluster role and rolebinding to give access to michelle for nodes
+           ---------------------------------------------------------------------
+            ---
+              kind: ClusterRole
+              apiVersion: rbac.authorization.k8s.io/v1
+              metadata:  
+                name: node-admin
+              rules:
+                - apiGroups: [""]  
+                  resources: ["nodes"]
+                  verbs: ["get", "watch", "list", "create", "delete"]
+
+            ---
+              kind: ClusterRoleBinding
+              apiVersion: rbac.authorization.k8s.io/v1
+              metadata:
+                name: michelle-binding
+              subjects:
+                - kind: User  
+                  name: michelle  
+                  apiGroup: rbac.authorization.k8s.io
+              roleRef:  
+                kind: ClusterRole  
+                name: node-admin  
+                apiGroup: rbac.authorization.k8s.io
+
+
+
+
+           ---------------------------------------------------------------------
+
+
+
+         #To see the cluster roles.  Run the command 
+          kubectl get clusterroles --no-headers | wc -l 
+          #or 
+          kubectl get clusterroles --no-headers -o json | jq '.items | length'
+         #To see the cluster roles bindings.  Run the command 
+          kubectl get clusterrolebindings --no-headers | wc -l
+          #or 
+          kubectl get clusterrolebindings --no-headers -o json | jq '.items | length'
+         # Create a ClusterRole named "pod-reader" that allows user to perform "get", "watch" and "list" on pods
+            kubectl create clusterrole pod-reader --verb=get,list,watch --resource=pods
+
+            # Create a ClusterRole named "pod-reader" with ResourceName specified
+            kubectl create clusterrole pod-reader --verb=get --resource=pods --resource-name=readablepod
+          --resource-name=anotherpod
+
+            # Create a ClusterRole named "foo" with API Group specified
+            kubectl create clusterrole foo --verb=get,list,watch --resource=rs.extensions
+
+            # Create a ClusterRole named "foo" with SubResource specified
+            kubectl create clusterrole foo --verb=get,list,watch --resource=pods,pods/status
+
+            # Create a ClusterRole name "foo" with NonResourceURL specified
+            kubectl create clusterrole "foo" --verb=get --non-resource-url=/logs/*
+
+            # Create a ClusterRole name "monitoring" with AggregationRule specified
+            kubectl create clusterrole monitoring --aggregation-rule="rbac.example.com/aggregate-to-monitoring=true"
+
+             # Create a ClusterRoleBinding for user1, user2, and group1 using the cluster-admin ClusterRole
+              kubectl create clusterrolebinding cluster-admin --clusterrole=cluster-admin --user=user1 --user=user2 --group=group1
+             example-1:
+           -------------------------------------------------------------------------------              
+             #To auto generate below yaml for clusterrole          
+             kubectl create clusterrole storage-admin --verb=get,list,watch,create,delete --resource=persistentvolumes,storageclasses -o yaml --dry-run
+             # sample cluster role 
+              ---
+              kind: ClusterRole
+              apiVersion: rbac.authorization.k8s.io/v1
+              metadata:
+                name: storage-admin
+              rules:
+              - apiGroups: [""]
+                resources: ["persistentvolumes"]
+                verbs: ["get", "watch", "list", "create", "delete"]
+              - apiGroups: ["storage.k8s.io"]
+                resources: ["storageclasses"]
+                verbs: ["get", "watch", "list", "create", "delete"]
+
+
+           ---------------------------------------------------------------------------------
+
+            #TO auto-geneate below-yaml for cluster role binding
+              kubectl create clusterrolebinding michelle-storage-admin --clusterrole=storage-admin --user=michelle -o yaml --dry-run           
+            # sample cluster rolebinding
+           ---
+            kind: ClusterRoleBinding
+            apiVersion: rbac.authorization.k8s.io/v1
+            metadata:
+              name: michelle-storage-admin
+            subjects:
+            - kind: User
+              name: michelle
+              apiGroup: rbac.authorization.k8s.io
+            roleRef:
+              kind: ClusterRole
+              name: storage-admin
+              apiGroup: rbac.authorization.k8s.io
+
+           ----------------------------------------------------------------------------------
+
          IMAGE SECURITY:
           - public registries:
               docker.io/nginx/nginx

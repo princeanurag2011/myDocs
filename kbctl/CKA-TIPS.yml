@@ -175,3 +175,11 @@ master $ cat curl-test.sh
 for i in {1..35}; do
    kubectl exec --namespace=kube-public curl -- sh -c 'test=`wget -qO- -T 2  http://webapp-service.default.svc.cluster.local:8080/info 2>&1` && echo "$test OK" || echo "Failed"';
    echo ""  
+
+
+   #To view the certificate files
+    openssl x509 -in /etc/kubernetes/pki/apiserver.crt -text
+
+   #To sign the certificate
+    openssl x509 -req -in /etc/kubernetes/pki/apiserver-etcd-client.csr -CA /etc/kubernetes/pki/etcd/ca.crt -CAkey /etc/kubernetes/pki/etcd/ca.key -CAcreateserial -out /etc/ku
+bernetes/pki/apiserver-etcd-client.crt
