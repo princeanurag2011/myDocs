@@ -206,4 +206,12 @@ for i in {1..35}; do
 
     #the configuration file located for configuring the CoreDNS service?
      kubectl exec <core-dns-pod-name> -n kube-system ps
+ kubectl run busybox --image=busybox:1.28 --restart=Never -o yaml --dry-run --command -- sleep 1000 > pod.yaml
+ kubectl run busybox --image=busybox:1.28 --restart=Never  --command -- sleep 1000
+ kubectl exec -it busybox /bin/sh
+ ip a #to see network device interfaces and its IP range, MAC,  status and Bridge network  
+ ip route #for default gateway.
 
+
+ #TO apply network 
+  kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')" 

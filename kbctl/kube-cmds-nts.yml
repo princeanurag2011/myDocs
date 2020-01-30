@@ -1394,6 +1394,17 @@ NodeUpgrade:
 
    To see the ip address added by kube proxy 
    #cat /var/log/kube-proxy.log
+   
+  #To check the ip range configured for services
+  What is the IP Range configured for the services within the cluster?
+  Inspect the setting on kube-api server by running on command ps -aux | grep kube-api
+   --service-cluster-ip-range=10.96.0.0/12
+  
+  What is the root domain/zone configured for this kubernetes cluster?
+  kubectl describe configmap coredns -n kube-system
+  look for Kuberentes in it
+
+
 
  ----------------------------------------------------------------------------------------- 
  INGRESS:
