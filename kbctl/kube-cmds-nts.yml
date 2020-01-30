@@ -111,8 +111,10 @@ kubectl create -f namespace-dev.yml #check the yaml file below
         - containerPort:80
    nodeSelector: #to schedule pods on particular node we use node selector with labels
      availableZone: 1a
-     
+
+#note: DEAFULT deployment path of nginx server is /usr/share/nginx/html     
 ------------commands to create pods--------------------------
+
 #By default pods gets created in default namespace
 #To create pod using above file in default namespace
  kubectl create -f pod-definition.yml
@@ -1255,6 +1257,17 @@ NodeUpgrade:
  =======================================================================
     for basic networking check ntwrk.yml file
     
+ ip link add vnet type brige #to create virtual bridge network with virtual NIC vnet 
+ ip link set vnet up #to enable the vNIC device vnet
+ ip addr add 10.244.1.1/24 dev vnet # to set ip address to pod which is connected to vdevice vnet
+
+ # to connect to pod 10.2444.2.2  in node1 (192.168.1.11) from node2(192.168.1.12) 
+ #we set below ip route in node02
+ ip route add 10.244.2.2 via 192.168.1.11 #
+
+
+
+
 -------------------------------------------------------------------------------------------------
  #to set ipaddress to two systems and connect them through switch(192.168.1.0)
    
@@ -1344,6 +1357,44 @@ NodeUpgrade:
    https://coredns.io/plugins/kubernetes/
     
    ---------------------------------------------------------------------------------------
+   ip link #to see the list network interfaces
+   ip addr # to see the ip address
+   ip a #to see the network interfaes and ipadress
+   ip route # to see the deafult gatewaya nd routing adress
+   arp #address resolution protocols  - to see the list of ip adress and their mac address along with network interface.
+   arp <nodename> to see details of node
+   netstat -tinlpa  #to see the list opened ports which are in listetning state.
+   cat /proc/sys/net/ipv4/ip_forward #used for port forwarding if value set to 1
+
+   #TO check the network plugin used in Kubernetes
+   ps aux | grep kubelet | grep network -i  #look for network plugin
+   
+   #TO check the network plugin directory use above command and look for belwo ffeild in it
+    --cni-bin-dir=/opt/cni/bin  #it containes the list of plugins available
+
+    #To check  the CNI plugin configured to be used on this kubernetes cluster
+    --cni-conf-dir=/etc/cni/net.d/
+    
+    #to see which binary executable file will be run by kubelet after a container 
+    #and its associated namespace are created.
+
+    /etc/cni/net.d/10-weave.conf #check for type
+
+
+    Comunication to pods is done through iptables implemented by kube-proxy
+    When we create a new pod it gets an IP
+     #kubectl run nginx --image=nginx --restart=Never --port=80
+     #kubectl get po -o wide
+
+    When we expose the service it get an service ip which is avilable across the cluster
+    #kubectl expose pod nginx --port=80 --name nginx-service --type=clusterip  
+    #if we dont mention type, by default it create cluster ip which is accessible across the cluster.
+    To access the pod through service it creates ip tables and add the entries of ip's
+     #iptables -L -t net | grep nginx-service
+
+   To see the ip address added by kube proxy 
+   #cat /var/log/kube-proxy.log
+
  ----------------------------------------------------------------------------------------- 
  INGRESS:
    - It is service which acts as a load balancer along with SSL. 

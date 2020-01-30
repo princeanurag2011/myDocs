@@ -68,7 +68,11 @@ POD:
      
  #Generate POD Manifest YAML file (-o yaml). Don't create it(--dry-run) :
      kubectl run --generator=run-pod/v1 nginx --image=nginx --dry-run -o yaml
-
+#TO generate yaml file with command argumetns 
+  kubectl run ubuntu --image=ubuntu -o yaml --dry-run --command -- sh sleep 1000
+  NOTE: whatever placed after --command -- <>
+        it will consider ervything as arguments so if we need to generate YAML file
+         place -o yaml --dry-run  before the --command
   
   TIPS:
     kubectl run nginx --image=nginx  #deployment
@@ -123,7 +127,7 @@ Deployment:
     kubectl create deployment --image=nginx nginx
     
   #Generate Deployment YAML file (-o yaml). Don't create it(--dry-run)
-     kubectl run --generator=deployment/v1beta1 nginx --image=nginx --dry-run -o yaml
+     kubectl run --generator=deployment/v1beta1 nginx --image=nginx --dry-run -o yaml 
       #or 
     kubectl create deployment --image=nginx nginx --dry-run -o yaml
     
@@ -181,5 +185,25 @@ for i in {1..35}; do
     openssl x509 -in /etc/kubernetes/pki/apiserver.crt -text
 
    #To sign the certificate
-    openssl x509 -req -in /etc/kubernetes/pki/apiserver-etcd-client.csr -CA /etc/kubernetes/pki/etcd/ca.crt -CAkey /etc/kubernetes/pki/etcd/ca.key -CAcreateserial -out /etc/ku
-bernetes/pki/apiserver-etcd-client.crt
+    openssl x509 -req 
+    -in /etc/kubernetes/pki/apiserver-etcd-client.csr \
+    -CA /etc/kubernetes/pki/etcd/ca.crt \
+    -CAkey /etc/kubernetes/pki/etcd/ca.key \
+    -CAcreateserial -out /etc/kubernetes/pki/apiserver-etcd-client.crt
+
+
+
+    netstat -anp | grep etcd
+
+    ls /opt/cni/bin
+    /etc/cni/net.d/10-weave.conf
+
+    kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+    kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+
+    Networking Solution used by this cluster?
+    /etc/cni/net.d/ 
+
+    #the configuration file located for configuring the CoreDNS service?
+     kubectl exec <core-dns-pod-name> -n kube-system ps
+
