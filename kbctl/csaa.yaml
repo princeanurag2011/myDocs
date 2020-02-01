@@ -6,89 +6,261 @@ CSOPA - Certified SysOPS Administrator
 CSAP - Certified Solution Architect Professional
 
 CSAA-8-topics:
-  - Compute:
-      - EC2:
-         #https://aws.amazon.com/ec2/faqs/
-      - Elastic Beanstalk
-      - Lambda
-  - Storage:
-      - S3:
-          #https://aws.amazon.com/s3/faqs/
-      - Glacier
-  - DB:
-      - RDS:
-          #https://aws.amazon.com/rds/faqs/
-      - DyanamoDB
-      - Redshift
-  - Networking and content delivery:
-      - VPC:
-          #https://aws.amazon.com/vpc/faqs/
-      - CloudFront
-      - Route53:
-          #https://aws.amazon.com/route53/faqs/
-      - Direct Connect
-      - Elastic Load Balancer
-  - Security Identity and Compliance:
-      - IAM
-      - WAF
-  - Mgmt and Governance:
-      - Cloud Watch 
-      - Cloud Formation
-      - AutoScaling
-      - Config
-      - Cloud trail
-      - Trusted Advisor
-  - Analytics:
-      - Kinesis
-  - Application Integrations:
-      - SQS
-      - SNS
-      - SWF
-  - Others:
-     - AWS WHITEPAPERS
-     - WELL ARCHITECTED FRAMEWORK
-     - Security BEST PRACTISES
+	- Compute:
+			- EC2:
+				 #https://aws.amazon.com/ec2/faqs/
+			- Elastic Beanstalk
+			- Lambda
+	- Storage:
+			- S3:
+					#https://aws.amazon.com/s3/faqs/
+			- Glacier
+	- DB:
+			- RDS:
+					#https://aws.amazon.com/rds/faqs/
+			- DyanamoDB
+			- Redshift
+	- Networking and content delivery:
+			- VPC:
+					#https://aws.amazon.com/vpc/faqs/
+			- CloudFront
+			- Route53:
+					#https://aws.amazon.com/route53/faqs/
+			- Direct Connect
+			- Elastic Load Balancer
+	- Security Identity and Compliance:
+			- IAM
+			- WAF
+	- Mgmt and Governance:
+			- Cloud Watch 
+			- Cloud Formation
+			- AutoScaling
+			- Config
+			- Cloud trail
+			- Trusted Advisor
+	- Analytics:
+			- Kinesis
+	- Application Integrations:
+			- SQS
+			- SNS
+			- SWF
+	- Others:
+		 - AWS WHITEPAPERS
+		 - WELL ARCHITECTED FRAMEWORK
+		 - Security BEST PRACTISES
 
 
 IAM:
-   - Identity Access Mgmt:
-       #when we create user/group by default it wont have any access to aws resources.
-       #This is called default deny or Non-Explicit -Deny
-       #IAM Users and Groups should be given least access(only the required)  to AWS resources
-      - ARN - amazon resource name
-      - arn:partition:service:region:account:resource #format
-      - we can use arn for 
-        users(IAM and federated),groups,policies, instance profiles, vMFA devices, server certificates
-      - These are important part of IAM Polices to identify them easily.
-      - IAM POLICY:
-          - This is attached to either principals or Identity (users, groups, roles)  or resources(s3 bucket)
-          - These are stored in JSON format
-          - Identity Policies:
-              - Managed Policies:
-                  - AWS Managed Polices
-                  - Customer Managed Policies
-              - Inline Policies:
-                 - These are attached to particular users,roles
-          - Resource Policies:
-              - These are attached to the resources like S3 directly.
-          - POLICY EVALUATION LOGIC:
-              - Explicit-deny --> Explicit-allow --> default deny
-      - IAM ROLES:
-          - Users in AWS account access resources which they dont have access usually.
-          - Users in one AWS account to access resource in another AWS account.
-          - a mobile app  to use aws resources withoutany aws keys
-          - Users who has identities outside of the AWS   
-          - Third parties to perform temporary audits.
-          - example:
-             -  AWS EC2 to access to S3 (No need to store keys in EC2 if IAM roles are used)
-             -  users in different aws accounts
-             -  Users from externally authenticated Users (web Identity Federation) - google, facebook etc.
-             -  Provide AWS  account owned by third party SAML 2.0 
-             -  WE CAN ATTCH ONLY ONE IAM ROLE TO EC2  Instance AT this time:
-                  - It can be attached to running/stopped instance.
-                  - free of cost
-             - can't be aded to groups
-             - can't make direct request to AWS services; they are meant to be used by authorized entities
-               such as IAM USER , apps , AWS service like EC2     
+	 - Identity Access Mgmt:
+			 #when we create user/group by default it wont have any access to aws resources.
+			 #This is called default deny or Non-Explicit -Deny
+			 #IAM Users and Groups should be given least access(only the required)  to AWS resources
+			- ARN - amazon resource name
+			- arn:partition:service:region:account:resource #format
+			- we can use arn for 
+				users(IAM and federated),groups,policies, instance profiles, vMFA devices, server certificates
+			- These are important part of IAM Polices to identify them easily.
+			- IAM POLICY:
+					- This is attached to either principals or Identity (users, groups, roles)  or resources(s3 bucket)
+					- These are stored in JSON format
+					- Identity Policies:
+							- Managed Policies:
+									- AWS Managed Polices
+									- Customer Managed Policies
+							- Inline Policies:
+								 - These are attached to particular users,roles
+					- Resource Policies:
+							- These are attached to the resources like S3 directly.
+					- POLICY EVALUATION LOGIC:
+							- Explicit-deny --> Explicit-allow --> default deny
+			- IAM ROLES:
+					- Users in AWS account access resources which they dont have access usually.
+					- Users in one AWS account to access resource in another AWS account.
+					- a mobile app  to use aws resources withoutany aws keys
+					- Users who has identities outside of the AWS   
+					- Third parties to perform temporary audits.
+					- example:
+						 -  AWS EC2 to access to S3 (No need to store keys in EC2 if IAM roles are used)
+						 -  users in different aws accounts
+						 -  Users from externally authenticated Users (web Identity Federation) - google, facebook etc.
+						 -  Provide AWS  account owned by third party SAML 2.0 
+						 -  WE CAN ATTCH ONLY ONE IAM ROLE TO EC2  Instance AT this time:
+									- It can be attached to running/stopped instance.
+									- free of cost
+						 - can't be aded to groups
+						 - can't make direct request to AWS services; they are meant to be used by authorized entities
+							 such as IAM USER , apps , AWS service like EC2     
+
+Route53:
+	Here we can purchase the Domain.
+		- If it is Public hosted zone it can be acessed from internet.
+		- If it is private hosted zone only can  be accessed from AWS resources.
+	DNS Query:
+		- A req that is submitted by user to the DNS for a resource that is associated with domain name.
+
+	DNS Record:
+		- By deafult when we  purchase a domain in AWS . By default it creates 'ns record' and 'SOA' record.
+		NOTE:
+			- We can create anyone of the below records or all of them. But we can't create two records of Same Types
+					EX: we can't have two A Type records for a Single domain with same values.(say same IP's) 
+			- But A record can have multiple Values. 
+					EX: we can repressent two IPs for single A record.
+
+		Types:
+		
+			A Record:
+				- Maps a domain/sub-domain to the IP Address
+
+			CName:
+				- Canonical Name Record
+				- Points a Domain or sub domain name to another domain or subdomain 
+					 ex: gmail.com to mail.google.com
+			Alias Record:
+				- A type of record that can be created to route the traffic to the amazon resource
+					 like Cluod Front or s3
+			ns Record:
+				- nameserver record. These servers provide DNS name services.
+
+			SOA:
+				- Start of Authority. It has jus the info about 
+					 - domain authority  
+					 - domain of zone admin.
+					 - Zone serial number
+					 - refresh time
+					 - retry time
+					 - expire time
+					 - negative caching TTL
+
+	TTL:
+		- Time to live: The amount of time in seconds that you want the DNS resolver to cache the values
+										of that record before submitting another request to the Route 53 to get the
+										current value of that record.
+
+	Zone Apex : 
+		-  that is just a domain name like google.com, whizlabz.com
+
+	Routing Policy:
+		- A setting of record that defines how Route53 responds to DNS queries  and route traffic.
+
+		NOTE:
+			For 'A record' type:
+			  - You can choose alias type as ELB, S3 etc., by selecting Alias as 'YES'
+			  - Else we need to mention the IP address in the 'Value' Section if the alias is slected as 'NO'
+
+		types:
+			- Simple Routing Policy:
+				 - Its just a redirection policy. We can do this using ALIAS or IP for A type Record. 
+			- Weighted Routing Policy:
+				 -  Traffic routed to resource = weight of specific record / sum of weight of all the record.
+				 -  We can test the policy using the 'Test Record test.'
+				 -  USECASE: 
+							This is used incase of redirecting traffic betweeen different version of applications. 
+				 - In the management console we have option to enter the weightage value fo a record.
+			- Latency Routing Policy:
+				 - routing is done based on the request from a region and redirecting that req to the 
+					 nearest available hosted server based on the caluclation of latency.
+					 NOTE: Latency is calculate d over a period of time. and it may change based on the 
+								 routing and connections.
+								 For testing purpose we can use this website below for IP's to ping form a specific region
+												www.nirsoft.net/countryip/ca.html
+
+			- Geographical Routing Policy:
+				 - routing is done based on the geo loaction and connects to that server in that region.
+				 - we have to choose the country region from routing policy.
+				 - if we don't mention the default location . Then Traffic originating from 
+				   other than the mentioned regions won't get any connection to that server.
+
+			- Failover Routing Policy:
+				 - This is used if one server goes down then connect to the another server.
+				 - It has two Failover record types primary and secondary.
+				 - And these failover record types can be associated with the 'Health checks.'
+				 - WE CAN FIND THE HEALTH CHECK OPTION BELOW THE HOSTED ZONE.
+
+			- Multi value Answer Routing Policy:
+				 - This is used in case of Multiple server hosting smae applications.
+				 - It return the IP of the server upto 8 Healthy servers(selected as random) 
+				   and doesn't return the ip value of the unhelathy server.
+				 -  These A records can be asociated with heath checks.
+				 
+		
+
+
+	
+
+
+OSI MODEL:
+	  Open Systems Interconnections
+
+   DATA:
+     - Layer 7:  
+     	   - APPLICATION LAYER
+     	   - End User layer (HTTP, FTP, SSH, DNS)
+     	   - APPLICATION LOAD BALANACER operates @LAYER7 i.e is in DATA Section
+     - Layer 6:
+     	   - PRESENTATION Layer
+     	   - Syntax Layer of SSH, SSL, FTP, JPEG
+     - Layer 5:
+         - SESSION LAYER
+         - Sync and send to port (API,Socket)
+   Segment:
+   	 - LAYER 4:
+   	 	   - TRANSPORT LAYER
+   	 	   - E2E connection (TCP, UDP)
+   	 	   - NETWORK LOAD BALANACER operates @LAYER4 i.e in TRANSPORT section
+   Packet:
+   	 - LAYER 3:
+   	 	   - NETWORK LAYER
+   	 	   - packets (IP, IPSec, ICMP)
+   Frames:
+     - LAYER 2:
+         - DATA LINK
+         - FRAMES (Switches and Bridges)
+   Bits:
+   	 - LAYER 1:
+   	 	   - BITS
+   	 	   - Physical structure (Co-ax Cable, Fiber)
+
+
+
+  
+
+ELB AND AutoScaling:
+
+	 - ELB:
+	 	  - Elastic Load Balancer
+	 	  - Supports Cross-Zone Load Balancing:
+	 	  	  - Redirecting the traffic to one or more avilability zones.
+	 	  	  - NOTE: 
+	 	  	  	  - This is always ENABLED for 'APPLICATION LOAD BALANACER.'
+	 	  	      - And DISABLED for the 'NETWORK LOAD BALANACER.'
+	 	  - Works with Service like:
+	 	  	  - EC2
+	 	  	  - ECS
+	 	  	  - AutoScaling
+	 	  	  - CLOUD Watch
+	 	  	  - VPC
+	 	  	  - Route53
+	 	  	  - Also Supports HYbruid load balancing: 
+	 	  	  	  redirecting traffic to On prem and Cloud both based on Health checks
+	 	  	  - APPLICATION LOAD BALANCER:
+	 	  	   	  - It deals with HTTP/HTTPS Traffic.
+	 	  	   	  - operates in the Data Layer @ Layer 7
+	 	  	   	  - Highly available
+	 	  	   	  - Internet facing or Internal
+	 	  	   	  - Health checks
+	 	  	   	  - Supports SSL and TLS Certificates
+	 	  	   	  - Cross Zone Load Balncing is ENABLED by default
+	 	  	  - NETWORK LOAD	BALANCER:
+	 	  	   	  - It deals with the TCP/IP Traffic.
+	 	  	   	  - Operates in the Transport Layer @ Layer4
+
+	 	  
+ 
+
+
+
+
+
+
 
 
