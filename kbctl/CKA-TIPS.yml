@@ -52,9 +52,20 @@ shortcuts:
  rs -repicaSets
  pv -persistent volumes
  pvc -persistentvolume claims
- sa - servie accounts
+ sa - serviceaccounts
  netpol - network policies
-
+ cs - configmaps
+ ep - endpoints
+ ev - events  
+ no - nodes
+ quota - resourcequotas
+ ds - daemonsets
+ sts - statefulsets
+ cj - cronjobs
+ csr - certificatesigningrequests
+ ing -   ingresses
+ psp - podsecuritypolicies
+ sc - storageclasses
 
 ----------------------------------------------
  #To switch between clusters, we can use : 
