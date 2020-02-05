@@ -4,8 +4,7 @@ CKA:
   core_concepts:
     - cluster architecture
     - api premitives
-    - services and other Network primitives
-    
+    - services and other Network primitives    
   scheduling:
     - labels and selectors
     - resource limits
@@ -13,26 +12,22 @@ CKA:
     - Daemon sets
     - Multiple Schedulers
     - Schdeuler Events
-    - Configure Kubernetes Schdeuler
-    
+    - Configure Kubernetes Schdeuler    
   logging:
     - Monitoring:
         - cluster components
         - cluster components logs
         - applications
-        - applications logs
-        
+        - applications logs        
   App Life Cycle management:
     - Rolling Updates And Rollbacks in Deploy
     - Configure Applications
     - Scale Applications
-    - Self Healing Applications
-    
+    - Self Healing Applications    
   Cluster_mantainance:
     - Cluster Upgrade Process
     - Operating System Upgrades
-    - Backup and restore Methodologies
-    
+    - Backup and restore Methodologies    
     Security:
       - Authentication and Authorization
       - TLS certificates for Cluster Components
@@ -40,15 +35,13 @@ CKA:
       - Images security
       - Network Policies
       - Security Contexts
-      - Secure Persistence and values store
-  
+      - Secure Persistence and values store  
   Storage:
     - persistent volumes
     - persistent volume claims
     - Configure Applications with presistant stores
     - Access Modes for volumes
-    - Kubernetes Storage Object
-  
+    - Kubernetes Storage Object  
   Networking:
      prerequisites:
         - Network:
@@ -57,16 +50,14 @@ CKA:
            - tools
            - namespaces
            - DNS and Core DNS
-           - Networking in Docker
-           
+           - Networking in Docker           
     - Networking Configuration on cluster core
     - Service Networking
     - POD NETWORK CONCEPTS
     - network load blancer
     - Ingress
     - Cluster DNS
-    - CNI: Container Networking Interface
-    
+    - CNI: Container Networking Interface    
   Installation_Configuration_validation:
     - Design a Kubernetes Cluster
     - Install Kunernetes Master and node
@@ -100,6 +91,9 @@ CKA_EXAM:
   Troubleshooting: 10%
 
 CKAD:
+  - links:
+     - https://www.cncf.io/certification/ckad/
+     - https://linuxacademy.com/course/certified-kubernetes-application-developer-ckad/
   - Core Concepts: 13%
   - Configuration: 18%
     Multi-Container Pods: 10%
@@ -107,6 +101,46 @@ CKAD:
     Pod Design: 20%
   - Services & Networking: 13%
     State Persistence: 8%
+
+
+CKAD:
+  - Core Concepts:
+      - Kubernetes Architecture
+      - Create and Configure Pods
+  - Configuration:
+      - Config Maps
+      - Security Contexts
+      - Resource Requirements
+      - secrets
+      - Service Accounts
+  - Multi-Container Pods:
+      - Ambassdor
+      - Adapter
+      - SideCar
+  - Observability:
+      - ReadinessProbe
+      - LivenessProbe
+      - Monitor And Debug Applications
+  - Pod Design:
+      - labels, selectors, Annotations
+      - Rolling Updates, Rollbacks in Deployments
+      - Jobs and Cron Jobs
+  - Service and Networking:
+      - Understading Services
+      - Network Policies
+  - State Persistence:
+      - persistence Volumes
+      - persistence VOlume Claims
+
+
+
+
+
+
+
+
+
+
 #---------------cka-exam------------------------  
 #Chapter 1. Course Introduction
 #Chapter 2. Basics of Kubernetes
