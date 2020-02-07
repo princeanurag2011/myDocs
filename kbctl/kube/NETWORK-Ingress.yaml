@@ -152,34 +152,4 @@ spec:
           serviceName: pay-service
           servicePort: 8282
 -------------------------------------------------------
-#To allow only outgoing traffic from pod to other specific pods and block incoming traffic
--------------------------------------------------------
-apiVersion: networking.k8s.io/v1kind: NetworkPolicy
-metadata:
-  name: internal-policy
-  namespace: defaultspec:
-  podSelector:
-    matchLabels:
-      name: internal
-  policyTypes:
-  - Egress
-  - Ingress 
-  ingress:
-    - {}
-  egress:
-  - to:
-    - podSelector:
-        matchLabels:
-          name: mysql
-    ports:
-    - protocol: TCP
-      port: 3306
 
-  - to:
-    - podSelector:
-        matchLabels:
-          name: payroll
-    ports:
-    - protocol: TCP
-      port: 8080
--------------------------------------------------------
