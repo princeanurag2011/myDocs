@@ -226,3 +226,9 @@ for i in {1..35}; do
 
  #TO apply network 
   kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')" 
+
+
+#etcd backup
+ETCDCTL_API=3 etcdctl -endpoints=[127.0.0.1:2379] --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+     --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key \
+     snapshot save /tmp/snapshot-pre-boot.db

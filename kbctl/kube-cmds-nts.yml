@@ -1412,7 +1412,7 @@ NodeUpgrade:
    - in Kubernetes to implemtn it we need to deploy the nginx pod and run that service.
    
   -------------------NGINX INGRESS CONTROLLER ----------------------------
-   apiVersion: extensions/v1beta1
+   apiVersion: apps/v1
    kind: Deployment
    metadata:
      name: nginx-ingress-controller
@@ -1713,7 +1713,7 @@ k -n app-space get ingress -o yaml
                    curl -v -k https://master-node-ip:6443/api/v1/pods -u "username:password"
                #sample csv file contains usernames,paswords, uid,gid
 
-         - FIles -Usernames and tokens:
+         - Files -Usernames and tokens:
               - it is same like file based authentication shown above, instead of passwords it has tokens..
                   # add token auth file to kube api server using below tag
                                         --basic-auth-file=user-details.csv 
@@ -1917,12 +1917,23 @@ k -n app-space get ingress -o yaml
                         kubectl certificate approve <csrname> #ex: kubectl certificate approve adminuser  
                         #to view Certificate
                         kubectl get csr  <csrname> -o yaml
-                       # decode the certificate 
+                        #or 
+                        kubectl get csr -o jsonpath='{.status.certificate}' | base64 --decode > adminuser.crt
+                        #decode the certificate 
                         echo <copy the certificate code shown above > | base64 decode
-                        #copy the contetn and paste in adminuser.crt and it's done
-                      # To deny the scr request
+                        #copy the content and paste in adminuser.crt and it's done
+
+                        #To add user to config using certificate and key.
+                        kubectl config set-credentials adminuser --client-certificate=adminuser.crt --client-key=adminuser.key
+                        #To use the created user to access the cluster resources
+                        kubectl config set-context admin-context --cluster=minikube --namespace=dev --user=adminuser
+
+                        #to view the access of admin and his context cluster and namespace
+                        kubectl config view
+
+                        #To deny the scr request
                         kubectl certificate deny <csrname>
-                      #To delete the csr req
+                        #To delete the csr req
                         kubectl delete csr 
       ----------------------------------------------------------------------------
         #Sample CSR 
@@ -2967,7 +2978,13 @@ kubectl get pv --sort-by=.spec.capacity.storage > /opt/outputs/storage-capacity-
 #Retrieve just the first 2 columns of output and store it in /opt/outputs/pv-and-capacity-sorted.txt
 #The columns should be named NAME and CAPACITY. Use the 'custom-columns' option. 
 #And remember it should still be sorted as in the previous question.
+kubectl get pv --sort-by=.spec.capacity.storage -o=custom-columns=NAME:.metadata.name,CAPACITY:.spec.capacity.storage > /opt/outputs/pv-and-capacity-sorted.txt
 
+
+#Use a JSON PATH query to identify the context configured for the 'aws-user' in 
+#the 'my-kube-config' context file and store the result in /opt/outputs/aws-context-name.
+
+ kubectl config view --kubeconfig=my-kube-config -o jsonpath="{.contexts[?(@.context.user=='aws-user')].name}" > /opt/outputs/aws-context-name
 
 
 

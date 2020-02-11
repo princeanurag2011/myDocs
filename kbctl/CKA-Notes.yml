@@ -420,3 +420,35 @@ STORAGE:
           set expandtab
           set shiftwidth=2
           set tabstop=2
+
+
+
+
+
+
+
+
+
+Graduated projects:
+
+Kubernetes for container orchestration
+https://kubernetes.io/
+
+Prometheus for monitoring
+https://prometheus.io/
+
+Envoy for service mesh
+https://github.com/envoyproxy/envoy
+
+
+
+CoreDNS for service discovery
+https://coredns.io/
+
+
+containerd for container runtime
+https://containerd.io/
+
+
+Fluentd for logging
+https://www.fluentd.org/
