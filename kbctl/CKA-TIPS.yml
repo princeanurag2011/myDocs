@@ -232,3 +232,9 @@ for i in {1..35}; do
 ETCDCTL_API=3 etcdctl -endpoints=[127.0.0.1:2379] --cacert=/etc/kubernetes/pki/etcd/ca.crt \
      --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key \
      snapshot save /tmp/snapshot-pre-boot.db
+
+
+#testing
+for i in {1..35}; do
+   kubectl exec --namespace=kube-public curl -- sh -c 'test=`wget -qO- -T 2  http://webapp-service.default.svc.cluster.local:8080/info 2>&1` && echo "$test OK" || echo "Failed"';
+   echo ""

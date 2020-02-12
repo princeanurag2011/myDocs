@@ -1,0 +1,83 @@
+---
+ ========================================================================================== 
+                            CKAD
+ ==========================================================================================
+ CKAD:
+    - links:
+       - https://www.cncf.io/certification/ckad/
+       - https://linuxacademy.com/course/certified-kubernetes-application-developer-ckad/
+    - Core Concepts: 13%
+    - Configuration: 18%
+      Multi-Container Pods: 10%
+      Observability: 18%
+      Pod Design: 20%
+    - Services & Networking: 13%
+      State Persistence: 8%
+---
+ ==========================================================================================
+                          CKAD - CURRICULUM
+ ==========================================================================================
+
+ CKAD-CURRICULUM:
+    - 13% - Core Concepts:
+        - Understand Kubernetes API primitives
+        - Create and configure basic Pods
+    - 18% - Configuration: 
+        - Understand ConfigMaps
+        - Understand SecurityContexts
+        - Define an application’s resource requirements
+        - Create & consume Secrets
+        - Understand ServiceAccounts
+    - 10% - Multi-Container Pods:
+        - Understand Multi-Container Pod design patterns (e .g. ambassador, adapter, sidecare)
+    - 18% - Observability:
+        - Understand LivenessProbes and ReadinessProbes
+        - Understand container logging
+        - Understand how to monitor applications in Kubernetes
+        - Understand debugging in Kubernetes
+    - 20% - Pod Design:
+        - Understand Deployments and how to perform rolling updates
+        - Understand Deployments and how to perform rollbacks
+        - Understand Jobs and CronJobs
+        - Understand how to use Labels, Selectors,and Annotations
+    - 13% - Service and Networking:
+        - Understand Services
+        - Demonstrate basic understanding of NetworkPolicies
+    - 8% - State Persistence:
+        - Understand PersistentVolumeClaims for storage
+
+ =========================================================================================
+                          CKAD - TOPICS
+ ==========================================================================================
+
+CKAD-TOPICS:
+    - 13% - Core Concepts:
+        - Kubernetes Architecture
+        - Create and Configure basic Pods
+    - 18% - Configuration: 
+        - Config Maps
+        - Security Contexts
+        - Resource Requirements
+        - secrets
+        - Service Accounts
+    - 10% - Multi-Container Pods:
+        - Ambassdor
+        - Adapter
+        - SideCar
+    - 18% - Observability:
+        - ReadinessProbe
+        - LivenessProbe
+        - Container Logging
+        - Monitor And Debug Applications
+    - 20% - Pod Design:
+        - labels, selectors, Annotations
+        - Rolling Updates, Rollbacks in Deployments
+        - Jobs and Cron Jobs
+    - 13% - Service and Networking:
+        - Understading Services
+        - Network Policies
+    - 8% - State Persistence:
+        - persistence Volumes
+        - persistence Volume Claims
+ ==========================================================================================
+ 
