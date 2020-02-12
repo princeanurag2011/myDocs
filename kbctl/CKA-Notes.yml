@@ -132,15 +132,6 @@ CKAD:
       - persistence Volumes
       - persistence VOlume Claims
 
-
-
-
-
-
-
-
-
-
 #---------------cka-exam------------------------  
 #Chapter 1. Course Introduction
 #Chapter 2. Basics of Kubernetes
@@ -452,3 +443,9 @@ https://containerd.io/
 
 Fluentd for logging
 https://www.fluentd.org/
+
+kubectl set image deployments/kubernetes-bootcamp kubernetes-bootcamp=jocatalin/kubernetes-bootcamp:v2
+
+
+git clone \
+    https://github.com/GoogleCloudPlatform/kubernetes-engine-samples
