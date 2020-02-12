@@ -1,0 +1,298 @@
+  GCA:
+  - 
+     Compute engine:
+       A project can have upto 5 vpc's
+     Stages of Compute Engine:
+      - provisioning
+      - staging
+      - running
+      - stopping
+      - repairing
+      - terminated
+     Billing:
+      - Charge for 1min and then per sec.
+      - Peremeptive VM's upto 80% disount:
+          - these are choosen only to specific temporary jobs for a short period of time
+          - these served on demand.      
+      - commited use 70% disount
+      - sustained use 20-20% discount
+      - Disk pricing prorated to seconds
+      - snapshots only charged  for amount used
+      - Unused static IP's are also charged @1Cent per hour.
+      - Custom VMs are charged per vCPU and per RAM GB
+      - Predefined machines cost less than custom VM's when compared.
+      - Charged on egress based on the type of egress used.
+      - NO charge for connecting to GCP resources
+     Types:
+      - CPU platforms:
+         - Intel Xeon 2.6Ghz Sandy Bridge
+         - Intel Xeon 2.5Ghz v2 Ivy Bridge
+         - Intel Xeon 2.3Ghz v3 Haswell
+         - Intel Xeon 2.2Ghz v4 Broadwell
+         - Intel Xeon 2.0Ghz Skylake
+      - General Purpose:
+         - First generation processors powered by SKY_LAKE CPU 
+            - It has option to select Shared Core Machines 
+         - Second generation processors powered by CASCADE_LAKE
+            - It has NO option to select Shared Core Machines.
+         - We can select exisiting or Custom MACHINE Types where we can choose CPU and MEM of required amounts
+            vCPU: 2-80
+            vMEM: 1-640GB
+      - Compute Optimized
+      - Memory Optimized
+     Instance Templates:
+      - It is resource to create VM Instances and Managed Instance groups
+        - Max 2000 Instances per group is allowed.
+      - Managed Instance Groups:
+          - High Availability (Regional and Multi Zonal)          
+          - Safe updates
+          - Load balacing 
+          - Auto-scaling:
+             -> based on 
+               - CPU utilization/
+               - Load balacing Utilization/
+               - Stack driver monitoring Metrics/
+               - Multiple metrics.
+          - Health checks 
+      - Unmanaged Instance groups:
+          - Not peferred for Highly available and scalable Applications
+          -  not possible for Auto Scaling and self healing and load balancing
+     Sole-tenant Node:
+         - It's a Physical Compute Engine server that is dedicated to Hosting only our VM's
+         - min VM size is 2vCPU and only available in some zones.
+     Peremeptive Nodes:
+         - Available for MAX. 24hr only. later may be lost if the hardware demand increases.
+         - Can't live migrate or restart.
+         - Charged if only started for 10 min. 
+         - When attached GPU quota will be used.
+         - Compute Engine send signals for preemptiont oto VM 30 secs.
+         - Avg preemption rate varies from 5% to 15%  per seven days.
+
+     Regions and Zones:
+         - Region is a specific geographic zone where you can run resources.
+         - Ex: 
+            - Instances, disks are zonal and need to be in same zone.
+            - Static IP's are regional and can be assigned to resources in the same region.
+            - Images, snapshots firewalls, etc. are global not restricted to any region or zone.
+
+     Storage:
+       - Regional stroage provides synchronous replication  across TWO zones.     
+       - PERSISTENT DISK SSD:
+       - PERSISTENT DISK STANDARAD:
+       - The above two are regional/zonal storages:
+           - PERSISTENT DISK ARE Attached to network Interface. So independent of VM's
+           - USED as bootable , snapshots
+           - Zonal
+           - Resize dynamically . Even when instansce is running
+           - Attached to multiple VM's for readonly data.
+           - Automatic encryption using our own key.
+           - Lower Performance with Local SSD or RAM.
+       - Local SSD:
+            - Storage Type: High Performance Local block storage.
+            - Max Storage space for instance is 3TB an can attach upto 8 Disks
+            - Can't be used for live migration
+            - High IOPS upto   680k Read and 360k write.
+            - Scope of access is Instance only
+            - data redudancy is NONE.
+            - predefined size 375G
+            - SCSI or NVMe interface is available
+            - Performance upto 1.5TB scales up. Beyond 1.5TB IOPS and Throughtput doesn't increase.
+            - Data is ephermal in nature:
+               - data stays on restart but is lost if we terminate instance.
+        - RAM Disk:
+            - https://cloud.google.com/compute/docs/disks/mount-ram-disks
+            - Faster than any Disk Avaialble
+            - ephermal - data is deleted if instance is restarted, stopper or terminated.
+              cloud.google.com/compute/docs/disks/ram-disks
+            - TO create a RAM DISK:
+                sudo mkdir /mnt/ram-disk
+                sudo mount -t tmpfs -o size=50g tmpfs /mnt/ram-disk
+                echo 'tmpfs /mnt/ram-disk tmpfs nodev,nosuid,noexec,nodiratime,size=50G 0 0' | sudo tee -a /etc/fstab
+            - To delete RAM disks
+               sudo umount /mnt/ram-disk
+            - To backup:
+               # adding to shutdown script
+               gcloud compute instances add-metadata example-instance --metadata shutdown-script="#! /bin/bash
+               rsync -a --delete --recursive --force /mnt/ram-disk/ /mnt/ram-disk-backup/
+               EOF"
+            - To restore from Backup:
+                # adding to startup scripts:
+               gcloud compute instances add-metadata example-instance --metadata startup-script="#! /bin/bash
+               rsync -a --recursive --force /mnt/ram-disk-backup/ /mnt/ram-disk/
+               EOF"
+
+       - Storage-type:
+         - Zonal STANDARAD Persistent Disks:
+             - Storage Type: Efficient and Reliable Block storage
+             - Max Storage space for instance is 64TB
+             - Scope of access is Zonal.
+             - data redudancy is Zonal
+             - Performance is linear with provisoned capacity.
+         - Regional Persistent Disks:
+             - Storage Type: Efficient and Reliable Block storage with replication across 2 zones
+             - Max Storage space for instance is 64TB
+             - Scope of access is Zonal.
+             - data redudancy is Multi-Zonal
+             - Performance is linear with provisoned capacity.
+         - Zonal and Regional Persistent Disks:
+             - Storage Type: Fast and reliable Block Storage
+             - Max Storage space for instance is 64TB
+             - Scope of access is Zonal.
+             - data redudancy is Multi-Zonal
+             - Performance is linear with provisoned capacity.
+        
+         - Cloud Storage Buckets:
+             - Storage Type: Affordable Object Storage
+             - Max space per instance : Almost infinite
+             - Scope of Access: Global
+             - Data redudancy: Regional and Multi-Zonal
+             - Performance: depends on Storage class and location of bucket relative to instance
+         - STANDARAD PERSISTENT DISK < SSD PERSISTENT DISK < LOCAL SSD:
+             
+     LOAD BALANCING:
+          - Scale our application
+          - Supports Heavry Traffic
+          - Detect and Automatically remove unhealthy instance
+          - Route traffic to closest Virtual Machine.
+          - Load distribution algorithm:
+              - two methods for determining instance load:
+                 - Requests per Seconds 
+                 - CPU utilization
+          - Session Affinity:
+                - Sends all the requets from the same client to the same Virtual Machine
+                  as long as the instance is UP and Healthy and has capacity.
+
+                - Two types avilable in GCP:
+                   - Client IP affinity 
+                   - generate cookie affinity  
+          - Types of Load Balancig:
+
+              - HTTP(s): 
+                 - Operates at Layer 7 
+                 - Has internet facing and Internal 
+                 - regional/Multi-Zonal
+                 - HTTP AND HTTPS supported.
+              - TCP:
+                 - Operates at layer 4 
+                 - Has internet facing and internal facing
+                 - regional/Multi-Zonal
+                 - TCP / SSL / TCP Proxy
+
+              - UDP:
+                 - Operates at Layer 4
+                 - Has internet facing and internal facing
+                 - Single Region
+                 
+          - Load Balancer doesn't keep instances in sync.
+          - Load Balancer doesn't suppport sending HTTPS DELETE with body.
+          - GCP Load balancer has native suport for Web Socket.
+          - LB is content-aware it sends the requests based on the host path and url using backend services
+          - Logging:
+             - Logging can be enabled by Stack Driver Logging
+          - Timeouts and Retry's:
+              - HTTPs default timeout is 30 seconds
+              - TCP default timeout is 10 min. (600 seconds) 
+              - retreis failed GET requests only. POST requests are not retried.
+          - Regional Internal Load Balancer:
+             LIMITS and Restrictions:
+              - Internal to GCP instances
+              - Can't hop to IP of manually configured Route
+              - Can't send the traffic through VPN tunnel to load Balancer IP
+
+              - MAx 50 internal LB forwarding rules is allowed.
+              - A max of 250 backedn service is allowed per Internal LB.
+              
+     Networking:
+       - Each VM has :
+           - each VM belongs to 1 VPC
+           - 1 primary internal IP
+           - 1 or more secondary IP
+           - 1 External IP
+       - Communication:
+            - If two VMs are on same VPC , they can connect using internal IP's
+            - From external World i'e from internet, we have to use public IP's or External IP's
+            - GCP has internal DNS Service that allows instance in the same network to access each other by using internal DNS names 
+     Connectivity:
+        - for Linux machines:
+            - SSH from Console GUI (keys are not required)
+            - SSH from cloud shell
+            - SSH via Cloud SDK
+            - Desktop - 3rd party need keys
+            - need firewall open ports : 
+            - port: 22
+        - for windows machines:
+            - RDP
+            - RDP clients
+            - PowerShell
+            - Needs to set password
+            - Firewall rule should allow TCP: 3389
+        - 
+
+   
+  -
+    IAM:
+       -  Identity and Access (Roles) Management:
+           - Memebers:
+              - Google Account:
+                  - google EMAIL belongs to Individual
+              - Service Account:
+                  - Belongs to application or VM instance  instead of Individual.
+                  - Each service account is associated with two sets of pub/private key
+                  - Since it doesn't have usernames and password can'tbe used to login using browsers.
+                  - These are two types:
+                    - Google managed keys and user managed keys.
+                  - Cloud IAM permissions can be granted to allow other users to impersonate service account.
+                  - These service accounts offer higher serivce level Objectives than user accounts.
+                  - Service accounts are not the members of the G-suite Domain unlike user accounts.
+                  - These service accounts can be attached to users and indirectly user can access the resources
+                    attached to service accounts
+              - Google group:
+                  - Collection of Google and Service Accounts
+                  - Can be used for applying policies
+                  - Can't be used for Login credentials
+              - G Suite Admin: 
+                  - Virtual group for oraganizing Users
+                  - Can't be used for identity either
+                  - ex: alias@Exmple.com
+
+              - Cloud Identity Domain:
+                  - Virtual group for oraganizing Users.
+                  - Don't have accesst o g-Suite Users
+              - allAuthenticatedUsers:
+                  -  Its a speacial Identifier that repressents anyone who is authenticated with google or service account.
+              - allUsers:
+                  - Special Identifier that repressents anyone who is on the internet both authenticated and non authenticated.
+           
+           - permissions:
+               -  <service>.<resource>.<verb>
+               - Ex: appEngine.module.list
+                                     .deploy
+                                     .list
+                                     .delete
+                                     .stop
+                                     .update
+           - ROLES:
+              - primitive Roles:
+                  - Viewers:
+                       Permission for read-only Access.
+                  - Editor:
+                       All viewers plus permission for actions  that modify the state i.e is changing exisiting resources.
+                  - Owner:
+                       - All editor permissions i.e manage roles permission for a project  and all resource in it.
+                       - Setup Billing for the project.
+              - predefined roles:
+                   - To give granular access to users.
+                   - There are 1000's of predefined roles.
+                   - Can grant multiple roles to users.
+              - Custom Roles:
+                   - Cloud IAM provides UI and API for creating and managing custom roles.
+                   - To create create these roles, we need the roles/iam.roleAdmin role with iam.roles.create in order
+                     to create Custom roles or the roles/iam.organizationRoleAdmin if it's in an organization.
+           - Policies:
+               - A policy is attached to resource. 
+               - A policy consists of list of bindings.
+               - A binding binds the list of MEMBERS to a ROLE
+           - GCP resources are organized hierarchically:
+              - Organization > Projects > resources 
+              - Policies can be applied to any of the above 
+              - Child inherits the policies of parent and policies can't be controlled by child.
