@@ -50,7 +50,7 @@
                           CKAD - TOPICS
  ==========================================================================================
 
-CKAD-TOPICS:
+ CKAD-TOPICS:
     - 13% - Core Concepts:
         - Kubernetes Architecture
         - Create and Configure basic Pods
@@ -81,3 +81,219 @@ CKAD-TOPICS:
         - persistence Volume Claims
  ==========================================================================================
  
+=========================================================================================
+                     1-1    CKAD - Core Concepts - Kubernetes Architecture - 13%
+==========================================================================================
+
+ Kubernetes-Architecture:
+    - Master:
+       - ETCD CLUSTER: 
+           - its a database which store data in key:value Pair
+           - it runs on port no: 2379 (by default)
+           - It stores the cluster details
+           - The etcd cluster stores info about:
+              - nodes
+              - pods
+              - configs
+              - secrets
+              - Accounts
+              - Roles
+              - Bindings
+              - Others
+       - Kube API server: 
+             - accepts all requests and processing
+             - Authenticate User -> Validate request -> Retreive data -> Update ETCD 
+               -> Schedulers -> Kubelet -> then pods and containers are created and run by Kubelet
+       - Kube Control manager: 
+              - namespaces controller:    
+              - service account controller:
+              - Node controller: 
+                 - checks node  Availability
+                 - node controller checks status of nodes
+                 - watch status of nodes
+                 - remidiate situtation
+                 - Node Monitor period: 5s
+                   - checks every 5 secs if not reachable then
+                 - Node Monitor grace period: 40s
+                   - waits for 40 sec to mark node as unhealthy/unreachable
+                 - Pod eviction time: 5m
+                   - waits for 5 min. to restore pods to normal state,
+                     if not restored then remove pods and provision them to healthy node.
+
+              - Replication controller: checks desired no of pods are runnning
+              - Replica-set:
+              - Deployemnt controller:                        
+              - endpoint controller:              
+              - PV-Protection controller:
+              - PV-Binder controller:              
+              - Stateful-set:
+              - job controller:
+              - cron job:
+
+       - Kube Schdeuler: 
+          - places the right containers on right node based on available node resources like ram, cpu
+
+    - Worker:
+       - Kubelet: it is the agent runnning on the node
+           - it registers the node with kubernetes cluster
+           - create pods / containers
+           - Monitor nodes and pods and reports to api sever
+           - An agent that runs on each node in the cluster. 
+           - It makes sure that containers are running in a pod.
+           - The kubelet takes a set of PodSpecs that are provided through various mechanisms 
+             and ensures that the containers described in those PodSpecs are running and healthy. 
+           - The kubelet doesn’t manage containers which were not created by Kubernetes.
+       - Kubeproxy: 
+           - kube-proxy is a network proxy that runs on each node in your cluster, 
+             implementing part of the Kubernetes Service concept.
+           - kube-proxy maintains network rules on nodes. 
+           - These network rules allow network communication to yourPods from network sessions 
+             inside or outside of your cluster.
+           - create route tables
+           - enables service to connect with other pods using service namespaces
+
+    PORT_NUMBERS:
+      - MASTER:
+         - kube-api: 6443
+         - kubelet: 10250
+         - Kube-scheduler: 10251
+         - Kube-controller-manager: 10252
+         - ETCD: 2379
+         - ETCD: 2380 #INCASE OF MULTIPLE MASTERS
+      - Node:
+          - Services: 30000-32767
+          - kubelet: 10250
+
+ =========================================================================================
+                     1-2    CKAD - Core Concepts - Create and Configure basic Pods -13%
+ ==========================================================================================
+
+ Pod: 
+  - It is the basic kubernetes Object. It has containers runnning inside it and pods are run in
+      kubernetes Cluster.
+  - By default each pod is associated with default Service Account  and
+    default namespaces unless explicitly mentioned    
+
+ Manifest File for Pod:
+  -------------------pod-def.yaml--------------------------------------------
+   apiVersion: v1
+   kind: Pod 
+   metadata: 
+     name: myapp-pod   
+     labels:
+       app: myapp
+       type: front-end    
+   spec:
+     containers:
+       - name: nginx-webserver
+         image: nginx
+         ports:
+           - containerPort: 80
+  ----------------------------------------------------------------------------
+
+ COMMANDS:
+
+   - To create the pod using Manifest File:
+       kubectl create -f pod-def.yaml
+   - To generate the above pod Manifest file in yaml format and redirect it's output to a file:
+       kubectl run myapp-pod --image=nginx --restart=Never -o yaml --dry-run > pod-def.yaml
+   - To see the list of pods running in default namespace:
+       kubectl get pods
+       #or 
+       kubectl get po
+   - To create pod in a specific namespace (say dev):
+       kubectl --namespace=dev create -f pod-def.yml 
+       #or
+       kubectl -n dev create -f pod-def.yaml
+   - To see list of pods with detailed information like on which node it's running:
+       kubectl get pods -o wide
+   - To see list of pods with detailed information like on which node it's running Across all namespaces:
+       kubectl get pods -o wide -A #works with v1.14 +
+       #or
+       kubectl get pods -o wide --all-namespaces
+   - To see detailed information of pods like labels, containers, created time, events etc:
+       kubectl describe pods <pod-name> #check the metadata name section for pod name.
+   - To remove the pod by name:
+       kubectl delete pods <pod-name> 
+   - To remove all the pods :
+       kubectl delete pods --all
+   - To Delete pods and services with label name=myLabel:
+       kubectl delete pods,services -l name=myLabel
+       #ex: kubectl delete pods,services -l env=dev
+
+ #Edit a POD
+ #Remember, you CANNOT edit specifications of an existing POD other than the below.
+ #spec.containers[*].image
+ #spec.initContainers[*].image
+ #spec.activeDeadlineSeconds
+ #spec.tolerations
+
+ #Run the kubectl edit pod <pod name> command.  This will open the pod specification in an editor (vi editor). 
+ #Then edit the required properties. When you try to save it, you will be denied. 
+ #This is because you are attempting to edit a field on the pod that is not editable.
+ # A copy of the file with your changes is saved in a temporary location /tmp/pod093e2e.yaml
+
+ =========================================================================================
+                     2-1    CKAD - Configuration - ConfigMaps - 13%
+ ==========================================================================================
+
+ Config Maps: it is used to store configuration data for applications
+ -----Config-Map.yml:----------------
+ ---  
+ apiVersion: v1
+ kind: ConfigMap
+ metadata:
+   name: app-config
+ data:
+   APP_COLOR: pink
+   APP_MOD: prod  
+-----------------------------------------
+COMMANDS:
+  - To create ConfigMap from Manifest file:
+     kubectl create -f Config-Map.yaml
+
+  - To generate the above ConfigMap Manifest file in yaml format and redirect it's output to a file:
+     kubectl create configmap <confg-name> --from-literal=<key>=<value>  -o yaml --dry-run > Config-Map.yml
+
+     ex:  kubectl create configmap app-config --from-literal=APP_COLOR=pink   \
+         --from-literal=APP_MOD=prod -o yaml --dry-run > Config-Map.yaml
+
+  - To generate the above ConfigMap Manifest file in yaml format and redirect it's output to a file:         
+    kubectl create configmap <confg-name> --from-file=<path-to-file> -o yaml --dry-run > config-map.yaml
+    #ex:  kubectl create configmap my-config --from-file=app_config.properties
+     --- 
+     #app_config.properties
+     APP_COLOR=pink
+     APP_MOD=prod
+     -----------------------
+     
+  - To see the list of configmaps:
+     kubectl get cm
+     #or
+     kubectl get configmaps
+
+  - To use configmaps as volumes:
+     check with documentation 
+
+  - To utilize the configmap in POD as environment variables:
+    ---------------------------------------------------------------
+
+      apiVersion: v1
+      kind: Pod
+      metadata:
+         name: app-config
+      spec:
+        contianers:
+         - name:
+            image:
+         #  env:
+         #  - name: APP_COLOR
+         #     valueFrom:
+         #       ConfigMapKeyRef:
+         #         name: app-config
+         #         key: APP_COLOR
+                  
+            envFrom:
+             - configMapRef:
+                     name: app-config
+    ---------------------------------------------------------------

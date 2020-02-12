@@ -242,7 +242,7 @@
 
 
   ETCD CLUSTER:
-    - its a databae which store data in key:value Pair
+    - its a database which store data in key:value Pair
     - it runs on port no: 2379 (by default)
      ExecStart =/usr/local/bin/etcd
       --advertise-client-url https://${INTERNAL_IP}:2379

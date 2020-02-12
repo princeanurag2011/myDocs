@@ -1,0 +1,240 @@
+CertificationTip:
+ -  Here's a tip: 
+  As you might have seen already, it is a bit difficult to create and edit YAML files. 
+  Especially in the CLI. During the exam, you might find it difficult to copy and paste YAML files from browser to terminal.
+  Using the kubectl run command can help in generating a YAML template. And sometimes, you can even get away 
+  with just the kubectl run command without having to create a YAML file at all. 
+  For example, if you were asked to create a pod or deployment with specific name and image 
+  you can simply run the kubectl run command.
+
+  #Use the below set of commands and try the previous practice tests again,
+  # but this time try to use the below commands instead of YAML files. 
+  #Try to use these as much as you can going forward in all exercises
+  #Reference (Bookmark this page for exam. It will be very handy):
+   - https://kubernetes.io/docs/reference/kubectl/conventions/
+  note: 
+   from kubectl v1.6 --generator is deprecated. In future versions it may be removed. 
+   Generators other than run-pod/v1 are deprecated.
+   
+  -  Here's a quick tip. In the exam, you won't know if what you did is correct or not as in the practice tests in this course. 
+      You must verify your work yourself. For example, if the question is to create a pod with a specific image,
+      you must run the the kubectl describe pod command to verify the pod is created with the correct name and correct image.
+   
+
+-------------------------------
+vim ~/.vimrc
+set nu
+set expandtab
+set shiftwidth=2
+set tabstop=2
+--------------------------------
+
+#To set the alias in linux
+alias k=kubectl
+#to view the alias
+type k #then o/p of this command: k is aliased to `kubectl'
+#or
+alias k  #then o/p of this command: alias k='kubectl'
+-----------------------------------------
+
+#TO avoid typing the full commands u an use shortcuts
+export ns=default #Use this set your namespace
+alias k='kubectl -n $ns' # This helps when namespace in question doesn't have a friendly name 
+alias kdr='kubectl -n $ns -o yaml --dry-run'.  # run commands in dry run mode and generate yaml.
+alias kgp='kubectl -n $ns get pods -o wide' #to view the pods
+alias kga='kubectl -n $ns get all -o wide' #to view all
+-----------------------------------------------
+shortcuts:
+ po -pods
+ deploy -deployments
+ svc -service
+ ns -namespace
+ rs -repicaSets
+ pv -persistent volumes
+ pvc -persistentvolume claims
+ sa - serviceaccounts
+ netpol - network policies
+ cs - configmaps
+ ep - endpoints
+ ev - events  
+ no - nodes
+ quota - resourcequotas
+ ds - daemonsets
+ sts - statefulsets
+ cj - cronjobs
+ csr - certificatesigningrequests
+ ing -   ingresses
+ psp - podsecuritypolicies
+ sc - storageclasses
+
+----------------------------------------------
+ #To switch between clusters, we can use : 
+  kubectl config use-context <cluster>
+
+   
+POD:
+ 
+ #Create an NGINX Pod:
+     kubectl run --generator=run-pod/v1 nginx --image=nginx
+     
+ #Generate POD Manifest YAML file (-o yaml). Don't create it(--dry-run) :
+     kubectl run --generator=run-pod/v1 nginx --image=nginx --dry-run -o yaml
+#TO generate yaml file with command argumetns 
+  kubectl run ubuntu --image=ubuntu -o yaml --dry-run --command -- sh sleep 1000
+  NOTE: whatever placed after --command -- <>
+        it will consider ervything as arguments so if we need to generate YAML file
+         place -o yaml --dry-run  before the --command
+  
+  TIPS:
+    kubectl run nginx --image=nginx  #deployment
+    kubectl run nginx --image=nginx  --restart=Never #POD
+    kubectl run nginx --image=nginx  --restart=OnFailure #Job
+    kubectl run nginx --image=nginx  --restart=OnFailure --schedule='* * * *' #cron Job
+
+
+   #ex-1 : Generate Pod 
+     kubectl run nginx \
+     --image=nginx  \
+     --restart=Never \
+     --port=80 \
+     --command \
+     --serviceaccount=mysal \
+     --env=HOSTNAME=local \
+     --labels=bu=finance,env=dev \
+     --limits='cpu=200m,memory=512Mi' \
+     --dry-run -o yaml -- /bin/sh -c 'echo hello-world'
+
+  #ex-2 Scaling
+    kubectl run frontend \
+     --replicas=2 \
+     --labels=run=load-balancer-example \
+     --image=busybox \
+     --port=8080 
+  
+  #ex-3 Expose
+    kubectl expose deployment frontend \
+    --type=NodePort \
+    --name=frontend-service \
+    --port=6767 \
+    --targetPort=80
+
+ #ex:4 expose pod
+
+ kubectl expose pod redis --port=6379 --name redis-service
+
+ #ex-5
+
+    kubectl expose deployment webapp \
+      --type=NodePort \
+      --port=8080 \
+      --name=webapp-service \
+      --dry-run -o yaml > webapp-service.yaml
+ 
+Deployment:
+    
+  #Create a deployment
+     kubectl run --generator=deployment/v1beta1 nginx --image=nginx
+     #or 
+    kubectl create deployment --image=nginx nginx
+    
+  #Generate Deployment YAML file (-o yaml). Don't create it(--dry-run)
+     kubectl run --generator=deployment/v1beta1 nginx --image=nginx --dry-run -o yaml 
+      #or 
+    kubectl create deployment --image=nginx nginx --dry-run -o yaml
+    
+   #Generate Deployment YAML file (-o yaml). Don't create it(--dry-run) with 4 Replicas (--replicas=4)
+     kubectl run --generator=deployment/v1beta1 nginx --image=nginx --dry-run --replicas=4 -o yaml
+       #or 
+    kubectl create deployment --image=nginx nginx --dry-run  --replicas=4 -o yaml
+    #or
+    kubectl scale deployment/webapp --replicas=3
+    #or
+   kubectl expose deployment webapp --type=NodePort --port=8080 --name=webapp-service --dry-run -o yaml > webapp-service.yaml
+   #Save it to a file - (If you need to modify or add some other details before actually creating it)
+     kubectl run --generator=deployment/v1beta1 nginx --image=nginx --dry-run --replicas=4 -o yaml > nginx-deployment.yaml
+        #or 
+    kubectl create deployment --image=nginx nginx --dry-run  --replicas=4 -o yaml > nginx-deployment.yaml
+     
+
+Service:
+
+# To Create a Service named redis-service of type ClusterIP to expose pod redis on port 6379
+   kubectl expose pod redis --port=6379 --name redis-service --dry-run -o yaml
+  #(This will automatically use the pod's labels as selectors) 
+   #Or
+   kubectl create service clusterip redis --tcp=6379:6379 --dry-run -o yaml  
+   #(This will not use the pods labels as selectors, instead it will assume selectors as app=redis. 
+   #You cannot pass in selectors as an option. So it does not work very well if your pod has a different label set. 
+   # So generate the file and modify the selectors before creating the service)
+
+#Create a Service named nginx of type NodePort to expose pod nginx's port 80 on port 30080 on the nodes:
+   kubectl expose pod nginx --port=80 --name nginx-service --dry-run -o yaml
+  #(This will automatically use the pod's labels as selectors, but you cannot specify the node port. 
+  #You have to generate a definition file and then add the node port in manually before creating the service with the pod.)
+  #Or
+   kubectl create service nodeport nginx --tcp=80:80 --node-port=30080 --dry-run -o yaml
+  #(This will not use the pods labels as selectors)
+  #Both the above commands have their own challenges. 
+  #While one of it cannot accept a selector the other cannot accept a node port.
+  # I would recommend going with the `kubectl expose` command. 
+  #If you need to specify a node port, generate a definition file using the same command and
+   # manually input the nodeport before creating the service.
+
+   # testing
+   # for i in {1..35}; do
+   # kubectl exec --namespace=kube-public curl -- sh -c 'test=`wget -qO- -T 2  http://webapp-service.default.svc.cluster.local:8080/info 2>&1` && echo "$test OK" || echo "Failed"';
+   # echo ""
+
+
+master $ cat curl-test.sh
+for i in {1..35}; do
+   kubectl exec --namespace=kube-public curl -- sh -c 'test=`wget -qO- -T 2  http://webapp-service.default.svc.cluster.local:8080/info 2>&1` && echo "$test OK" || echo "Failed"';
+   echo ""  
+
+
+   #To view the certificate files
+    openssl x509 -in /etc/kubernetes/pki/apiserver.crt -text
+
+   #To sign the certificate
+    openssl x509 -req 
+    -in /etc/kubernetes/pki/apiserver-etcd-client.csr \
+    -CA /etc/kubernetes/pki/etcd/ca.crt \
+    -CAkey /etc/kubernetes/pki/etcd/ca.key \
+    -CAcreateserial -out /etc/kubernetes/pki/apiserver-etcd-client.crt
+
+
+
+    netstat -anp | grep etcd
+
+    ls /opt/cni/bin
+    /etc/cni/net.d/10-weave.conf
+
+    kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+    kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+
+    Networking Solution used by this cluster?
+    /etc/cni/net.d/ 
+
+    #the configuration file located for configuring the CoreDNS service?
+     kubectl exec <core-dns-pod-name> -n kube-system ps
+ kubectl run busybox --image=busybox:1.28 --restart=Never -o yaml --dry-run --command -- sleep 1000 > pod.yaml
+ kubectl run busybox --image=busybox:1.28 --restart=Never  --command -- sleep 1000
+ kubectl exec -it busybox /bin/sh
+ ip a #to see network device interfaces and its IP range, MAC,  status and Bridge network  
+ ip route #for default gateway.
+
+
+ #TO apply network 
+  kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')" 
+
+
+#etcd backup
+ETCDCTL_API=3 etcdctl -endpoints=[127.0.0.1:2379] --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+     --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key \
+     snapshot save /tmp/snapshot-pre-boot.db
+
+
+#testing
+for i in {1..35}; do
+   kubectl exec --namespace=kube-public curl -- sh -c 'test=`wget -qO- -T 2  http://webapp-service.default.svc.cluster.local:8080/info 2>&1` && echo "$test OK" || echo "Failed"';
+   echo ""
