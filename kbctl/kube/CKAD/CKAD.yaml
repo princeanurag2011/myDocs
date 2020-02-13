@@ -50,7 +50,7 @@
                           CKAD - TOPICS
  ==========================================================================================
 
-CKAD-TOPICS:
+ CKAD-TOPICS:
     - 13% - Core Concepts:
         - Kubernetes Architecture
         - Create and Configure basic Pods
@@ -81,3 +81,1811 @@ CKAD-TOPICS:
         - persistence Volume Claims
  ==========================================================================================
  
+=========================================================================================
+    1 - 1/2           1-1    CKAD - Core Concepts - Kubernetes Architecture - 13%
+==========================================================================================
+
+ Kubernetes-Architecture:
+    - Master:
+       - ETCD CLUSTER: 
+           - its a database which store data in key:value Pair
+           - it runs on port no: 2379 (by default)
+           - It stores the cluster details
+           - The etcd cluster stores info about:
+              - nodes
+              - pods
+              - configs
+              - secrets
+              - Accounts
+              - Roles
+              - Bindings
+              - Others
+       - Kube API server: 
+             - accepts all requests and processing
+             - Authenticate User -> Validate request -> Retreive data -> Update ETCD 
+               -> Schedulers -> Kubelet -> then pods and containers are created and run by Kubelet
+       - Kube Control manager: 
+              - namespaces controller:    
+              - service account controller:
+              - Node controller: 
+                 - checks node  Availability
+                 - node controller checks status of nodes
+                 - watch status of nodes
+                 - remidiate situtation
+                 - Node Monitor period: 5s
+                   - checks every 5 secs if not reachable then
+                 - Node Monitor grace period: 40s
+                   - waits for 40 sec to mark node as unhealthy/unreachable
+                 - Pod eviction time: 5m
+                   - waits for 5 min. to restore pods to normal state,
+                     if not restored then remove pods and provision them to healthy node.
+
+              - Replication controller: checks desired no of pods are runnning
+              - Replica-set:
+              - Deployemnt controller:                        
+              - endpoint controller:              
+              - PV-Protection controller:
+              - PV-Binder controller:              
+              - Stateful-set:
+              - job controller:
+              - cron job:
+
+       - Kube Schdeuler: 
+          - places the right containers on right node based on available node resources like ram, cpu
+
+    - Worker:
+       - Kubelet: it is the agent runnning on the node
+           - it registers the node with kubernetes cluster
+           - create pods / containers
+           - Monitor nodes and pods and reports to api sever
+           - An agent that runs on each node in the cluster. 
+           - It makes sure that containers are running in a pod.
+           - The kubelet takes a set of PodSpecs that are provided through various mechanisms 
+             and ensures that the containers described in those PodSpecs are running and healthy. 
+           - The kubelet doesn’t manage containers which were not created by Kubernetes.
+       - Kubeproxy: 
+           - kube-proxy is a network proxy that runs on each node in your cluster, 
+             implementing part of the Kubernetes Service concept.
+           - kube-proxy maintains network rules on nodes. 
+           - These network rules allow network communication to yourPods from network sessions 
+             inside or outside of your cluster.
+           - create route tables
+           - enables service to connect with other pods using service namespaces
+
+    PORT_NUMBERS:
+      - MASTER:
+         - kube-api: 6443
+         - kubelet: 10250
+         - Kube-scheduler: 10251
+         - Kube-controller-manager: 10252
+         - ETCD: 2379
+         - ETCD: 2380 #INCASE OF MULTIPLE MASTERS
+      - Node:
+          - Services: 30000-32767
+          - kubelet: 10250
+
+ =========================================================================================
+    1 - 2/2        1-2    CKAD - Core Concepts - Create and Configure basic Pods -13%
+ ==========================================================================================
+
+ Pod: 
+  - It is the basic kubernetes Object. It has containers runnning inside it and pods are run in
+      kubernetes Cluster.
+  - By default each pod is associated with default Service Account  and
+    default namespaces unless explicitly mentioned    
+
+ Manifest File for Pod:
+  -------------------pod-def.yaml--------------------------------------------
+   apiVersion: v1
+   kind: Pod 
+   metadata: 
+     name: myapp-pod   
+     labels:
+       app: myapp
+       type: front-end    
+   spec:
+     containers:
+       - name: nginx-webserver
+         image: nginx
+         ports:
+           - containerPort: 80
+  ----------------------------------------------------------------------------
+
+ COMMANDS:
+
+   - To create the pod using Manifest File:
+       kubectl create -f pod-def.yaml
+   - To generate the above pod Manifest file in yaml format and redirect it's output to a file:
+       kubectl run myapp-pod --image=nginx --restart=Never -o yaml --dry-run > pod-def.yaml
+   - To see the list of pods running in default namespace:
+       kubectl get pods
+       #or 
+       kubectl get po
+   - To create pod in a specific namespace (say dev):
+       kubectl --namespace=dev create -f pod-def.yml 
+       #or
+       kubectl -n dev create -f pod-def.yaml
+   - To see list of pods with detailed information like on which node it's running:
+       kubectl get pods -o wide
+   - To see list of pods with detailed information like on which node it's running Across all namespaces:
+       kubectl get pods -o wide -A #works with v1.14 +
+       #or
+       kubectl get pods -o wide --all-namespaces
+   - To see detailed information of pods like labels, containers, created time, events etc:
+       kubectl describe pods <pod-name> #check the metadata name section for pod name.
+   - To remove the pod by name:
+       kubectl delete pods <pod-name> 
+   - To remove all the pods :
+       kubectl delete pods --all
+   - To Delete pods and services with label name=myLabel:
+       kubectl delete pods,services -l name=myLabel
+       #ex: kubectl delete pods,services -l env=dev
+
+ #Edit a POD
+ #Remember, you CANNOT edit specifications of an existing POD other than the below.
+ #spec.containers[*].image
+ #spec.initContainers[*].image
+ #spec.activeDeadlineSeconds
+ #spec.tolerations
+
+ #Run the kubectl edit pod <pod name> command.  This will open the pod specification in an editor (vi editor). 
+ #Then edit the required properties. When you try to save it, you will be denied. 
+ #This is because you are attempting to edit a field on the pod that is not editable.
+ # A copy of the file with your changes is saved in a temporary location /tmp/pod093e2e.yaml
+
+ =========================================================================================
+      2 - 1/5          2-1    CKAD - Configuration - ConfigMaps - 18%
+ ==========================================================================================
+
+ Config Maps: it is used to store configuration data for applications.
+
+ ConfigMaps Manifest file:
+
+ -----Config-Map.yml:----------------
+ ---  
+ apiVersion: v1
+ kind: ConfigMap
+ metadata:
+   name: app-config
+ data:
+   APP_COLOR: pink
+   APP_MOD: prod  
+-----------------------------------------
+
+COMMANDS:
+  - To create ConfigMap from Manifest file:
+     kubectl create -f Config-Map.yaml
+
+  - To generate the above ConfigMap Manifest file in yaml format and redirect it's output to a file:
+     kubectl create configmap <confg-name> --from-literal=<key>=<value>  -o yaml --dry-run > Config-Map.yml
+
+     ex:  kubectl create configmap app-config --from-literal=APP_COLOR=pink   \
+         --from-literal=APP_MOD=prod -o yaml --dry-run > Config-Map.yaml
+
+  - To generate the above ConfigMap Manifest file in yaml format and redirect it's output to a file:         
+    kubectl create configmap <confg-name> --from-file=<path-to-file> -o yaml --dry-run > config-map.yaml
+    #ex:  kubectl create configmap my-config --from-file=app_config.properties
+     --- 
+     #app_config.properties
+     APP_COLOR=pink
+     APP_MOD=prod
+     -----------------------
+     
+  - To see the list of configmaps:
+     kubectl get cm
+     #or
+     kubectl get configmaps
+  - To see detailed view of configMaps:
+     kubectl describe configmap
+
+  Usage:
+  
+  - To utilize the configmap in POD as environment variables:
+    ---------------------------------------------------------------
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: app-config
+      spec:
+        contianers:
+          - name:
+            image:
+         #  env:
+         #  - name: APP_COLOR
+         #     valueFrom:
+         #       ConfigMapKeyRef:
+         #         name: app-config
+         #         key: APP_COLOR
+                  
+            envFrom:
+             - configMapRef:
+                     name: app-config
+    --------------------------------------------------------------
+     
+     - To Populate a Volume with data stored in a ConfigMap     
+
+    --------------------------------------------------------------
+    #pods/pod-configmap-volume.yaml 
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: api-test-pod
+    spec:
+      containers:
+       - name: test-container
+         image: k8s.gcr.io/busybox
+         command: [ "/bin/sh", "-c", "ls /etc/config/" ]
+         volumeMounts:
+           - name: config-volume
+             mountPath: /etc/config
+      volumes:
+        - name: config-volume
+          configMap:
+              name: special-config
+      restartPolicy: Never
+
+    --------------------------------------------------------------
+  =========================================================================================
+    2 - 2/5          2-2    CKAD - Configuration - Security Contexts - 18%
+ =========================================================================================
+ 
+  SecurityContexts: It is used to give user permissions.
+
+     - pod-level-security:
+     -----------------------------------------------------
+       #To use security contexts in pod level in kubernetes in pod-def.yaml
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: nginx-pod
+        spec:
+          securityContext:
+            runAsUser: 1001
+            runAsGroup: 3000
+            fsGroup: 2000  
+          container:
+            - name: nginx
+              image: private-registry.io/apps/internal-app
+          imagePullSecret:
+            - name: regcred #check below command to create regcred
+       -----------------------------------------------------
+
+    - container-level-security:
+      -----------------------------------------------------
+       #To use security contexts in container level in kubernetes in pod-def.yaml
+       #note: capabilities can be added only at container level
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: nginx-pod
+        spec:                 
+          container:
+            - name: nginx
+              image: private-registry.io/apps/internal-app
+              securityContext:
+                 runAsUser: 1001
+                 capabilities: 
+                   add: [ "MAC_ADMIN" ]
+          imagePullSecret:
+            - name: regcred #check below command to create regcred
+       -----------------------------------------------------
+
+  ----------------------------------------------------
+   kubectl create secret docker-registery regcred \
+   --docker-server=private-registry.io \
+   --docker-username=registry-user \
+   --docker-password=registry-pass \
+   --docker-email=registry-user@org.com
+  -----------------------------------------------------
+
+ =========================================================================================
+    2 - 3/5          2-3    CKAD - Configuration - Resource Requirements - 18%
+ =========================================================================================
+   
+Resource Requirements: These are cpu and memory usage limits set on the pod.
+
+    If you do not specify a CPU limit for a Container, then one of these situations applies:
+
+       - The Container has no upper bound on the CPU resources it can use. 
+         Then Container could use all of the CPU resources available on the Node where it is running.
+
+       - The Container is running in a namespace that has a default CPU limit, 
+         and the Container is automatically assigned the default limit. 
+         Cluster administrators can use a LimitRange to specify a default value for the CPU limit.
+
+    If you do not specify a memory limit for a Container, one of the following situations applies:
+
+       - The Container has no upper bound on the amount of memory it uses. 
+         Then Container could use all of the memory available on the Node 
+         where it is running which in turn could invoke the OOM Killer. 
+         Further, in case of an OOM Kill, a container with no resource limits will 
+         have a greater chance of being killed.
+
+       - The Container is running in a namespace that has a default memory limit, 
+         and the Container is automatically assigned the default limit.
+         Cluster administrators can use a LimitRange to specify a default value for the memory limit.
+
+ ----------------------------------------------------
+ apiVersion: v1
+ kind: Pod
+ metadata:
+   name: frontend
+ spec:
+   containers:
+   - name: db
+     image: mysql
+     env:
+     - name: MYSQL_ROOT_PASSWORD
+       value: "password"
+     resources:
+       requests:
+         memory: "64Mi"
+         cpu: "250m"
+       limits:
+         memory: "128Mi"
+         cpu: "500m"
+
+   - name: memory-demo-ctr
+     image: polinux/stress
+     resources:
+       limits:
+         memory: "200Mi"
+       requests:
+         memory: "100Mi"
+     command: ["stress"]
+     args: ["--vm", "1", "--vm-bytes", "150M", "--vm-hang", "1"]
+
+   - name: cpu-demo-ctr
+     image: vish/stress
+     resources:
+       limits:
+         cpu: "1"
+       requests:
+         cpu: "0.5"
+     args:
+     - -cpus
+     - "2"
+ ----------------------------------------------------
+
+ =========================================================================================
+    2 - 4/5          2-4    CKAD - Configuration - Secrets - 18%
+ =========================================================================================
+  Secrets: This object is used to store sensitive information
+
+  Types of secrets we can create in kubernetes:
+    - generic
+    - docker-registry
+    - tls
+
+  Example:
+    first we need convert the secret data base64 encryption
+
+    encryption:
+
+    echo -n 'my-app' | base64
+    #o/p: bXktYXBw
+    echo -n '39528$vdg7Jb' | base64
+    #o/p: Mzk1MjgkdmRnN0pi
+   
+    decryption:
+
+    echo 'bXktYXBw' | base64 --decode
+    #o/p: my-app
+    echo 'Mzk1MjgkdmRnN0pi' | base64 --decode
+    #o/p: 39528$vdg7Jb
+
+  Manifest file for Secret:
+  ------------------secret.yaml-----------------------
+   apiVersion: v1
+   kind: Secret
+   metadata:
+     name: app-secret
+   data:
+     username: bXktYXBw
+     password: Mzk1MjgkdmRnN0pi
+  ------------------------------------------------
+  Note: if we use 'data' feild in the above manifest file. Then we need to do base64 encryption.
+        if we use 'stringData' feild in the above manifest file. Then base64 encryption not required.
+  
+  COMMANDS:
+
+    - To create secret from the manifest file:
+        kubectl create -f secret.yaml
+    - To see the list of secrets avialable:
+        kubectl get secrets
+    - To see the detailed view of secret:
+        kubectl describe secrets <secret-name>
+        ex: kubectl describe secrets app-secret
+    - To see the detailed view of secret in YAML format:
+        kubectl get secrets <secret-name> -o yaml
+        ex: kubectl get secrets app-secret -o yaml
+    - To generate YAML manifest file for secret:
+
+       #To create Secret from literals
+       kubectl create secret generic <secretName>  --from-literals=<key>=<value>
+       ex: kubectl create secret generic app-secret  --from-literals=DB_HOST=mysql \
+                                                   --from-literals=DB_USERNAME=admin \
+                                                   --from-literals=DB_PASS=PASSword123 #\
+                                                  # -o yaml --dry-run  #use this to generate manifest file
+      
+      #To create Secret from file
+       kubectl create secret generic <secretName>  --from-file=<filePath>
+       ex: kubectl create secret generic app-secret  --from-file=app_secret.properties #\
+                                                    # -o yaml --dry-run  #use this to generate manifest file
+
+      NOTE: if we use '--from-literals', we have to use escape charecters if
+            the string data entered has any special charecters.
+             
+            if we use '--from-file', Then no need to use escape charecters 
+
+            Individual secrets are limited to 1MiB in size
+
+  USAGE:
+   
+    - Acessing secrets and passing values to env variables from secrets:
+   -------------------pod-def.yaml------------------------------------------------------
+
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: secret-env-pod
+    spec:
+      containers:
+      - name: mycontainer
+        image: redis
+        env:
+          - name: SECRET_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: username
+   -------------------------------------------------------------------------
+
+   - Acessing secrets and passing value to env from secrets:
+   -------------------pod-def.yaml------------------------------------------------------
+
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: secret-env-pod
+    spec:
+      containers:
+      - name: mycontainer
+        image: redis
+        envFrom:
+        - secretRef:
+            name: app-secret
+   -------------------------------------------------------------------------
+
+   - This is an example of a Pod that mounts a Secret in a volume:
+   -------------------pod-def.yaml------------------------------------------------------
+
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: secret-env-pod
+    spec:
+      containers:
+      - name: mycontainer
+        image: redis
+        volumeMounts:
+          - name: foo
+            mountPath: "/etc/foo"
+            readOnly: true
+        volumes:
+         - name: foo
+           secret:
+             secretName: app-secret
+      #note: each attribute is created as file in the volumes 
+                       # cat /etc/foo/DB_HOST
+   -------------------------------------------------------------------------
+
+   - To create secret for docker registry:
+
+      kubectl create secret docker-registry <name> \
+      --docker-server=DOCKER_REGISTRY_SERVER \
+      --docker-username=DOCKER_USER \
+      --docker-password=DOCKER_PASSWORD \
+      --docker-email=DOCKER_EMAIL
+
+
+   - To Create a new TLS secret named tls-secret with the given key pair:
+       kubectl create secret tls tls-secret --cert=path/to/tls.cert --key=path/to/tls.key
+
+
+=========================================================================================
+    2 - 5/5          2-5    CKAD - Configuration - Service Accounts - 18%
+ =========================================================================================
+ ServiceAccounts: 
+  - Belongs to application or VM instance  instead of Individual.
+  - Each service account is associated with two sets of pub/private key
+  - Since it doesn't have usernames and password can't be used to login using browsers.
+  - These are two types:
+    - Google managed keys and user managed keys.
+  - Cloud IAM permissions can be granted to allow other users to impersonate service account.
+  - These service accounts offer higher serivce level Objectives than user accounts.
+  - Service accounts are not the members of the G-suite Domain unlike user accounts.
+  - These service accounts can be attached to users and indirectly user can access the resources
+    attached to service accounts  
+
+  NOTE:
+    - The service account has to exist at the time the pod is created, or it will be rejected.
+    - You cannot update the service account of an already created pod.
+    - In kubernetes by deafult a default service account is created.
+
+ Manifest file for Service Account:
+
+ -----------------------------------------------
+ apiVersion: v1
+ kind: ServiceAccount
+ metadata:
+    creationTimestamp: 2020-01-20T13:40:02Z
+    name: default
+    namespace: default
+    resourceVersion: "322"
+    selfLink: /api/v1/namespaces/default/serviceaccounts/default
+    uid: 5c02a25a-3b8a-11ea-ab89-0242ac110028
+ secrets:
+    - name: default-token-b6bft
+ -----------------------------------------------
+ NOTE: we can also add imagePullSecret to serviceaccount. Check the original documentation.
+
+ COMMANDS:
+
+ - To create service account:
+     kubectl create serviceaccount <serviceaccountname>
+ - To see list of service account:
+     kubectl get serviceaccounts
+ - To see detailed view  of service:
+     kubectl describe serviceaccount <serviceaccountname>
+ - To view the secret of serviceaccount:
+     kubectl describe secret <serviceaccountname>
+
+ USAGE:
+ -------------------------------------------------------------
+   apiVersion: v1
+   kind: Pod 
+   metadata: 
+     name: myapp-pod   
+     labels:
+       app: myapp
+       type: front-end    
+   spec:
+     serviceAccount: default
+     serviceAccountName: default
+     containers:
+       - name: nginx-webserver
+         image: nginx
+         ports:
+           - containerPort: 80
+-------------------------------------------------------------
+
+=========================================================================================
+            3    CKAD - Configuration - Multi-Container Pods - 10%
+ =========================================================================================
+
+ MultiContainerPods:
+   
+    links: https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/
+
+   - In a multi-container pod, each container is expected to run a process that 
+     stays alive as long as the POD's lifecycle.
+
+   - For example in the multi-container pod that we talked about earlier that has a 
+     web application and logging agent,  both the containers are expected to stay alive at all times. 
+
+   - The process running in the log agent container is  expected to stay alive as long 
+     as the web application is running. If any of them fails, the POD restarts.
+
+ Multi containers are dived based on functionality:
+
+      - SideCar:
+          - shares the same file System between the containers in POD.
+          - Sidecar containers extend and enhance the “main” container, 
+            they take existing containers and make them better. 
+
+         -  As an example, consider a container that runs the Nginx web server.  
+            Add a different container that syncs the file system with a git repository, 
+            share the file system between the containers and you have built Git push-to-deploy. 
+
+            But you’ve done it in a modular manner where the git synchronizer can be built by 
+            a different team, and can be reused across many different web servers (Apache, 
+            Python, Tomcat, etc).  
+
+            Because of this modularity, you only have to write and test your git synchronizer once 
+            and reuse it across numerous apps. 
+            And if someone else writes it, you don’t even need to do that.
+
+      - Ambassdor:
+
+          - Ambassador containers proxy a local connection to the world.  
+           
+          - As an example, consider a Redis cluster with read-replicas and a single write master.  
+            You can create a Pod that groups your main application with a Redis ambassador container.  
+            The ambassador is a proxy is responsible for splitting reads and writes and 
+            sending them on to the appropriate servers.  
+
+            Because these two containers share a network namespace, they share an IP address and 
+            your application can open a connection on “localhost” and find the proxy without any 
+            service discovery.  
+
+            As far as your main application is concerned, it is simply connecting to a Redis server 
+            on localhost.  This is powerful, not just because of separation of concerns 
+            and the fact that different teams can easily own the components, 
+            but also because in the development environment, you can simply skip the proxy and 
+            connect directly to a Redis server that is running on localhost.          
+
+
+      - Adapter:
+         - Adapter containers standardize and normalize output.  
+           Consider the task of monitoring N different applications.  
+           Each application may be built with a different way of exporting monitoring 
+           data. (e.g. JMX, StatsD, application specific statistics) but every monitoring system expects 
+           a consistent and uniform data model for the monitoring data it collects.  
+
+           By using the adapter pattern of composite containers, you can transform the heterogeneous
+           monitoring data from different systems into a single unified representation by 
+           creating Pods that groups the application containers with adapters that know how to do the 
+           transformation. 
+
+           Again because these Pods share namespaces and file systems, the coordination of these 
+           two containers is simple and straightforward.
+           
+
+
+ NOTE: implementation is same for all the above containers.
+
+   - Example for multi container pods:
+     -----------------------------------------------------------------------------
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: yellow
+      spec:
+        containers:
+          - name: simple-webapp
+            image: nginx
+
+          - name: log-agent
+            image: log-agent
+
+     -----------------------------------------------------------------------------
+ 
+   - InitContainers:
+        - Sometimes you may want to run a process that runs to completion in a container. 
+        - For example a process that pulls a code or binary from a repository that will be 
+          used by the main web application.  That is a task that will be run only one time when 
+          the pod is first created Or a process that waits  for an external service or database to 
+          be up before the actual application starts. That's where initContainers comes in.
+    
+        - You can configure multiple such initContainers as well, like how we did for multi-pod containers. 
+        - In that case each init container is run one at a time in sequential order.
+        - If any of the initContainers fail to complete, then Kubernetes restarts the Pod repeatedly 
+          until the Init Container succeeds.
+
+      -------------------------------------------------------------------------------
+        ---
+         apiVersion: v1
+         kind: Pod
+         metadata:
+           name: myapp-pod
+           labels:
+            app: myapp
+         spec:
+           containers:
+             - name: myapp-container
+               image: busybox:1.28
+               command: ['sh', '-c', 'echo The app is running! && sleep 3600']
+           initContainers:
+             - name: init-myservice
+               image: busybox:1.28
+               command: ['sh', '-c', 'until nslookup myservice; do echo waiting for myservice; sleep 2; done;']
+             - name: init-mydb
+               image: busybox:1.28
+               command: ['sh', '-c', 'until nslookup mydb; do echo waiting for mydb; sleep 2; done;']
+
+      -------------------------------------------------------------------------------
+
+ =========================================================================================
+            4 - 1,2/4  4-1 4-2  CKAD -  Observability - ReadinessProbe - LivenessProbe- 18%
+ =========================================================================================
+
+   ReadinessProbe and LivenessProbe:
+
+    - A Probe is a diagnostic performed periodically by the kubelet on a Container. 
+    - To perform a diagnostic, the kubelet calls a Handler implemented by the Container. 
+    - There are three types of handlers:
+
+         - ExecAction: 
+             - Executes a specified command inside the Container. 
+             - The diagnostic is considered successful if the command exits with a status code of 0.
+
+         - TCPSocketAction: 
+             - Performs a TCP check against the Container’s IP address on a specified port. 
+             - The diagnostic is considered successful if the port is open.
+
+         - HTTPGetAction: 
+             - Performs an HTTP Get request against the Container’s IP address 
+               on a specified port and path. 
+
+             - The diagnostic is considered successful if the response has a status code 
+               greater than or equal to 200 and less than 400.
+
+    - The kubelet can optionally perform and react to three kinds of probes on running Containers:
+
+        livenessProbe: 
+            - Indicates whether the Container is running. 
+            - If the liveness probe fails, the kubelet kills the Container, and the Container 
+              is subjected to its restart policy. 
+            - If a Container does not provide a liveness probe, the default state is Success.
+            NOTE:
+               - If the process in your Container is able to crash on its own whenever 
+                 it encounters an issue or becomes unhealthy, then specify a liveness probe, 
+                 and specify a restartPolicy of Always or OnFailure.
+
+
+        readinessProbe: 
+            - Indicates whether the Container is ready to service requests. 
+            - If the readiness probe fails, the endpoints controller removes the Pod’s IP address 
+               from the endpoints of all Services that match the Pod. 
+            - The default state of readiness before the initial delay is Failure. 
+            - If a Container does not provide a readiness probe, the default state is Success.
+            NOTE:
+                - If your Container needs to work on loading large data, configuration files, 
+                  or migrations during startup, specify a readiness probe.
+                - Also, If you’d like to start sending traffic to a Pod only when a probe succeeds, 
+                  specify a readiness probe
+
+        startupProbe: 
+            - Indicates whether the application within the Container is started. 
+            - All other probes are disabled if a startup probe is provided, until it succeeds.
+            - If the startup probe fails, the kubelet kills the Container, and the Container 
+              is subjected to its restart policy. 
+            - If a Container does not provide a startup probe, the default state is Success.
+
+        NOTE:
+
+            - If your Container usually starts in  more than 
+              initialDelaySeconds + failureThreshold × periodSeconds: 
+              you should specify a startup probe that checks the same endpoint as the liveness probe. 
+              The default for periodSeconds is 30s.
+
+            - You should then set its failureThreshold high enough to allow the Container to start, 
+              without changing the default values of the liveness probe. 
+              This helps to protect against deadlocks.
+
+  
+   Example:
+    -----------------------------------------------------------------------
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      labels:
+        test: liveness
+      name: liveness-exec
+    spec:
+      containers:
+      - name: liveness
+        image: k8s.gcr.io/busybox
+        args:
+        - /bin/sh
+        - -c
+        - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 600
+        livenessProbe:
+          exec:
+            command:
+            - cat
+            - /tmp/healthy
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      
+     ------------------------------------------------------------------------
+     NOTE:
+        In the above Maifest file:
+        - The 'periodSeconds' field specifies that the kubelet should 
+          perform a liveness probe every 5 seconds. 
+
+        - The 'initialDelaySeconds' field tells the kubelet that it should 
+          wait 5 second before performing the first probe
+
+
+     Probes Configurations:
+
+         - initialDelaySeconds: 
+             - Number of seconds after the container has started before liveness or readiness 
+               probes are initiated. 
+
+             - Defaults value: 0 seconds. 
+             - Minimum value is 0.
+
+         - periodSeconds: 
+              - How often (in seconds) to perform the probe. 
+
+              - Defaults value: 10 seconds. 
+              - Minimum value is 1.
+
+         - timeoutSeconds: 
+              - Number of seconds after which the probe times out. 
+
+              - Defaults value: 1 second. 
+              - Minimum value is 1.
+
+         - successThreshold: 
+              - Minimum consecutive successes for the probe to be considered 
+                successful after having failed. 
+
+              - Defaults value: 1. 
+              - Must be 1 for liveness. 
+              - Minimum value is 1.
+
+         - failureThreshold: 
+              - When a Pod starts and the probe fails, Kubernetes will try 
+                failureThreshold times before giving up. 
+              - Giving up in case of liveness probe means restarting the container. 
+              - In case of readiness probe the Pod will be marked Unready. 
+
+              - Defaults value: 3. 
+              - Minimum value is 1
+
+
+  - Example with readinessProbe, livenessProbe, startupProbe:
+ ---------------------------pod-def.yaml---------------------------------------
+    apiVerision: v1
+    kind: Pod
+    metadata:
+      name: my-legacy-app
+    spec:
+      containers:
+       - name: legacy
+         image: legacy:v1
+
+         readninessProbe:
+           httpGet:
+             path: /api/ready
+             port:8080
+         # readninessProbe:
+         #   tcpSocket:
+         #     port:8080
+         # readninessProbe:
+         #   exec:
+         #     command:
+         #       - cat 
+         #       - /app/is_ready
+
+         livenessProbe:
+           httpGet:
+             path: /api/ready
+             port:8080
+           initialDelaySeconds: 10
+           periodSeconds: 5
+           failureThreshold: 8
+         # livenessProbe:
+         #   tcpSocket:
+         #     port:8080
+         #   initialDelaySeconds: 10
+         #   periodSeconds: 5
+         #   failureThreshold: 8
+         # livenessProbe:
+         #   exec:
+         #     command:
+         #       - cat 
+         #       - /app/is_ready
+         #   initialDelaySeconds: 10
+         #   periodSeconds: 5
+         #   failureThreshold: 8
+
+         startupProbe:
+          httpGet:
+            path: /healthz
+            port: liveness-port
+          failureThreshold: 30
+          periodSeconds: 10
+
+  ------------------------------------------------------------------------
+  NOTE:
+    - To deal with legacy applications that might require an additional startup time 
+      on their first initialization. 
+
+    - In such cases, it can be tricky to set up liveness probe parameters without 
+      compromising the fast response to deadlocks that motivated such a probe. 
+
+    - The trick is to set up a startup probe with the same command, HTTP or TCP check, 
+      with a 'failureThreshold * periodSeconds' long enough to cover the worse case startup time.
+
+    - The application will have a maximum of 5 minutes (30 * 10 = 300s) to finish its startup. 
+      Once the startup probe has succeeded once, the liveness probe takes over to provide a 
+      fast response to container deadlocks. 
+
+    - If the startup probe never succeeds, the container is killed after 300s and subject to 
+      the pod’s restartPolicy.
+
+ =========================================================================================
+     4 - 3/4    4-3  CKAD -  Observability - Container Logging - 18%
+ =========================================================================================
+
+    - To see the logs of the containers running in the POD:
+
+        - if Pod has only one container:
+            kubectl logs <pod-name>
+
+            - To export the logs of container to log file:
+                kubectl logs <pod-name> >  pod-name-logs.log
+
+
+        - if the pod has multiple containers:
+            kubectl logs <pod-name> <container-name>
+
+            - To export the logs of container to log file:
+                    kubectl logs <pod-name> <container-name> >  pod-name-logs.log
+        
+ =========================================================================================
+     4 - 4/4    4-4  CKAD -  Observability - Monitoring - 18%
+ =========================================================================================
+  
+  MetricsServer:
+
+   - To install metrics server:
+      git clone https://github.com/kubernetes-incubator/metrics-server.git
+      #then run 
+      kubectl create -f deploy/1.8+/
+   
+   - After installtion:
+   
+     - To see details of cluster metrics of nodes:
+        kubectl top node
+    
+     - To see the details of pods metrics :
+        kubectl top pods
+   
+     - To see logs of conainers:
+        kubectl logs -f <podName>    <containerName>
+
+ =========================================================================================
+     5 - 1/3    5-1  CKAD -  Pod design  - Labels, Selectors, Annotations -  20%
+ =========================================================================================
+  
+   - To see list of pods with labels :
+      kubectl get pods -o wide --show-labels
+
+   - To see list of nodes with labels :
+      kubectl get nodes -o wide --show-labels
+  
+   - To assign labels to nodes:
+      kubectl label nodes <node-name> <label-name>=<label-value>
+      #ex: kubectl label nodes ip-123.23.123.12 availabiltyZone=1a
+ 
+   - To remove the label assignd to pod:
+      kubectl label pods <pod-name> <label-name> -
+      #ex: to remove the label availabiltyZone=1a then
+      # kubectl label pods myapp-pod availabiltyZone -
+ 
+   - To see the list of pods using Selector:
+      kubectl get pods --selector <label-name>=<label-value>
+      #ex: kubectl get pods --selector availabiltyZone=1a
+
+   Label Selectors:
+
+     - Equality based:
+         Three kinds of operators are admitted =,==,!=. The first two represent equality 
+         (and are simply synonyms), while the latter represents inequality
+
+        ex: environment = production
+            tier != frontend
+
+        ex: kubectl get pods -l environment=production,tier=frontend
+
+     - Set based:
+         Three kinds of operators are supported in, notin and exists (only the key identifier). 
+         
+         Valid operators include:
+         - In, 
+         - NotIn, 
+         - Exists and 
+         - DoesNotExist
+
+          ex: CLI - commands:
+            kubectl get pods -l 'environment in (production),tier in (frontend)'
+            kubectl get pods -l 'environment in (production, qa)'
+            kubectl get pods -l 'environment,environment notin (frontend)'
+
+          ex: inside Manifest file:
+           -------------------------------------------------------- 
+            apiVersion:
+            kind:
+            metadata:
+                name:
+            spec:
+            template:
+                metadata:
+                  name:
+                  labels:
+                    env: prod
+                    type: frontend
+                spec:
+                  containers:
+                    - name:
+                      iamge:
+            selector:
+              matchLabels:
+                component: redis
+              matchExpressions:
+                - {key: tier, operator: In, values: [cache]}
+                - {key: environment, operator: NotIn, values: [dev]}
+       --------------------------------------------------------
+ 
+    NOTE: 
+        Resources that support set-based requirements Newer resources, such as 
+        - Job, 
+        - Deployment, 
+        - ReplicaSet, and 
+        - DaemonSet, 
+        support set-based requirements as well
+
+ =========================================================================================
+     5 - 2/3    5-2  CKAD -  Pod design  - Rolling updates and Rollbacks -  20%
+ =========================================================================================
+
+  --------------------------------------------------------------------------
+                        REPLICA SET
+  --------------------------------------------------------------------------                         
+
+    ---------------ReplicaSet-definition.yml---------------
+    #note: the appVersion should be apps/v1 for ReplicationController
+    #if apiVersion is v1 , we can get error unable to recognize
+     apiVersion: apps/v1
+     kind: ReplicaSet
+     metadata: 
+       name: webserver-replicaset
+       labels:
+         app: webserver
+         type: front-end
+        
+     spec:
+       template:  
+         metadata: 
+           name: webserver-pod
+           labels:
+             app: webserver
+             type: front-end    
+         spec:
+           container:
+             - name: nginx-controller
+               image: nginx  
+       replicas: 3
+       selector: #for repicaset selector is used as additonal feild
+         matchLabels:
+           type: front-end
+    ----------------commands to create replica sets----------------------------
+    NOTE: metadata labels should match with template metadata labels. 
+          Also selector matchLabels should match with template metadata labels
+
+    #To create replicaset using above file.
+     kubectl create -f replicaset-definition.yml
+    #To edit the replicaSet(say rs name: webserver-replicaset)
+     kubectl edit rs <replicaset-name>
+     #ex: kubectl edit rs webserver-replicaset
+
+    #To export replicaset to yaml file
+     kubectl get rs webserver-replicaset -o yaml > rs.yml
+    #-----------------------------------------------
+    #To increase the no. of replicas to 6 
+    #change the replicas to 6 in the above file
+    #then run the below command
+     kubectl replace -f replicaset-definition.yml
+
+    #or  we can do using tags for above file
+     kubectl scale --replicas=6 -f replicaset-definition.yml
+
+    #or  we can do using type and name format
+     kubectl scale --replicas=6 replicaset myapp-replicaset
+    #-----------------------------------------------------
+
+    #To see created replicaset
+     kubectl get replicaset
+    #note: we can see desired-current-ready status
+
+    #To see no of pods created after running replicaiton controller
+     kubectl get pods -o wide
+    #NOte: we can see three pods if we used above to file to create replicas
+
+    #To remove the replicaset and also pods underlying
+     kubectl delete replicaset webserver-replicaset
+
+-----------------------------------------------------------------
+
+
+ -----------------------------------------------------------------
+                              DEPLOYMENTS
+ -----------------------------------------------------------------
+
+  Deployments has the strategy of deployments:
+    - recreate strategy:
+        Terminate old version and release new versions. ALL happens at once
+    - rolling Updates:
+        release the updates in incremental fashion 
+        one batch after other
+        once new batch is formed one by one. old batch gets terminated one by one
+    - Other strategy:
+        - BLUE_GREEN:
+            release new version along with old version and switching traffic    
+        - Canary:
+            release a new version to a subset of users(say  25% users), 
+            then proceed to a full rollout(remaning %75 )
+        - A/B Testing:
+            Routing subset of users to a new fucntionality under specific version 
+            based on certain decisions 
+        
+
+ Reasons for deployment failures :
+   - insufficinet permission
+   - insufficinet quota of resources
+   - Image pull error
+   - Application run time misconfigurations
+   - Readiness probe failures
+
+
+----------------nginx-deploy.yml-----no.of replicas=1 --------------------------
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   annotations:
+     deployment.kubernetes.io/revision: "1"
+   creationTimestamp: "2019-12-21T08:32:52Z"
+   generation: 2
+   labels:
+     app: nginx-1
+   name: nginx-1
+   namespace: default
+   resourceVersion: "11734"
+   selfLink: /apis/apps/v1/namespaces/default/deployments/nginx-1
+   uid: dd0f6cf8-9a1d-4f7c-bfd7-dbb4bf8e9120
+ spec:
+   progressDeadlineSeconds: 600
+   replicas: 1
+   revisionHistoryLimit: 10
+   selector:
+     matchLabels:
+       app: nginx-1
+   strategy:
+     rollingUpdate:
+       maxSurge: 25%
+       maxUnavailable: 25%
+     type: RollingUpdate
+   template:
+     metadata:
+       creationTimestamp: null
+       labels:
+         app: nginx-1
+     spec:
+       containers:
+       - image: nginx:latest
+         imagePullPolicy: Always
+         name: nginx
+         resources: {}
+         terminationMessagePath: /dev/termination-log
+         terminationMessagePolicy: File
+       dnsPolicy: ClusterFirst
+       restartPolicy: Always # incase the containers stops execution of process inside it, it will try to restart always
+     # restartPolicy: Never # incase the containers stops execution of process inside it, it will not restart
+       schedulerName: default-scheduler
+       securityContext: {}
+       terminationGracePeriodSeconds: 30
+ status:
+   availableReplicas: 1
+   conditions:
+   - lastTransitionTime: "2019-12-21T08:32:54Z"
+     lastUpdateTime: "2019-12-21T08:32:54Z"
+     message: Deployment has minimum availability.
+     reason: MinimumReplicasAvailable
+     status: "True"
+     type: Available
+   - lastTransitionTime: "2019-12-21T08:32:52Z"
+     lastUpdateTime: "2019-12-21T08:32:54Z"
+     message: ReplicaSet "nginx-1-74c64df7b" has successfully progressed.
+     reason: NewReplicaSetAvailable
+     status: "True"
+     type: Progressing
+   observedGeneration: 2
+   readyReplicas: 1
+   replicas: 1
+   updatedReplicas: 1
+
+ --------------------------------------------------------------------
+
+COMMANDS:
+
+ - To create deployment strategy:
+    kubectl create -f nginx-deploy.yml
+ 
+ - To see the status of the deployment :
+    kubectl get deploy <deployment-name> 
+    # For deployment name -> check in nginx-deploy.yml above look for name in the metadata section
+    #Ex: kubectl get deploy nginx-1
+
+ - To update the no. of replicas or version no make changes in the above yaml file and use below command:
+    kubectl apply -f nginx-deploy.yml
+ 
+ - To update the deployment and keep a track record of every deployment:
+    # this is done beacuase in case of any issue with deployed version we can rollback immediately
+    kubectl apply -f nginx-deploy.yml --record=true
+ 
+ - To check rolling updates deployments status:
+    kubectl rollout status deploy <deployment-name>
+ 
+ - To check the no of replicas sets created:
+    kubectl get rs <replicaset-name> -o wide
+
+ - To check the history i.e REVISION NO. and CHANGE CAUSE of roll out deployments:
+    kubectl rollout history deploy <deployment-name>
+ 
+ - To check the detailed history of revision:
+    kubectl rollout history deploy <deployment-name> --revision=1
+ 
+ - To add our own message to the CHANGE CAUSE after applying changes using below command:
+    kubectl apply -f nginx-deploy.yml --record=true
+    #run the next command to update change cause we can do this using 'kubectl annotate'
+    kubectl annotate deployment.v1.apps/<deployment-name> kubernetes.io/change-cause="add your message here"
+  
+ - To roll back the deployment to immediate pevious version :
+    kubectl rollout undo deploy <deployment-name>
+
+ - To roll back the deployment to specific version or revision (say 1) :
+    kubectl rollout undo deploy <deployment-name> --to-revision=1
+
+ - To pause the deployments:
+    kubectl rollout pause deploy <deployment-name>
+ 
+ - To resume the deployments:
+    kubectl rollout resume deploy <deployment-name>
+ 
+- NOTE:
+   - Deployment revision is triggered only when the 'rollout' is triggered.
+
+   - In the deployment revision/version history only changes made to template like changing 
+     version no. and labels etc then deployment revision is created. Otherwise no revision is created.
+
+   - Other updates like scaling the deployment don't create  deployment revision.
+
+
+   =========================================================================================
+     5 - 3/3    5-3  CKAD -  Pod design  - Jobs and Cron Jobs -  20%
+ =========================================================================================
+
+   JOBS:
+
+-----------------------------job-def.yaml----------------------------
+ apiVersion: batch/v1
+ kind: Job
+ metadata: 
+    name: sample-addition-job
+ spec:
+  backoffLimit: 4 #to specify the number of retries before considering a Job as failed. 
+  #The back-off limit is set by default to 6
+  completions: 3 #To make sure 3 job are in completed status
+  #if parallelism is not used then it ceates pod sequentially
+  parallelism: 3 #To make sure 3 pods are created at a time and ensures the status is completed
+   #if  1/3 failed to complete the job , then it will not create 3 next time only 1 pod is created to get 3 completed.
+  template:
+    spec:
+       contianers:
+         - name: math-add
+           image: ubuntu
+           command: ['expr', '3', '+', '2']
+       restartPolicy: Never
+---------------------------------------------------------
+#To create a job 
+ kubectl create -f job-def.yaml
+
+#To see the list of jobs
+ kubectl get jobs
+
+#To see the list of pods created by job
+ kubectl get pods #look at the status 
+
+#To see the output of the executed job we can use logs
+ kubectl logs <job-pod-name>
+ #ex: kubectl logs sample-addition-job
+
+#To delete the jobs 
+ kubectl delete job <job-name>
+ #ex: kubectl delete job sample-addition-job
+---------------------------------------------------------------
+
+CRON-JOBS:
+-----------------------------cronjob-def.yaml----------------------------
+ apiVersion: batch/v1beta1
+ kind: CronJob
+ metadata: 
+    name: sample-addition-job
+ spec:
+    schedule:   "*/1 * * * * " #check cat /etc/crontab #to view the format
+      #  #format of CRONETAB:
+      #  <min> <hour> <date of month> <month> <day of week> <username> <write command here>
+    jobTemplate:
+       spec:
+        completions: 3 #To make sure 3 job are in completed status
+        #if parallelism is not used then it ceates pod sequentially
+        parallelism: 3 #To make sure 3 pods are created at a time and ensures the status is completed
+         #if  1/3 failed to complete the job , then it will not create 3 next time only 1 pod is created to get 3 completed.
+        template:
+          spec:
+            contianers:
+              - name: math-add
+                image: ubuntu
+                command: ['expr', '3', '+', '2']
+            restartPolicy: Never
+---------------------------------------------------------
+
+#To create a cronjob 
+ kubectl create -f cronjob-def.yaml
+
+#To see the list of jobs
+ kubectl get cronjobs
+
+ =========================================================================================
+     6 - 1/2   6-1  CKAD -  Service & Networking  - Services -  13%
+ =========================================================================================
+  
+  ------------------------------------------------------------------------------------
+                             SERVICES
+ ------------------------------------------------------------------------------------
+
+ ---------------------service-nginx.yml------external-load-balancer-----------
+ apiVersion: v1
+ kind: Service
+ metadata:
+   labels:
+     app: nginx-1
+   name: nginx-1-service #service name is created with this name
+   namespace: default   
+ spec:
+   clusterIP: 10.0.1.163
+   externalTrafficPolicy: Cluster
+   ports:
+   - nodePort: 31672
+     port: 80
+     protocol: TCP
+     targetPort: 80
+   selector:
+     app: nginx-1
+     env: dev
+   sessionAffinity: None
+   type: LoadBalancer #for load balancing
+   #type: nodePort #for node port
+   #type: ClusterIP #with in the cluster  
+ status:
+  loadBalancer:
+    ingress:
+    - ip: 35.193.18.231
+ --------------------------commands to create services-------------------------------
+
+ services are used to access the application from:
+    - outside of the cluster:
+         <node-ip>:<nodePort>
+    - within the cluster:
+         <cluster-ip>
+    - load balancer:
+        - provided by cloud services and we can get the external-ip
+
+COMMANDS: 
+
+ - To create service from service-nginx.yml file:
+     kubectl create -f service-nginx.yml
+ 
+ - To see the created service:
+     kubectl get svc
+ 
+ - To see the detialsed info of services:
+     kubectl describe svc <service-name> 
+   #ex:kubectl describe svc nginx-1-service
+
+ - TO delete service:
+     kubectl delete svc <service-name>
+
+ -------------------------------------------------------------------- 
+                    INGRESS Service
+ ------------------------------------------------------------------------
+  ----------------------------------------------------------------------------------------- 
+
+ INGRESS:
+   - It is service which acts as a load balancer along with SSL. 
+   - in Kubernetes to implemtn it we need to deploy the nginx pod and run that service.
+   
+  -------------------NGINX INGRESS CONTROLLER ----------------------------
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: nginx-ingress-controller
+   spec:
+     replicas: 1
+     selector: 
+        matchLabels:
+           name: nginx-ingress
+    template: 
+       metadata: 
+          labels: 
+             name: nginx-ingress
+       spec:
+          containers:
+               - name:  nginx-ingress-controller
+                  image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.21.0
+          args:
+             - /nginx-ingress-controller
+             #- --configmap=$(POD_NAMESPACE)/nginx-configuration
+          env:
+            - name: POD_NAME
+              valueFrom:
+                 fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+               valueFrom:
+                 fieldRef:
+                   fieldPath: meatada.namespace
+          ports:
+           - name: http
+             containerPort: 80
+           - name: https
+             containerPort: 443
+    ------------------------------------------------------------------------------
+  ----------------------nginx-ingress-service-----------------------------------
+   apiVersion: v1
+   kind: Service
+   metadata:
+      name: nginx-ingress-service
+      labels:
+         name: nginx-ingress-service
+   spec:
+     type: NodePort
+     selector:
+       matchLabels:
+          name:  nginx-ingress
+     ports:
+       - port: 80
+          targetPort: 80
+          protocol:     TCP
+          name: http
+       - port: 443
+          targetPort: 443
+          protocol: TCP
+          name: https
+     ----------------------------------------------------------------------     
+  ----------------------------configmap------------------------------
+   apiVersion: v1
+   kind: ConfigMap
+   metadata: 
+     name: nginx-configuration
+   -------------------------------------------------------------  
+  ----------------------------Auth------------------------------
+   apiVersion: v1
+   kind: ServiceAccount
+   metadata: 
+     name: nginx-configuration
+   -------------------------------------------------------------  
+ IngressRules: check the below yml files
+   - Single backend Service
+   - multiple backendservcies based on url 
+   - multiple backend services based on hostname
+   
+ ----------------Ingress-wear.yml-------for single backend service------------------
+  apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata: 
+    name: ingress-wear
+  spec: 
+    backend:
+       servicename: wear-service 
+       servicePort: 80
+  ------------------------------------------  
+  
+ -----------------Ingress-wear.yml-------for multiple backend service with url------------------
+  apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata: 
+    name: ingress-wear-watch
+  spec: 
+    rules: 
+     - http:
+         - path: /wear
+            backend: 
+               serviceName: wear-service
+               servicePort: 80
+         - path : /watch
+            backend:
+               serviceName: watch-service
+               servicePort: 80 
+    
+   ------------------------------------------  
+
+ ------------------Ingress-wear.yml----for multiple backend service with hostname--------
+  apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata: 
+    name: ingress-wear-watch
+  spec: 
+    rules: 
+     - host: wear.my-online-store.com
+        http:
+         - path: 
+            backend: 
+               serviceName: wear-service
+               servicePort: 80
+     - host: watch.my-online-store.com
+        http:
+         - path: 
+            backend: 
+               serviceName: watch-service
+               servicePort: 80
+  ------------------------------------------ 
+#To see detailed info Ingress..
+  kubectl describe ingress ingress-wear-watch
+
+-----------------ingress-rewrite.yaml--------------------------------------
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: critical-space
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /pay
+        backend:
+          serviceName: pay-service
+          servicePort: 8282
+ -------------------------------------------------------
+
+#Which namespace is the Ingress Resource deployed in?
+Run the command 'kubectl get ingress --all-namespaces'
+
+#What is the Host configured on the ingress-resource?
+#The host entry defines the domain name that users use to reach the application like www.google.com
+
+Run the command 'kubectl describe ingress --namespace app-space' and look at Host under the Rules section.
+
+#If the requirement does not match any of the configured paths what service are the requests forwarded to?
+
+Run the command 'kubectl describe ingress --namespace app-space' and look at the Default backend field.
+
+#To generate ingress YAML for  exisiting ingress
+k -n app-space get ingress -o yaml
+
+  -------------------------------------------------------------------------
+
+
+
+ =========================================================================================
+     6 - 2/2   6-2  CKAD -  Service & Networking  - Network Policies -  13%
+ =========================================================================================
+
+   NETWORK POLICIES:
+      Theses network policies are applied to PODS to control Ingress and Egress traffic.
+       incoming traffic to pod: ingress
+
+       outgoing traffic from pod: egress
+
+    - The network policies are 'SUPPORTED' by:
+        - Kube-router
+        - Calico
+        - Romana
+        - Weave-net
+    - The network policies are 'NOT SUPPORTED' by:   
+        - FLANNEL
+
+    - Pod Communication is controlled by network policies:
+
+      ---->-ingress-----[ web-server-pod ]--egress-->---->-ingress----[ app-server-pod ]--egress-->--->-ingress---[ db-server-pod ]----|
+      ----<----------------------------------------------<------------------------------------------<----------------------------------|
+
+       NOTE: in the above shown map -> ingress - incoming traffic to the pod
+                                    -> egress  - outgoing traffic from pod to other pod
+    
+    - To create network policies for pods:
+
+       -----------network-policy-def.yaml------------------------------
+       #this netwrok policy is to allow only ingree traffic from api-pod to db-pod
+        apiVersion: networking.k8s.io/v1
+        kind: NetworkPolicy
+        metadata:
+          name: db-policy
+        spec:
+          podSelector:
+            matchLabels:
+              role: db
+          policyTypes:
+            - ingress
+          ingress:
+            - from:
+               - podSelector:
+                   matchLabels:
+                   name: app-server-pod
+              ports:
+                - protocol: TCP
+                  port: 3306
+       ---------------------------------------------------------------
+       kubectl create -f network-policy-def.yaml
+
+ -------------------------------------------------------------------
+  #To allow  egress traffic 
+    apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: internal-policy
+      namespace: default
+    spec:
+      podSelector:
+        matchLabels:
+          name: internal
+      policyTypes:
+      - Egress
+      - Ingress
+      ingress:
+        - {}
+      egress:
+      - to:
+        - podSelector:
+            matchLabels:
+              name: mysql
+        ports:
+        - protocol: TCP
+          port: 3306
+
+      - to:
+        - podSelector:
+            matchLabels:
+              name: payroll
+        ports:
+        - protocol: TCP
+          port: 8080
+ -------------------------------------------------------------------
+
+#TO see the  list of network policies
+ kubectl get networkpolicy
+
+=========================================================================================================
+     7 - 1,2/2   7  CKAD -  State Persistence  - PersistentVolumes and PersistentVolumeClaims -  8%
+ =========================================================================================================
+
+
+  ---------------------------------------------------------------------
+                          STORAGE VOLUMES
+  ---------------------------------------------------------------------
+  Volumes and Mounts:
+     
+    -------------------------pod-with-volume.yaml-----------------------
+     apiVersion: v1
+     kind: Pod
+     metadata:
+       name: random-number-generator
+     spec:
+       containers:
+         - name: alpine
+            image: alpine
+            command: ["/bin/sh", "-c"]
+            args: [ "shuf -i  0-100 -n 1 >> /opt/number.out;"]
+            volumeMounts: 
+              - mountPath: /opt #this is the path inside the container
+                 name: data_volume 
+       volumes: 
+         - name: data_volume
+           hostPath: 
+              path: /data   #this is the path of the host
+              type: Directory
+     -------------------------------------------------------------------
+     there is drawback with above model , because it would create this volume copy on every node
+     -------------------------------------------------------------------
+
+    -------------------------pod-with-ext-volume-aws-ebs.yaml-----------------------
+     apiVersion: v1
+     kind: Pod
+     metadata:
+       name: random-number-generator
+     spec:
+       containers:
+         - name: alpine
+            image: alpine
+            command: ["/bin/sh", "-c"]
+            args: [ "shuf -i  0-100 -n 1 >> /opt/number.out;"]
+            volumeMounts: 
+              - mountPath: /opt
+                 name: data_volume
+       volumes: 
+          - name: data_volume
+            awsElasticBlockStore: #NOTE: this will work only if the Node is on the AWS platform.
+              volumeID: <volume-id>
+              fsType: ext4
+     -------------------------------------------------------------------      
+
+  -------------------------------------------------------------------      
+                        PersistentVolumes
+  -------------------------------------------------------------------                
+  
+  PersistentVolumes:
+     
+    ---------------------pv-def.yml---------in dev--------------
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata: 
+        name: pv-vol1
+      spec:
+        accessmode:
+           - ReadWriteOnce
+         #- ReadOnlyMany
+         #- ReadWriteMany
+       capacity:
+          storage: 1Gi
+       hostPath:
+          path: /tmp/data   
+     -------------------------------------------------------------
+     COMMANDS:
+      #To create the Persistent Volume  
+       kubectl create -f pv-def.yml
+
+      #To see the list of PVs
+       kubectl get persistentvolume
+       
+     ---------------------pv-def.yml-----------in-prod------------
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata: 
+        name: pv-vol1
+      spec:
+        accessmodes:
+           - ReadWriteOnce
+         #- ReadOnlyMany
+         #- ReadWriteMany
+        capacity:
+          storage: 1Gi
+        awsElasticBlockStore:  #NOTE: this will work only if the Node is on the AWS platform.
+              volumeID: <volume-id>
+              fsType: ext4  
+     -------------------------------------------------------------
+
+ -------------------------------------------------------------------      
+                        PersistentVolumeClaims
+ -------------------------------------------------------------------
+
+     -------------pvc-def.yml----------------------------------
+      apiVersion: v1
+      kind: PersistenceVolumeClaim
+      metadata:
+        name: myclaim
+      spec: 
+        accessModes:
+         - ReadWriteOnce
+        resources:
+          requests:
+            storage: 500Mi
+     ------------------------------------------------------------------
+     COMMANDS:
+       #To create persistenceVolumeClaims 
+       kubectl create -f pvc-def.yml
+
+       #To see the list of persistenceVolumeClaims 
+       kubectl get persistentvolumeclaim
+
+       #To delete persistenceVolumeClaims 
+       kubectl delete persistentvolumeclaim myclaim
+      
+     USAGE:
+      
+    -------------------pod-def-with-pvc.yml-------------------
+     apiVersion: v1
+     kind: Pod
+     metadata:
+       name: mypod
+     spec:
+       containers:
+          - name: myfrontend
+            image: nginx
+            volumeMounts:
+                - mountPath: "/var/www/html"
+                   name: mypd
+       volumes:
+          - name: mypd
+            persistentVolumeClaim:
+               claimName: myclaim
+     ------------------------------------------------------------------------  
+
