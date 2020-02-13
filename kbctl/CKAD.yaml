@@ -82,7 +82,7 @@
  ==========================================================================================
  
 =========================================================================================
-    1 - 1/2              1-1    CKAD - Core Concepts - Kubernetes Architecture - 13%
+    1 - 1/2           1-1    CKAD - Core Concepts - Kubernetes Architecture - 13%
 ==========================================================================================
 
  Kubernetes-Architecture:
@@ -999,5 +999,893 @@ Resource Requirements: These are cpu and memory usage limits set on the pod.
     - If the startup probe never succeeds, the container is killed after 300s and subject to 
       the pod’s restartPolicy.
 
+ =========================================================================================
+     4 - 3/4    4-3  CKAD -  Observability - Container Logging - 18%
+ =========================================================================================
+
+    - To see the logs of the containers running in the POD:
+
+        - if Pod has only one container:
+            kubectl logs <pod-name>
+
+            - To export the logs of container to log file:
+                kubectl logs <pod-name> >  pod-name-logs.log
+
+
+        - if the pod has multiple containers:
+            kubectl logs <pod-name> <container-name>
+
+            - To export the logs of container to log file:
+                    kubectl logs <pod-name> <container-name> >  pod-name-logs.log
+        
+ =========================================================================================
+     4 - 4/4    4-4  CKAD -  Observability - Monitoring - 18%
+ =========================================================================================
   
+  MetricsServer:
+
+   - To install metrics server:
+      git clone https://github.com/kubernetes-incubator/metrics-server.git
+      #then run 
+      kubectl create -f deploy/1.8+/
    
+   - After installtion:
+   
+     - To see details of cluster metrics of nodes:
+        kubectl top node
+    
+     - To see the details of pods metrics :
+        kubectl top pods
+   
+     - To see logs of conainers:
+        kubectl logs -f <podName>    <containerName>
+
+ =========================================================================================
+     5 - 1/3    5-1  CKAD -  Pod design  - Labels, Selectors, Annotations -  20%
+ =========================================================================================
+  
+   - To see list of pods with labels :
+      kubectl get pods -o wide --show-labels
+
+   - To see list of nodes with labels :
+      kubectl get nodes -o wide --show-labels
+  
+   - To assign labels to nodes:
+      kubectl label nodes <node-name> <label-name>=<label-value>
+      #ex: kubectl label nodes ip-123.23.123.12 availabiltyZone=1a
+ 
+   - To remove the label assignd to pod:
+      kubectl label pods <pod-name> <label-name> -
+      #ex: to remove the label availabiltyZone=1a then
+      # kubectl label pods myapp-pod availabiltyZone -
+ 
+   - To see the list of pods using Selector:
+      kubectl get pods --selector <label-name>=<label-value>
+      #ex: kubectl get pods --selector availabiltyZone=1a
+
+   Label Selectors:
+
+     - Equality based:
+         Three kinds of operators are admitted =,==,!=. The first two represent equality 
+         (and are simply synonyms), while the latter represents inequality
+
+        ex: environment = production
+            tier != frontend
+
+        ex: kubectl get pods -l environment=production,tier=frontend
+
+     - Set based:
+         Three kinds of operators are supported in, notin and exists (only the key identifier). 
+         
+         Valid operators include:
+         - In, 
+         - NotIn, 
+         - Exists and 
+         - DoesNotExist
+
+          ex: CLI - commands:
+            kubectl get pods -l 'environment in (production),tier in (frontend)'
+            kubectl get pods -l 'environment in (production, qa)'
+            kubectl get pods -l 'environment,environment notin (frontend)'
+
+          ex: inside Manifest file:
+           -------------------------------------------------------- 
+            apiVersion:
+            kind:
+            metadata:
+                name:
+            spec:
+            template:
+                metadata:
+                  name:
+                  labels:
+                    env: prod
+                    type: frontend
+                spec:
+                  containers:
+                    - name:
+                      iamge:
+            selector:
+              matchLabels:
+                component: redis
+              matchExpressions:
+                - {key: tier, operator: In, values: [cache]}
+                - {key: environment, operator: NotIn, values: [dev]}
+       --------------------------------------------------------
+ 
+    NOTE: 
+        Resources that support set-based requirements Newer resources, such as 
+        - Job, 
+        - Deployment, 
+        - ReplicaSet, and 
+        - DaemonSet, 
+        support set-based requirements as well
+
+ =========================================================================================
+     5 - 2/3    5-2  CKAD -  Pod design  - Rolling updates and Rollbacks -  20%
+ =========================================================================================
+
+  --------------------------------------------------------------------------
+                        REPLICA SET
+  --------------------------------------------------------------------------                         
+
+    ---------------ReplicaSet-definition.yml---------------
+    #note: the appVersion should be apps/v1 for ReplicationController
+    #if apiVersion is v1 , we can get error unable to recognize
+     apiVersion: apps/v1
+     kind: ReplicaSet
+     metadata: 
+       name: webserver-replicaset
+       labels:
+         app: webserver
+         type: front-end
+        
+     spec:
+       template:  
+         metadata: 
+           name: webserver-pod
+           labels:
+             app: webserver
+             type: front-end    
+         spec:
+           container:
+             - name: nginx-controller
+               image: nginx  
+       replicas: 3
+       selector: #for repicaset selector is used as additonal feild
+         matchLabels:
+           type: front-end
+    ----------------commands to create replica sets----------------------------
+    NOTE: metadata labels should match with template metadata labels. 
+          Also selector matchLabels should match with template metadata labels
+
+    #To create replicaset using above file.
+     kubectl create -f replicaset-definition.yml
+    #To edit the replicaSet(say rs name: webserver-replicaset)
+     kubectl edit rs <replicaset-name>
+     #ex: kubectl edit rs webserver-replicaset
+
+    #To export replicaset to yaml file
+     kubectl get rs webserver-replicaset -o yaml > rs.yml
+    #-----------------------------------------------
+    #To increase the no. of replicas to 6 
+    #change the replicas to 6 in the above file
+    #then run the below command
+     kubectl replace -f replicaset-definition.yml
+
+    #or  we can do using tags for above file
+     kubectl scale --replicas=6 -f replicaset-definition.yml
+
+    #or  we can do using type and name format
+     kubectl scale --replicas=6 replicaset myapp-replicaset
+    #-----------------------------------------------------
+
+    #To see created replicaset
+     kubectl get replicaset
+    #note: we can see desired-current-ready status
+
+    #To see no of pods created after running replicaiton controller
+     kubectl get pods -o wide
+    #NOte: we can see three pods if we used above to file to create replicas
+
+    #To remove the replicaset and also pods underlying
+     kubectl delete replicaset webserver-replicaset
+
+-----------------------------------------------------------------
+
+
+ -----------------------------------------------------------------
+                              DEPLOYMENTS
+ -----------------------------------------------------------------
+
+  Deployments has the strategy of deployments:
+    - recreate strategy:
+        Terminate old version and release new versions. ALL happens at once
+    - rolling Updates:
+        release the updates in incremental fashion 
+        one batch after other
+        once new batch is formed one by one. old batch gets terminated one by one
+    - Other strategy:
+        - BLUE_GREEN:
+            release new version along with old version and switching traffic    
+        - Canary:
+            release a new version to a subset of users(say  25% users), 
+            then proceed to a full rollout(remaning %75 )
+        - A/B Testing:
+            Routing subset of users to a new fucntionality under specific version 
+            based on certain decisions 
+        
+
+ Reasons for deployment failures :
+   - insufficinet permission
+   - insufficinet quota of resources
+   - Image pull error
+   - Application run time misconfigurations
+   - Readiness probe failures
+
+
+----------------nginx-deploy.yml-----no.of replicas=1 --------------------------
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   annotations:
+     deployment.kubernetes.io/revision: "1"
+   creationTimestamp: "2019-12-21T08:32:52Z"
+   generation: 2
+   labels:
+     app: nginx-1
+   name: nginx-1
+   namespace: default
+   resourceVersion: "11734"
+   selfLink: /apis/apps/v1/namespaces/default/deployments/nginx-1
+   uid: dd0f6cf8-9a1d-4f7c-bfd7-dbb4bf8e9120
+ spec:
+   progressDeadlineSeconds: 600
+   replicas: 1
+   revisionHistoryLimit: 10
+   selector:
+     matchLabels:
+       app: nginx-1
+   strategy:
+     rollingUpdate:
+       maxSurge: 25%
+       maxUnavailable: 25%
+     type: RollingUpdate
+   template:
+     metadata:
+       creationTimestamp: null
+       labels:
+         app: nginx-1
+     spec:
+       containers:
+       - image: nginx:latest
+         imagePullPolicy: Always
+         name: nginx
+         resources: {}
+         terminationMessagePath: /dev/termination-log
+         terminationMessagePolicy: File
+       dnsPolicy: ClusterFirst
+       restartPolicy: Always # incase the containers stops execution of process inside it, it will try to restart always
+     # restartPolicy: Never # incase the containers stops execution of process inside it, it will not restart
+       schedulerName: default-scheduler
+       securityContext: {}
+       terminationGracePeriodSeconds: 30
+ status:
+   availableReplicas: 1
+   conditions:
+   - lastTransitionTime: "2019-12-21T08:32:54Z"
+     lastUpdateTime: "2019-12-21T08:32:54Z"
+     message: Deployment has minimum availability.
+     reason: MinimumReplicasAvailable
+     status: "True"
+     type: Available
+   - lastTransitionTime: "2019-12-21T08:32:52Z"
+     lastUpdateTime: "2019-12-21T08:32:54Z"
+     message: ReplicaSet "nginx-1-74c64df7b" has successfully progressed.
+     reason: NewReplicaSetAvailable
+     status: "True"
+     type: Progressing
+   observedGeneration: 2
+   readyReplicas: 1
+   replicas: 1
+   updatedReplicas: 1
+
+ --------------------------------------------------------------------
+
+COMMANDS:
+
+ - To create deployment strategy:
+    kubectl create -f nginx-deploy.yml
+ 
+ - To see the status of the deployment :
+    kubectl get deploy <deployment-name> 
+    # For deployment name -> check in nginx-deploy.yml above look for name in the metadata section
+    #Ex: kubectl get deploy nginx-1
+
+ - To update the no. of replicas or version no make changes in the above yaml file and use below command:
+    kubectl apply -f nginx-deploy.yml
+ 
+ - To update the deployment and keep a track record of every deployment:
+    # this is done beacuase in case of any issue with deployed version we can rollback immediately
+    kubectl apply -f nginx-deploy.yml --record=true
+ 
+ - To check rolling updates deployments status:
+    kubectl rollout status deploy <deployment-name>
+ 
+ - To check the no of replicas sets created:
+    kubectl get rs <replicaset-name> -o wide
+
+ - To check the history i.e REVISION NO. and CHANGE CAUSE of roll out deployments:
+    kubectl rollout history deploy <deployment-name>
+ 
+ - To check the detailed history of revision:
+    kubectl rollout history deploy <deployment-name> --revision=1
+ 
+ - To add our own message to the CHANGE CAUSE after applying changes using below command:
+    kubectl apply -f nginx-deploy.yml --record=true
+    #run the next command to update change cause we can do this using 'kubectl annotate'
+    kubectl annotate deployment.v1.apps/<deployment-name> kubernetes.io/change-cause="add your message here"
+  
+ - To roll back the deployment to immediate pevious version :
+    kubectl rollout undo deploy <deployment-name>
+
+ - To roll back the deployment to specific version or revision (say 1) :
+    kubectl rollout undo deploy <deployment-name> --to-revision=1
+
+ - To pause the deployments:
+    kubectl rollout pause deploy <deployment-name>
+ 
+ - To resume the deployments:
+    kubectl rollout resume deploy <deployment-name>
+ 
+- NOTE:
+   - Deployment revision is triggered only when the 'rollout' is triggered.
+
+   - In the deployment revision/version history only changes made to template like changing 
+     version no. and labels etc then deployment revision is created. Otherwise no revision is created.
+
+   - Other updates like scaling the deployment don't create  deployment revision.
+
+
+   =========================================================================================
+     5 - 3/3    5-3  CKAD -  Pod design  - Jobs and Cron Jobs -  20%
+ =========================================================================================
+
+   JOBS:
+
+-----------------------------job-def.yaml----------------------------
+ apiVersion: batch/v1
+ kind: Job
+ metadata: 
+    name: sample-addition-job
+ spec:
+  backoffLimit: 4 #to specify the number of retries before considering a Job as failed. 
+  #The back-off limit is set by default to 6
+  completions: 3 #To make sure 3 job are in completed status
+  #if parallelism is not used then it ceates pod sequentially
+  parallelism: 3 #To make sure 3 pods are created at a time and ensures the status is completed
+   #if  1/3 failed to complete the job , then it will not create 3 next time only 1 pod is created to get 3 completed.
+  template:
+    spec:
+       contianers:
+         - name: math-add
+           image: ubuntu
+           command: ['expr', '3', '+', '2']
+       restartPolicy: Never
+---------------------------------------------------------
+#To create a job 
+ kubectl create -f job-def.yaml
+
+#To see the list of jobs
+ kubectl get jobs
+
+#To see the list of pods created by job
+ kubectl get pods #look at the status 
+
+#To see the output of the executed job we can use logs
+ kubectl logs <job-pod-name>
+ #ex: kubectl logs sample-addition-job
+
+#To delete the jobs 
+ kubectl delete job <job-name>
+ #ex: kubectl delete job sample-addition-job
+---------------------------------------------------------------
+
+CRON-JOBS:
+-----------------------------cronjob-def.yaml----------------------------
+ apiVersion: batch/v1beta1
+ kind: CronJob
+ metadata: 
+    name: sample-addition-job
+ spec:
+    schedule:   "*/1 * * * * " #check cat /etc/crontab #to view the format
+      #  #format of CRONETAB:
+      #  <min> <hour> <date of month> <month> <day of week> <username> <write command here>
+    jobTemplate:
+       spec:
+        completions: 3 #To make sure 3 job are in completed status
+        #if parallelism is not used then it ceates pod sequentially
+        parallelism: 3 #To make sure 3 pods are created at a time and ensures the status is completed
+         #if  1/3 failed to complete the job , then it will not create 3 next time only 1 pod is created to get 3 completed.
+        template:
+          spec:
+            contianers:
+              - name: math-add
+                image: ubuntu
+                command: ['expr', '3', '+', '2']
+            restartPolicy: Never
+---------------------------------------------------------
+
+#To create a cronjob 
+ kubectl create -f cronjob-def.yaml
+
+#To see the list of jobs
+ kubectl get cronjobs
+
+ =========================================================================================
+     6 - 1/2   6-1  CKAD -  Service & Networking  - Services -  13%
+ =========================================================================================
+  
+  ------------------------------------------------------------------------------------
+                             SERVICES
+ ------------------------------------------------------------------------------------
+
+ ---------------------service-nginx.yml------external-load-balancer-----------
+ apiVersion: v1
+ kind: Service
+ metadata:
+   labels:
+     app: nginx-1
+   name: nginx-1-service #service name is created with this name
+   namespace: default   
+ spec:
+   clusterIP: 10.0.1.163
+   externalTrafficPolicy: Cluster
+   ports:
+   - nodePort: 31672
+     port: 80
+     protocol: TCP
+     targetPort: 80
+   selector:
+     app: nginx-1
+     env: dev
+   sessionAffinity: None
+   type: LoadBalancer #for load balancing
+   #type: nodePort #for node port
+   #type: ClusterIP #with in the cluster  
+ status:
+  loadBalancer:
+    ingress:
+    - ip: 35.193.18.231
+ --------------------------commands to create services-------------------------------
+
+ services are used to access the application from:
+    - outside of the cluster:
+         <node-ip>:<nodePort>
+    - within the cluster:
+         <cluster-ip>
+    - load balancer:
+        - provided by cloud services and we can get the external-ip
+
+COMMANDS: 
+
+ - To create service from service-nginx.yml file:
+     kubectl create -f service-nginx.yml
+ 
+ - To see the created service:
+     kubectl get svc
+ 
+ - To see the detialsed info of services:
+     kubectl describe svc <service-name> 
+   #ex:kubectl describe svc nginx-1-service
+
+ - TO delete service:
+     kubectl delete svc <service-name>
+
+ -------------------------------------------------------------------- 
+                    INGRESS Service
+ ------------------------------------------------------------------------
+  ----------------------------------------------------------------------------------------- 
+
+ INGRESS:
+   - It is service which acts as a load balancer along with SSL. 
+   - in Kubernetes to implemtn it we need to deploy the nginx pod and run that service.
+   
+  -------------------NGINX INGRESS CONTROLLER ----------------------------
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: nginx-ingress-controller
+   spec:
+     replicas: 1
+     selector: 
+        matchLabels:
+           name: nginx-ingress
+    template: 
+       metadata: 
+          labels: 
+             name: nginx-ingress
+       spec:
+          containers:
+               - name:  nginx-ingress-controller
+                  image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.21.0
+          args:
+             - /nginx-ingress-controller
+             #- --configmap=$(POD_NAMESPACE)/nginx-configuration
+          env:
+            - name: POD_NAME
+              valueFrom:
+                 fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+               valueFrom:
+                 fieldRef:
+                   fieldPath: meatada.namespace
+          ports:
+           - name: http
+             containerPort: 80
+           - name: https
+             containerPort: 443
+    ------------------------------------------------------------------------------
+  ----------------------nginx-ingress-service-----------------------------------
+   apiVersion: v1
+   kind: Service
+   metadata:
+      name: nginx-ingress-service
+      labels:
+         name: nginx-ingress-service
+   spec:
+     type: NodePort
+     selector:
+       matchLabels:
+          name:  nginx-ingress
+     ports:
+       - port: 80
+          targetPort: 80
+          protocol:     TCP
+          name: http
+       - port: 443
+          targetPort: 443
+          protocol: TCP
+          name: https
+     ----------------------------------------------------------------------     
+  ----------------------------configmap------------------------------
+   apiVersion: v1
+   kind: ConfigMap
+   metadata: 
+     name: nginx-configuration
+   -------------------------------------------------------------  
+  ----------------------------Auth------------------------------
+   apiVersion: v1
+   kind: ServiceAccount
+   metadata: 
+     name: nginx-configuration
+   -------------------------------------------------------------  
+ IngressRules: check the below yml files
+   - Single backend Service
+   - multiple backendservcies based on url 
+   - multiple backend services based on hostname
+   
+ ----------------Ingress-wear.yml-------for single backend service------------------
+  apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata: 
+    name: ingress-wear
+  spec: 
+    backend:
+       servicename: wear-service 
+       servicePort: 80
+  ------------------------------------------  
+  
+ -----------------Ingress-wear.yml-------for multiple backend service with url------------------
+  apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata: 
+    name: ingress-wear-watch
+  spec: 
+    rules: 
+     - http:
+         - path: /wear
+            backend: 
+               serviceName: wear-service
+               servicePort: 80
+         - path : /watch
+            backend:
+               serviceName: watch-service
+               servicePort: 80 
+    
+   ------------------------------------------  
+
+ ------------------Ingress-wear.yml----for multiple backend service with hostname--------
+  apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata: 
+    name: ingress-wear-watch
+  spec: 
+    rules: 
+     - host: wear.my-online-store.com
+        http:
+         - path: 
+            backend: 
+               serviceName: wear-service
+               servicePort: 80
+     - host: watch.my-online-store.com
+        http:
+         - path: 
+            backend: 
+               serviceName: watch-service
+               servicePort: 80
+  ------------------------------------------ 
+#To see detailed info Ingress..
+  kubectl describe ingress ingress-wear-watch
+
+-----------------ingress-rewrite.yaml--------------------------------------
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: critical-space
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /pay
+        backend:
+          serviceName: pay-service
+          servicePort: 8282
+ -------------------------------------------------------
+
+#Which namespace is the Ingress Resource deployed in?
+Run the command 'kubectl get ingress --all-namespaces'
+
+#What is the Host configured on the ingress-resource?
+#The host entry defines the domain name that users use to reach the application like www.google.com
+
+Run the command 'kubectl describe ingress --namespace app-space' and look at Host under the Rules section.
+
+#If the requirement does not match any of the configured paths what service are the requests forwarded to?
+
+Run the command 'kubectl describe ingress --namespace app-space' and look at the Default backend field.
+
+#To generate ingress YAML for  exisiting ingress
+k -n app-space get ingress -o yaml
+
+  -------------------------------------------------------------------------
+
+
+
+ =========================================================================================
+     6 - 2/2   6-2  CKAD -  Service & Networking  - Network Policies -  13%
+ =========================================================================================
+
+   NETWORK POLICIES:
+      Theses network policies are applied to PODS to control Ingress and Egress traffic.
+       incoming traffic to pod: ingress
+
+       outgoing traffic from pod: egress
+
+    - The network policies are 'SUPPORTED' by:
+        - Kube-router
+        - Calico
+        - Romana
+        - Weave-net
+    - The network policies are 'NOT SUPPORTED' by:   
+        - FLANNEL
+
+    - Pod Communication is controlled by network policies:
+
+      ---->-ingress-----[ web-server-pod ]--egress-->---->-ingress----[ app-server-pod ]--egress-->--->-ingress---[ db-server-pod ]----|
+      ----<----------------------------------------------<------------------------------------------<----------------------------------|
+
+       NOTE: in the above shown map -> ingress - incoming traffic to the pod
+                                    -> egress  - outgoing traffic from pod to other pod
+    
+    - To create network policies for pods:
+
+       -----------network-policy-def.yaml------------------------------
+       #this netwrok policy is to allow only ingree traffic from api-pod to db-pod
+        apiVersion: networking.k8s.io/v1
+        kind: NetworkPolicy
+        metadata:
+          name: db-policy
+        spec:
+          podSelector:
+            matchLabels:
+              role: db
+          policyTypes:
+            - ingress
+          ingress:
+            - from:
+               - podSelector:
+                   matchLabels:
+                   name: app-server-pod
+              ports:
+                - protocol: TCP
+                  port: 3306
+       ---------------------------------------------------------------
+       kubectl create -f network-policy-def.yaml
+
+ -------------------------------------------------------------------
+  #To allow  egress traffic 
+    apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: internal-policy
+      namespace: default
+    spec:
+      podSelector:
+        matchLabels:
+          name: internal
+      policyTypes:
+      - Egress
+      - Ingress
+      ingress:
+        - {}
+      egress:
+      - to:
+        - podSelector:
+            matchLabels:
+              name: mysql
+        ports:
+        - protocol: TCP
+          port: 3306
+
+      - to:
+        - podSelector:
+            matchLabels:
+              name: payroll
+        ports:
+        - protocol: TCP
+          port: 8080
+ -------------------------------------------------------------------
+
+#TO see the  list of network policies
+ kubectl get networkpolicy
+
+=========================================================================================================
+     7 - 1,2/2   7  CKAD -  State Persistence  - PersistentVolumes and PersistentVolumeClaims -  8%
+ =========================================================================================================
+
+
+  ---------------------------------------------------------------------
+                          STORAGE VOLUMES
+  ---------------------------------------------------------------------
+  Volumes and Mounts:
+     
+    -------------------------pod-with-volume.yaml-----------------------
+     apiVersion: v1
+     kind: Pod
+     metadata:
+       name: random-number-generator
+     spec:
+       containers:
+         - name: alpine
+            image: alpine
+            command: ["/bin/sh", "-c"]
+            args: [ "shuf -i  0-100 -n 1 >> /opt/number.out;"]
+            volumeMounts: 
+              - mountPath: /opt #this is the path inside the container
+                 name: data_volume 
+       volumes: 
+         - name: data_volume
+           hostPath: 
+              path: /data   #this is the path of the host
+              type: Directory
+     -------------------------------------------------------------------
+     there is drawback with above model , because it would create this volume copy on every node
+     -------------------------------------------------------------------
+
+    -------------------------pod-with-ext-volume-aws-ebs.yaml-----------------------
+     apiVersion: v1
+     kind: Pod
+     metadata:
+       name: random-number-generator
+     spec:
+       containers:
+         - name: alpine
+            image: alpine
+            command: ["/bin/sh", "-c"]
+            args: [ "shuf -i  0-100 -n 1 >> /opt/number.out;"]
+            volumeMounts: 
+              - mountPath: /opt
+                 name: data_volume
+       volumes: 
+          - name: data_volume
+            awsElasticBlockStore: #NOTE: this will work only if the Node is on the AWS platform.
+              volumeID: <volume-id>
+              fsType: ext4
+     -------------------------------------------------------------------      
+
+  -------------------------------------------------------------------      
+                        PersistentVolumes
+  -------------------------------------------------------------------                
+  
+  PersistentVolumes:
+     
+    ---------------------pv-def.yml---------in dev--------------
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata: 
+        name: pv-vol1
+      spec:
+        accessmode:
+           - ReadWriteOnce
+         #- ReadOnlyMany
+         #- ReadWriteMany
+       capacity:
+          storage: 1Gi
+       hostPath:
+          path: /tmp/data   
+     -------------------------------------------------------------
+     COMMANDS:
+      #To create the Persistent Volume  
+       kubectl create -f pv-def.yml
+
+      #To see the list of PVs
+       kubectl get persistentvolume
+       
+     ---------------------pv-def.yml-----------in-prod------------
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata: 
+        name: pv-vol1
+      spec:
+        accessmodes:
+           - ReadWriteOnce
+         #- ReadOnlyMany
+         #- ReadWriteMany
+        capacity:
+          storage: 1Gi
+        awsElasticBlockStore:  #NOTE: this will work only if the Node is on the AWS platform.
+              volumeID: <volume-id>
+              fsType: ext4  
+     -------------------------------------------------------------
+
+ -------------------------------------------------------------------      
+                        PersistentVolumeClaims
+ -------------------------------------------------------------------
+
+     -------------pvc-def.yml----------------------------------
+      apiVersion: v1
+      kind: PersistenceVolumeClaim
+      metadata:
+        name: myclaim
+      spec: 
+        accessModes:
+         - ReadWriteOnce
+        resources:
+          requests:
+            storage: 500Mi
+     ------------------------------------------------------------------
+     COMMANDS:
+       #To create persistenceVolumeClaims 
+       kubectl create -f pvc-def.yml
+
+       #To see the list of persistenceVolumeClaims 
+       kubectl get persistentvolumeclaim
+
+       #To delete persistenceVolumeClaims 
+       kubectl delete persistentvolumeclaim myclaim
+      
+     USAGE:
+      
+    -------------------pod-def-with-pvc.yml-------------------
+     apiVersion: v1
+     kind: Pod
+     metadata:
+       name: mypod
+     spec:
+       containers:
+          - name: myfrontend
+            image: nginx
+            volumeMounts:
+                - mountPath: "/var/www/html"
+                   name: mypd
+       volumes:
+          - name: mypd
+            persistentVolumeClaim:
+               claimName: myclaim
+     ------------------------------------------------------------------------  
+
