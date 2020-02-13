@@ -238,7 +238,7 @@
               - Service Account:
                   - Belongs to application or VM instance  instead of Individual.
                   - Each service account is associated with two sets of pub/private key
-                  - Since it doesn't have usernames and password can'tbe used to login using browsers.
+                  - Since it doesn't have usernames and password can't be used to login using browsers.
                   - These are two types:
                     - Google managed keys and user managed keys.
                   - Cloud IAM permissions can be granted to allow other users to impersonate service account.

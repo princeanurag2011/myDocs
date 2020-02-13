@@ -496,3 +496,6 @@
 
   git clone \
       https://github.com/GoogleCloudPlatform/kubernetes-engine-samples
+
+  KUBEADM using Open Stack
+  https://kubernetes.io/blog/2020/02/07/deploying-external-openstack-cloud-provider-with-kubeadm/
