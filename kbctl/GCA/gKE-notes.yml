@@ -1,0 +1,158 @@
+#kubernetes engine 52-incomplete
+--- 
+#gKE-google_kubernetes_engine
+_GKE doesn't support resource manager and scheduler
+Features:
+   - fully managed
+   - Auto scale
+   - Auto Upgrade
+   - Auto repair
+   - Hybrid networking
+   - Stackdrive logging and monitoring
+   - Stateful Application Support
+   - Docker image support
+   - resource limits
+   - private container registry
+   - IAM
+   - resource -optimized deployments
+   - reliable and self healing
+   - Provide configuration as desired system state
+Concepts:
+  cluster:
+    - Container cluster
+    - Cluster federation
+    - Cluster autoscaling
+    - Cluster lebeling
+  nodes:
+    - node pools
+    - node auto upgrade
+    - node repair
+    - node images
+  Others:
+    - load balancing
+    - IAM 
+    - IP agent
+    - others
+#---
+pods: it's an abstraction to repressent an application
+  - It holds one or more containers
+  - The containers in pod share :
+      - single IP Address
+      - single Namespace --> localhost
+      - data can be shared using Cloude storage bucket or disks
+  Lifecyle:
+    - pending: pod is created but some container are not running
+    - running: pod is bound to node and runnning all containers
+    - succeeded: ALL containers are terminated successfully
+    - failed: atleast one container has terminated failure
+    - unknown: pods can't be determined
+  Auto-scaling:
+    - pods can be Autoscaled based on cpu utilization(80%)
+    - any no. of replicas can be created (max 110 pods for node)
+
+deployments:
+  - define HA and autoscale
+  - create and manage pod lifecycle
+  - used for rolling updates/changing versions of applications running in container
+  - it take care of sservice is available to user.
+services:
+  - Cluster IP (default)
+  - Node port
+  - load balancer
+  - external Name
+  - Headless
+  - expose_service:
+     - service-type:
+         - cluster_IP: Exposes on an internal Ip in the cluster
+         - Node Port: Exposes service on same port of the each selected node
+         - Load Balancer: creates an load balancer with external IP
+Cluster:
+  - node-pools: pool of actual individual nodes like instance groups
+     - we can create multiple nodes inside node pools
+     - pools can contain different VM from one another
+     - can be in different zones
+     - node pool and multizone container cluster
+     - auto scale node in node pools
+     - GKE replicates all the pools across the cluster
+  - Auto scaling and balancing:
+     - All replicated pods can be restarted on some other nodes, possibly causing brief disruption.
+       if services are not disruption tolerant then , auto scalingis not recommended.
+     - All node in node pool have same set of labels
+     - It many override any manual node management operations that we perform as admin or user
+     - Cluster autoscaler considers least expensive vm in node pool and attemtptts to 
+       expand least expensive possible node pool
+     - CLUSTER autoscaler shouldn't be used with large clusters (more than 100-150 nodes)
+Load balancers:
+  - Internal Load balancers:
+      spec:
+      type: LoadBalancer
+  - External Load Balancers: Container native Load balancing
+      spec:
+      type: Node Port
+Node Image:
+    - Os running on the node (default one iscontainer optimized os)
+    - we can change the OS Image when requireed rolling updates.
+Node Repair:
+    - Node reports: becomes unhealthy if:
+        - Not Ready
+        - No status
+        - out of disk space
+    - repair process: automatically drains the nodes and create an other one
+Networking:
+    - define vpc for pods and nodes and services
+     
+labels and selectors:
+  - these are used to uniquely identify the nodes
+---
+#=========================example for labels and selectors==============================================
+#example: pod-def.yml
+---------------pod creation-------------------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webserver-nginx
+  labels:
+    environment: production
+    app: webserver-nginx-1
+spec:        
+  containers:
+    - name: nginx-webserver-nginx
+      image: nginx:latest
+------------------------------------------------
+-----------------------service---------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: webserver-nginx-service
+  labels:
+    environment: production
+    app: webserver-nginx-1
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+  - nodePort: 31672
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: webserver-nginx-1
+  sessionAffinity: None
+  type: LoadBalancer
+-----------------------------------------------
+#=================================================================
+Local SSD: default is set to 0 disks
+  - we can attach loal ssd to nodes while creating cluster
+  - data stored on ssd is ephermal , it's a physical device so we can add only during cluster 
+    creation time
+  - if node is terminated or down , then data can't be taken back.
+Logging an monitoring:
+   - stack driver is enabled to collect the logs
+ 
+Kubernetes federation:
+  Anthos:
+    - able to run cluster in :
+        - different regions
+        - different zones
+        - on premises
+        - other cloud envronments
+        

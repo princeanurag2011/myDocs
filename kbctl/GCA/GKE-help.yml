@@ -1,0 +1,27 @@
+---
+ #gKE: COMMAND-LINE:
+ #To create a cluster with one node
+  gcloud container clusters create kuberenetes-cluster
+
+#To create a cluster with two nodes
+  gcloud container clusters create [CLUSTER_NAME] \
+    --num-nodes 2 --local-ssd-count [NUMBER_OF_DISKS]
+	
+ #Accessing the cluster thoroug Gcloud :
+ gcloud container clusters get-credentials <cluster-name> --zone <zone-name> --project <project-name/id>
+ gcloud container clusters get-credentials kuberenetes-cluster --zone us-central1-a --project helpful-silo-261806
+
+ #to run the app in cluster
+ kubectl run app --image gcr.io/google-samples/hello-app:1.0
+
+#TO scale the application increasing replicas
+ kubectl scale deployment --replicas 3
+
+ #To expose ports open to world
+ kubectl expose deployment app -port:80 --type=LoadBalancer
+
+ #TO confirm service deployment
+ kubectl get service app
+
+ #To update the app in cluster
+ kubectl set image deployment app --image gcr.io/google-samples/hello-app:2.0
