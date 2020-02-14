@@ -1,15 +1,15 @@
 
-#Terraform infrastructure Provisioning for AWS.
+# Terraform infrastructure Provisioning for AWS.
 
-USED and TESTED with:
-Terraform v0.12.20
-+ provider.aws v2.49.0
+#### USED and TESTED with:
+Terraform v0.12.20 and
+provider.aws v2.49.0
 
 
-#Download: https://www.terraform.io/downloads.html
-#Provider help: https://www.terraform.io/docs/providers/aws/index.html
+#### Download: https://www.terraform.io/downloads.html
+#### Provider help: https://www.terraform.io/docs/providers/aws/index.html
 
-####MANDATORY TASK:
+#### MANDATORY TASK:
 1. Create an EC2 Instance.
 2. Create a Group in IAM
 3. Create an IAM User
@@ -24,38 +24,41 @@ Terraform v0.12.20
 7. Connect to an EC2-instance in AWS using .pem file provided while creating it.
 #### Now the user has both programmatic Access as well as Console Access.
 
-#After connecting to the EC2-Instance, go to the home directory
-sudo su;
-cd;
-
-#download terraform for ubuntu:
+#### After connecting to the EC2-Instance, go to the home directory:
+```
+ sudo su;
+ cd;
+```
+#### download terraform for ubuntu:
+```
 wget https://releases.hashicorp.com/terraform/0.12.20/terraform_0.12.20_linux_amd64.zip
 
 unzip -v terraform_0.12.20_linux_amd64.zip
+```
 
-#To add to Environment variables
-export PATH=$PATH:/root
+#### To add to Environment variables
+ export PATH=$PATH:/root
 
-#To check the version
-terraform version
+#### To check the version
+ terraform version
 
-#Create a directory
-mkdir infraProvision
+#### Create a directory
+ mkdir infraProvision
 
-#Go to that directory
-cd infraProvision
+#### Go to that directory
+ cd infraProvision
 
-#To add plugins and Initialize a Terraform working directory
-terraform init
+#### To add plugins and Initialize a Terraform working directory
+ terraform init
 
-# WE can provide AWS Access to Terraform in the following Ways:
+####  WE can provide AWS Access to Terraform in the following Ways:
 
- #AWS account options: ONLY OPTION 4 is RECOMMENDED Approach.
+ #### AWS account options: ONLY OPTION 4 is RECOMMENDED Approach.
 
   1. Create IAM User with Programmatic Access and Use 'Access Key ID' and
     'Secret Access key' in 'provider.tf' as shown below.
 
-  ####Sample provider file:
+  #### Sample provider file:
 -------------------provider.tf------------------------------
   provider "aws" {
   access_key = "uaasdusaQL" #use your 'Access Key ID'
@@ -75,9 +78,9 @@ terraform init
   4. Attach Admin Roles to Instance (RECOMMENDED)
       - create ROLE( it should have AmazonEC2FullAccess) and attach it to ec2-instance.
 
-#Create the definition file with .tf extension
-ex: vim 1-create-ec2-instance.tf
-Use the below code in it to create a Single EC2 instance in AWS.
+#### Create the definition file with .tf extension
+ ex: vim 1-create-ec2-instance.tf
+ Use the below code in it to create a Single EC2 instance in AWS.
 ----------------------------------------------------
   resource "aws_instance" "First_demo" {
     #ubuntu-os
@@ -90,10 +93,10 @@ Use the below code in it to create a Single EC2 instance in AWS.
   }
 ----------------------------------------------------
 
-#To generate and show execution plan
-terraform plan
+#### To generate and show execution plan
+ terraform plan
 
-####Troubleshooting:
+#### Troubleshooting:
 
    if the above command doesn't work. Then
    - check whether the logged in user has  programmatic access ?
@@ -118,9 +121,9 @@ terraform plan
        - RECOMMENDED Way is to attach Roles.
 
 
-#To Build the infrastructure plan and start Provisioning infrastructure.
-terraform apply    
+#### To Build the infrastructure plan and start Provisioning infrastructure.
+ terraform apply    
 
-#To Destroy the  provisioned infrastructure.
-terraform destroy
+#### To Destroy the  provisioned infrastructure.
+ terraform destroy
 -------------------------------------------------------------------------
