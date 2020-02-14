@@ -82,7 +82,7 @@ unzip -v terraform_0.12.20_linux_amd64.zip
  ex: vim 1-create-ec2-instance.tf
  Use the below code in it to create a Single EC2 instance in AWS.
  ```
-  ----------------------------------------------------
+  --------------1-create-ec2-instance.tf----------------
     resource "aws_instance" "First_demo" {
       #ubuntu-os
       ami = "ami-0620d12a9cf777c87"
@@ -102,10 +102,10 @@ unzip -v terraform_0.12.20_linux_amd64.zip
    if the above command doesn't work. Then
    - check whether the logged in user has  programmatic access ?
        - if yes, then check whether the 'provider.tf' has the details?
-         NOTE: provider.tf file should be present in the same working directory.
-         ####sample provider file:
+          - NOTE: provider.tf file should be present in the same working directory.
+            #### sample provider file:
       ```   
-       ---------------------------------------------------
+       -------------------provider.tf-----------------------------
          provider "aws" {
          access_key = "uaasdusaQL" #use your access_key
          secret_key = "u9d889su9s9d0" #use your secret_key
@@ -113,8 +113,9 @@ unzip -v terraform_0.12.20_linux_amd64.zip
          }
        ---------------------------------------------------
       ```
-       NOTE: This is NOT A RECOMMENDED approach as it uses keys and stores them in
-              the instance.
+      - NOTE:
+        - This is NOT A RECOMMENDED approach as it uses keys and
+          stores them in the instance.
 
    - Any Role is attached to the connected EC2 Instance?
       - if not, attach the role.
