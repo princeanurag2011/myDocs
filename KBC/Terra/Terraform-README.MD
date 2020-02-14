@@ -2,8 +2,8 @@
 # Terraform infrastructure Provisioning for AWS.
 
 #### USED and TESTED with:
-Terraform v0.12.20 and
-provider.aws v2.49.0
+ - Terraform v0.12.20 and
+ - provider.aws v2.49.0
 
 
 #### Download: https://www.terraform.io/downloads.html
@@ -59,21 +59,21 @@ unzip -v terraform_0.12.20_linux_amd64.zip
     'Secret Access key' in 'provider.tf' as shown below.
 
   #### Sample provider file:
--------------------provider.tf------------------------------
-  provider "aws" {
-  access_key = "uaasdusaQL" #use your 'Access Key ID'
-  secret_key = "u9d889su9s9d0" #use your 'Secret Access key'
-  region = "ap-south-1" #The Region where you want to provision
-  }
----------------------------------------------------
-
+  ```
+  -------------------provider.tf------------------------------
+      provider "aws" {
+      access_key = "uaasdusaQL" #use your 'Access Key ID'
+      secret_key = "u9d889su9s9d0" #use your 'Secret Access key'
+      region = "ap-south-1" #The Region where you want to provision
+      }
+  --------------------------------------------------
+ ```
   2. Create IAM User with Programmatic Access pass through Environment variables:
-
+    ```
       export AWS_ACCESS_KEY_ID="u9as8u8ADADFS9u89as89ua"  ##use your 'Access Key ID'
       export AWS_SECRET_ACCESS_KEY="98ASYD8AD99HH9suad0saud9s0" #use your 'Secret Access key'
-
+    ```
   3. Storing it under  ~/.aws/
-
 
   4. Attach Admin Roles to Instance (RECOMMENDED)
       - create ROLE( it should have AmazonEC2FullAccess) and attach it to ec2-instance.
@@ -81,18 +81,19 @@ unzip -v terraform_0.12.20_linux_amd64.zip
 #### Create the definition file with .tf extension
  ex: vim 1-create-ec2-instance.tf
  Use the below code in it to create a Single EC2 instance in AWS.
-----------------------------------------------------
-  resource "aws_instance" "First_demo" {
-    #ubuntu-os
-    ami = "ami-0620d12a9cf777c87"
-    instance_type = "t2.micro"
+ ```
+  ----------------------------------------------------
+    resource "aws_instance" "First_demo" {
+      #ubuntu-os
+      ami = "ami-0620d12a9cf777c87"
+      instance_type = "t2.micro"
 
-    tags = {
-      name = "demoInstance"
+      tags = {
+        name = "demoInstance"
+      }
     }
-  }
-----------------------------------------------------
-
+  ----------------------------------------------------
+ ```
 #### To generate and show execution plan
  terraform plan
 
@@ -103,6 +104,7 @@ unzip -v terraform_0.12.20_linux_amd64.zip
        - if yes, then check whether the 'provider.tf' has the details?
          NOTE: provider.tf file should be present in the same working directory.
          ####sample provider file:
+      ```   
        ---------------------------------------------------
          provider "aws" {
          access_key = "uaasdusaQL" #use your access_key
@@ -110,6 +112,7 @@ unzip -v terraform_0.12.20_linux_amd64.zip
          region = "ap-south-1" #The Region where you want to provision
          }
        ---------------------------------------------------
+      ```
        NOTE: This is NOT A RECOMMENDED approach as it uses keys and stores them in
               the instance.
 
@@ -124,6 +127,5 @@ unzip -v terraform_0.12.20_linux_amd64.zip
 #### To Build the infrastructure plan and start Provisioning infrastructure.
  terraform apply    
 
-#### To Destroy the  provisioned infrastructure.
+#### To Destroy the provisioned infrastructure:
  terraform destroy
--------------------------------------------------------------------------
