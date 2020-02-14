@@ -117,11 +117,11 @@ unzip -v terraform_0.12.20_linux_amd64.zip
               the instance.
 
    - Any Role is attached to the connected EC2 Instance?
-      - if not attach the role.
-     NOTE:
-       - If Roles are attached then,
+      - if not, attach the role.
+      - NOTE:
+        - If Roles are attached then,
           no need to use 'access_key' and 'secret_key' in 'provider.tf' file.
-       - RECOMMENDED Way is to attach Roles.
+        - RECOMMENDED Way is to attach Roles.
 
 
 #### To Build the infrastructure plan and start Provisioning infrastructure.
