@@ -20,15 +20,19 @@ my_id=$ID
 
 echo "My name is $MY_NAME and my password is ${MY_NAME}02120  and id is $my_id";
 
+
+
 #----------------------------MATH---------------------------------------------------------
 a=10
 b=20
 
-'expr $a + $b'   #add
-'expr $a - $b'   #sub
-'expr $a / $b'   #divide
-'expr $a \* $b'  #multiply
-'expr $a % $b'  #modulus remainder calculation
+#note this special charecter '  is single quote and this special charecter ` is backquote.
+# in the below code we used backquote.
+`expr $a + $b`   #add 
+`expr $a - $b`   #sub
+`expr $a / $b`   #divide
+`expr $a \* $b`  #multiply
+`expr $a % $b`  #modulus remainder calculation
 a=$b # assigemnt operator
 [ $a==$b ]
 [ $a!=$b ]
@@ -81,51 +85,68 @@ b=""
 
 #============case==========================
 
+================special======================
+#file name of the script
+    $0
+# position of argument supplied to script.
+    $1---9 
+#no. of arguments supplied to script.
+    $#
+# return all the argument s that are double quoted
+    $*
+# return all the argument s that are induvidually double quoted.
+    $@
+# exit status of last command. if success return 0
+    $?
+#process no. of current shell for shell script.
+   $$ 
+=======================================
+
 #Example:1
 
 case "$1" in
-	start)
-   	  /usr/sbin/sshd
-	  ;;
+  start)
+      /usr/sbin/sshd
+    ;;
     stop)
       kill $(cat /var/run/sshd.pid)
       ;;
          *)
       echo "Usage:  $0  start | stop" ; exit 1
       ;;
-  esac	  
+  esac    
 
 #Example:2
 
 case "$1" in
-	start | START)
-	  /usr/sbin/sshd
-	  ;;
+  start | START)
+    /usr/sbin/sshd
+    ;;
     stop | STOP)
       kill $(cat /var/run/sshd.pid)
       ;;
          *)
       echo "Usage:  $0  start | stop" ; exit 1
       ;;
-  esac	  
+  esac    
 
 #Example:3 
 read -p "Enter y or n :"  ANSWER
 case "$ANSWER" in
-		[yY] | [yY] [eE] [sS] )
-  					echo "yes"
-  			;;
-  		[nN] | [nN] [oO] )
-  				echo "no"
-  			;;
-  			   *)
-   				echo "Invalid answer"
-   			;;
+    [yY] | [yY] [eE] [sS] )
+            echo "yes"
+        ;;
+      [nN] | [nN] [oO] )
+          echo "no"
+        ;;
+           *)
+          echo "Invalid answer"
+        ;;
   esac
 
 #==========if=============================
 #EXAMPLE-1:
-		
+    
  if [ $a -eq $b ]
  then 
    echo $a
@@ -139,18 +160,18 @@ case "$ANSWER" in
 MY_AGE=18;
 if [ MY_AGE -lt 14 -a  MY_AGE -ge 3]
   then
-	echo "your age is ${MY_AGE}, GO TO SCHOOL"
+  echo "your age is ${MY_AGE}, GO TO SCHOOL"
 elif [ MY_AGE -ge 14  -a MY_AGE -lt 18]
   then 
     echo "your age is ${MY_AGE}, GO TO COLLEGE"
  elif [MY_AGE -ge 18 -a MY_AGE -lt 21  ] 
-  then	
+  then  
     echo "your age is ${MY_AGE}, eligible to apply driving license"
   elif [ MY_AGE -lt 3] 
    then
      echo "your age is ${MY_AGE}, Go to nursery"
    else
-   	echo "your age is ${MY_AGE}, You are major now"	
+    echo "your age is ${MY_AGE}, You are major now" 
  fi
 #============for==================
 for var  in 0 1 2 3 4 5 6 7 8 9
@@ -178,54 +199,39 @@ while [ $a -lt 100 ]
    a=`expr $a + 1`  #` back quote
  done
 
-================special======================
-#file name of the script
-    $0
-# position of argument supplied to script.
-    $1---9 
-#no. of arguments supplied to script.
-    $#
-# return all the argument s that are double quoted
-    $*
-# return all the argument s that are induvidually double quoted.
-    $@
-# exit status of last command. if success return 0
-    $?
-#process no. of current shell for shell script.
-   $$ 
-=======================================
+
  
 #===============functions=====================
 
 #!/bin/sh
 #def function
 create_user(){
-	echo "Enter username:"
-	read username
-	useradd $username
-	passwd $username
-	return 0
+  echo "Enter username:"
+  read username
+  useradd $username
+  passwd $username
+  return 0
 }
 #Invoke Function
 create_user 
 ret=$?    #return status of last function
 
 if [ ret == 0]
-	 then 
-	    echo "User with $username is created"
-	 else
-	    echo "error creating username.."
+   then 
+      echo "User with $username is created"
+   else
+      echo "error creating username.."
 fi
 
 create_root_user(){
-	echo "Enter username:"
-	read username
-	# read -p "Please enter your username: " username
-	useradd $username
-	passwd $username
-	echo "ansadmin ALL=(ALL) ALL" >> /etc/sudoers
+  echo "Enter username:"
+  read username
+  # read -p "Please enter your username: " username
+  useradd $username
+  passwd $username
+  echo "ansadmin ALL=(ALL) ALL" >> /etc/sudoers
     usermod -aG root $username
-	return 10
+  return 10
 }
 
 make_root_user(){

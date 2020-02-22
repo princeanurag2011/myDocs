@@ -20,15 +20,19 @@ my_id=$ID
 
 echo "My name is $MY_NAME and my password is ${MY_NAME}02120  and id is $my_id";
 
+
+
 #----------------------------MATH---------------------------------------------------------
 a=10
 b=20
 
-'expr $a + $b'   #add
-'expr $a - $b'   #sub
-'expr $a / $b'   #divide
-'expr $a \* $b'  #multiply
-'expr $a % $b'  #modulus remainder calculation
+#note this special charecter '  is single quote and this special charecter ` is backquote.
+# in the below code we used backquote.
+`expr $a + $b`   #add
+`expr $a - $b`   #sub
+`expr $a / $b`   #divide
+`expr $a \* $b`  #multiply
+`expr $a % $b`  #modulus remainder calculation
 a=$b # assigemnt operator
 [ $a==$b ]
 [ $a!=$b ]
@@ -80,6 +84,23 @@ b=""
 [ $a ]           #if not empty
 
 #============case==========================
+
+================special======================
+#file name of the script
+    $0
+# position of argument supplied to script.
+    $1---9 
+#no. of arguments supplied to script.
+    $#
+# return all the argument s that are double quoted
+    $*
+# return all the argument s that are induvidually double quoted.
+    $@
+# exit status of last command. if success return 0
+    $?
+#process no. of current shell for shell script.
+   $$ 
+=======================================
 
 #Example:1
 
@@ -178,22 +199,7 @@ while [ $a -lt 100 ]
    a=`expr $a + 1`  #` back quote
  done
 
-================special======================
-#file name of the script
-    $0
-# position of argument supplied to script.
-    $1---9 
-#no. of arguments supplied to script.
-    $#
-# return all the argument s that are double quoted
-    $*
-# return all the argument s that are induvidually double quoted.
-    $@
-# exit status of last command. if success return 0
-    $?
-#process no. of current shell for shell script.
-   $$ 
-=======================================
+
  
 #===============functions=====================
 
