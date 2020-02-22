@@ -90,6 +90,7 @@ Scripting:
     cat file1.txt 1>output-file1.txt 2>errors-file1.txt
     cat file1.txt &> output-file1.txt #&> redirecting output/error or both
     cat file1.txt 1> output-file1.txt 2>&1 #redirecting error and output
+    cat file1.txt 1> /dev/null 2>&1 #redirecting error and output to null # destroying data
     # < redirecting input 
     wc -l < output-file1.txt #o/p = no. of lines
     wc -l  output-file1.txt #o/p = no. of lines and filename
