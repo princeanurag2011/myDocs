@@ -15,6 +15,35 @@ Anisble:
   - APP deployments
   - Security compliance
 
+INSTALLATION:
+  #Install Ansible in redhat 
+   sudo yum install ansible
+
+ #Install Ansible in Fedora
+  sudo dnf install ansible
+
+ #Install Ansible in Ubuntu
+ sudo apt-get install ansible
+
+ #Install Ansible using PIP
+ #pre
+   sudo yum install epel-release
+   sudo yum install python-pip
+   sudo pip install --upgrade pip
+
+ #Install using PIP   
+  sudo pip install ansible
+
+ #Install secific version using PIP
+ sudo pip install ansible==2.7
+ 
+ sudo pip3 install ansible==v2.7
+
+
+Upgrade using PIP:
+sudo pip install --upgrade ansible
+sudo pip3 install ansible --upgradee
+   e
 ---
 ansible variables:
   ansible_host:
@@ -49,7 +78,7 @@ sample_inventory_file:
 
  [web:vars]
  ansible_user=ec2-user
- ansible_private_key_file=/root/anuragaws1.pem
+ ansible_ssh_private_key_file=/root/anuragaws1.pem
 
 #referring with alias -connection types -users- passwords ----
 
@@ -274,6 +303,32 @@ modules:
 
 
 ---
+Playbooks_example1: 
+------------------------------------------------------------------------------------------
+#playbook.yaml
+  ---
+  name: Play 1
+  hosts: localhost
+  tasks:
+    - name: execute comand date
+      command: date
+
+    - name: execute script on server
+      script: test_script.sh
+      tags: run-test
+
+    - name: install httpd service
+      yum:
+        name: httpd
+        state: present
+      tags: install-webserver
+
+    - name: Start web Server
+      service:
+        name: httpd
+        state: started
+      tags: start-webserver
+ ------------------------------------------------------------------------------------------
 running playbooks:
   #To check the syntax of playbook:
   ansible-playbook playbook.yml --syntax-check
@@ -289,6 +344,16 @@ running playbooks:
   ansible-playbook playbook.yml -i hosts.txt
   #note: hosts.txt should be in same location where this command is being executed
   #else specify the path
+  
+  #To run the playbook and start it specific task say (install httpd service) in the above playbook example
+  ansible-playbook playbook.yaml --start-at-task "install httpd service"
+  
+  #To run the playbook and run only a specific task say (execute script on server)  in the above playbook example  then, we can use 'tags'
+  ansible-playbook playbook.yaml --tags "run-test"
+  
+  #To skip the certains tasks , then also we can use tags
+  ansible-playbook playbook.yaml --skip-tags "run-test"
+  
 ---
 playbook_example_2:
     #create a file playbook-pingtest.yml
@@ -305,6 +370,8 @@ playbook_example_2:
   ansible-playbook playbook-pingtest.yml -i hosts.txt
   #note: hosts.txt should be in same location where this command is being executed
   #else specify the path
+  
+  
 ---
 varaibles_in_playbooks:
  -
@@ -319,3 +386,74 @@ varaibles_in_playbooks:
               path: /etc/resolv.conf
               line: 'nameserver {{dns_server}}'
 ---
+
+
+---
+playbook_example_3:
+    #create a file playbook-pingtest.yml
+
+  name: Print message
+  hosts: all
+  tasks:
+    - name: print message
+      debug:
+        msg:  hello-world from Ansible!
+        
+
+#GATHERING FACTS
+/etc/ansible/ansible.cfg
+
+gathering  = implicit  #gather facts by default 
+gathering  = explicit  #do not gather facts by default
+
+or we can set env by using 
+export ANSIBLE_GATHERING=explicit
+ansible-config dump | grep GATHERING 
+
+#To view the configurations
+ansible-config view
+ansible-config list
+ansible-config dump
+---
+playbook_example_4:
+    #create a file playbook-pingtest.yml
+
+  name: Print Node Information
+  hosts: all
+  tasks:
+    - name: print node info
+      debug:
+        var:  ansible_facts
+        
+   ---
+playbook_example_5:
+    #create a file playbook-pingtest.yml
+
+  name: To stop gathering facts
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: print node info
+      debug:
+        var:  ansible_facts
+        
+   Privilige Escalation:
+    in playbooks:
+    use 'become: yes' in playbook 
+    use 'become_method: doas' in playbook
+    use 'become_user: nginx' in playbook
+   
+    in inventory file:
+      we can use it as 
+        ansible_become=yes
+        ansible_become_method=doas
+        ansible_become_user=nginx
+     
+     while runnning as adhoc command:
+         we can use the tag 
+         ansible-playbook playbbok.yaml \
+         --become=yes \
+         --become_method=doas \
+         --ask-become-pass  #if there is any password for become method   
+         
+   

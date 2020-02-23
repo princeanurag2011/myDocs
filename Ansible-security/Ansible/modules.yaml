@@ -1,0 +1,111 @@
+#shell
+#file
+#user
+#copy
+#yum
+#setup
+
+#package:
+
+#service:
+
+#firewalld:
+     port: 8080
+     service: http
+	 source: 192.0.0.0/24
+     zone: public
+	 state: enabled
+	 permanant: yes
+	 immediate: yes
+
+#storage devices
+
+#creating logical volume groups
+
+lvg: 
+  vg: vg1
+  pvs: /dev/sdb1,/dev/sdb2
+  
+#creating logical volume
+lv:
+  vg: vg1
+  lv: lvol1
+  size: 2g
+
+#creating file systems
+
+filesystem:
+   fstype: ext4
+   dev: /dev/vg1/lvol1
+   
+   opts: -cc
+   
+#mounting file system
+
+mount:
+ fstype: ext4
+ src: /dev/vg1/lvol1
+ path: /opt/app
+ state: mounted
+
+#Creating directories
+
+ file:
+   path: /opt/app/web
+   state: directory
+   
+#Creating files
+  file:
+    path: /opt/app/web/index.html
+	state: touch
+	owner: app-owner
+	group: app-owner
+	mode: '0644'
+	
+#Archive
+ 
+  archive:
+    path: /opt/app/web
+    dest: /tmp/web.gz
+    format: zip|tar|bz2|gz
+
+#Unrachive
+   unarchive:
+     src: /tmp/web.gz
+     dest: /opt/app/web
+     remote_src: yes
+
+#Cron jobs
+
+    cron:
+      name: create a health check report
+      job: sh /opt/scripts/health.sh
+      
+      month: *  # * means every month 
+      day: *    # * means every date
+      hour: *   # * means every hour 
+      min: *     # * means every min  */2 means evry 2 min
+      weekday: * # * means every day   
+ 
+ #Users:
+   - user:
+      name: anurag
+      uid: 1001
+      group: developers
+      shell: /bin/bash
+      
+   - group: 
+       name: developers
+       
+   - authorized_keys:
+        user: anurag
+        state: present
+        key: | 
+          ssh-rsa AAAAdsdjasdj0a9sdj0asjd0asjd0asjdj0ajd0s9ajajd0a0
+          09099009ju0u0jukbkbsakjbkdksadsakkaknndaskj root@91921890
+       
+scripts
+playbooks
+
+
+

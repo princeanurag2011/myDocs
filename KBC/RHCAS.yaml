@@ -1,0 +1,30 @@
+Redhat Certified Ansible Specialist
+Redhat Certified Specialist in Ansible Automation
+EX-407  4HRS
+
+Redhat Certfied Engineer RHEL8 EX-294
+
+Linux-prerequisites:
+  - SSH Keys, authorized_keys
+  - users, groups
+  - package managers 
+  - services
+  - cron
+  - SELinux
+  - Devices, Filesystems, LVM -logical-volume-managers
+  - Firewalls
+  - Archiving
+
+RHCAS:
+   - Core Components
+   - Install and configure Ansible nodes
+   - Configure Ansible managrd nodes
+   - Create Simple Shell Script and run Adhoc commands
+   - Dynamic inventories
+   - Ansible Plays and playbooks
+   - Ansible Modules
+   - Customized Configuration files
+   - variables and facts
+   - Roles
+   - Ansible vault
+   - Documenttaion
