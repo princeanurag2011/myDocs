@@ -9,6 +9,26 @@ CSAA-8-topics:
 	- Compute:
 			- EC2:
 				 #https://aws.amazon.com/ec2/faqs/
+        - General Purpose        
+            -> t,m   
+            -> t2,t3,m3,m4 
+            -> low-traffic-websites,web-applications 
+            -> small and mid range db's
+        - compute optimized     
+            -> c    
+            -> c3,c4       
+            -> high performance frntend fleet of web servers and also for video encoding
+        - memory optimized       
+            -> x,r   
+            -> r3          
+            -> high performance databases, distributed mem caches
+        - storage optimized      
+            -> i,d   
+            -> i2,d2       
+            -> data warehousing , log or data-processing applications
+        - accelerated computing  
+            -> p,g,f -> g2          
+            -> 3d applications streaming , machine learning
 			- Elastic Beanstalk
 			- Lambda
 	- Storage:
