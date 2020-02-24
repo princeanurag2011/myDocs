@@ -418,3 +418,95 @@ Switch to Sudo user:
 ```
   ansible-playbook --ask-vault-pass vault-demo.yaml
 ```
+
+
+#### Ansible Security:
+
+ - firewall:
+
+    - iptables: rhel 6
+        - rule based firewall system, which controls i/o packets
+        - tables -> chains -> rules
+        - config files: /etc/sysconfig/iptables
+        - refer: https://docs.ansible.com/ansible/latest/modules/iptables_module.html
+    - firewallD: rhel 7
+        - new UI for RHEL7 and CENTOS7 Fedora like syatems
+        - replaces iptables, it is also called dynamic firewall manager.
+        - it has both daemon and service
+        - config files: /usr/lib/firewalld/
+        - /etc/firewalld/
+        - refer: https://docs.ansible.com/ansible/latest/modules/firewalld_module.html
+    - ufw: debian
+        - Canonical’s Uncomplicated Firewall (ufw)
+        - refer: https://docs.ansible.com/ansible/latest/modules/ufw_module.html#ufw-module
+    - the firewall stack
+
+ - SELinux:
+
+     - Security Enhanced Linux is an implentation of MAC (Mandatory Access Control) mechanism
+      in Linux Kernel.
+
+     - It is built into the Linux kernel and enabled by default on Fedora, CentOS, RHEL and a few other  Linux distributions. SELinux allows server admin to define various permissions for all process. It defines how all processes can interact with other parts of the server such as:
+        - Pipes
+        - Files
+        - Network ports
+        - Sockets
+        - Directories
+        - Other process
+
+     - SELinux puts restrictions on each of the above object according to a policy. For example, an apache user with full permission can only access /var/www/html directory, but can not touch other parts of the system such as /etc directory without policy modification.
+
+     - In other words, damage can be now restricted to the particular server and files. The cracker will not able to get a shell on your server via common daemons such as Apache / BIND / Sendmail as SELinux offers the following security features:
+
+        - Protect users’ data from unauthorized access.
+        - Protect other daemons or programs from unauthorized access.
+        - Protect network ports / sockets / files from unauthorized access.
+        - Protect server against exploits.
+        - Avoid privilege escalation and much more.
+
+     - The procedure to remove and disable SELinux security features is as follows:
+
+        - Log in to your server
+        - Check the current SELinux status, run: sestatus
+        - To disable SELinux on CentOS 7 temporarily, run: sudo setenforce 0
+        - Edit the /etc/selinux/config file and set the SELINUX to disabled
+        - Reboot the Linux server
+        - Verify it by running the sestatus and getenforce again
+
+     - Different types of security policy:
+         - /etc/selinux/config file controls the state of SELinux on the system. SELINUX= can take one of these three values:
+
+        - enforcing – SELinux security policy is enforced.
+        - permissive – SELinux prints warnings instead of enforcing (disabled).
+        - disabled – No SELinux policy is loaded (disabled).
+        - SELINUXTYPE= can take one of following:
+
+        - targeted – Targeted processes are protected.
+        - minimum – Modification of targeted policy. Only selected processes are protected.
+        - mls – Multi Level Security protection.
+
+     - Disabling SELinux permanently
+        - Edit the /etc/selinux/config file, run:
+        - sudo vi /etc/selinux/config
+
+        - Set SELINUX to disabled:
+          SELINUX=disabled
+
+        - Save and close the file in vi/vim. Reboot the Linux system:
+          sudo reboot
+
+        - After reboot, make sure following commands gives Disabled output indicating that SELinux removed and disabled on your Linux server:
+          getenforce
+          sestatus
+     - Refer: https://docs.ansible.com/ansible/latest/modules/selinux_module.html#selinux-module
+
+
+ - ntp:
+    - ntpServers details for india: https://www.ntppool.org/zone/in
+    - centos: https://www.tecmint.com/install-ntp-server-in-centos/
+    - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/system_administrators_guide/chap-configuring_the_date_and_time#sect-Configuring_the_Date_and_Time-timedatectl-NTP
+
+ - ssh hardening:
+   - refer: https://medium.com/@jasonrigden/hardening-ssh-1bcb99cd4cef
+
+ 
