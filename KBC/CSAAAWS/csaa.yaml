@@ -9,6 +9,8 @@ CSAA-8-topics:
 	- Compute:
 			- EC2:
 				 #https://aws.amazon.com/ec2/faqs/
+
+        Instanes:
         - General Purpose        
             -> t,m   
             -> t2,t3,m3,m4 
@@ -29,6 +31,20 @@ CSAA-8-topics:
         - accelerated computing  
             -> p,g,f -> g2          
             -> 3d applications streaming , machine learning
+        EBS:
+          - EBS are specific to AZ
+          - when snapshot is taken they are stored in S3
+          - If AZ goes down , still we can recover data 
+          - We can send snapshots to other regions as well
+           aws cli:
+              aws ec2 create snapshot --volume-id <vol-id> --description ""  --region   us-east-2
+              aws ec2 delete snapshot --snapshot-id <snap-id> --region   us-east-2
+          Recommended way to create snapshot:
+             - Pause all writes to volumes
+             - Unmount the volume -> take snapshot -> remount the volume 
+             -> stop the instance  -take snapshot (for root EBS volumes)
+             - Foe encrypted volumes snapshots also creates the same encrypted 
+
 			- Elastic Beanstalk
 			- Lambda
 	- Storage:
@@ -43,6 +59,14 @@ CSAA-8-topics:
 	- Networking and content delivery:
 			- VPC:
 					#https://aws.amazon.com/vpc/faqs/
+
+           Public Subnet: for weba nd app servers
+           Private Subnet: for database servers
+           NAT gateway: private internet access gateway
+           Internet gateway: for public instance gateway for internet
+           Elastic IP: attached to NAT gateway
+           Route table: for public and private subnets
+           Route table associations
 			- CloudFront
 			- Route53:
 					#https://aws.amazon.com/route53/faqs/
