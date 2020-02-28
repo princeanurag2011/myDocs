@@ -1068,6 +1068,7 @@ spec:
 StaticPods:
   - kubelet can run static pods without any cluster or master arrangement.
   - static pods can be deployed using yaml manifest files
+  - deafult static pods have  keyword '-master' appended to them.
   - default config files location..
       ps -aux | grep kubelet and look for below 
     --config=/var/lib/kubelet/config.yaml
@@ -1075,6 +1076,10 @@ StaticPods:
   - kubelet.service  -> contains the 'pod-manifest-path' by default  
   - kubelet.service  -> other way to  we can add '--config=kubeconfig.yml' and 
      in the 'kubeconfig.yml' -> mention 'staticPodPath: /etc/kubernetes/manifests'
+  - if we update the yaml in /etc/kubernetes/manifests file it automatically updates the pods
+  - Static pods vs DaemonSet, The default difference between them is 
+    DaemonSet should be always runnning and static pods can be run by kubelet without
+    cluster or master arrangement
    
 MultipleSchedulers:
   - multiple schedulers can be configured in master
