@@ -342,6 +342,18 @@ Set:
       # Set some of the local shell environment into a deployment config on the server
       env | grep RAILS_ | kubectl set env -e - deployment/registry
 
+      
+      # Set a deployment's nginx container image to 'nginx:1.9.1', and its busybox container image to 'busybox'.
+      kubectl set image deployment/nginx busybox=busybox nginx=nginx:1.9.1
+
+      # Update all deployments' and rc's nginx container's image to 'nginx:1.9.1'
+      kubectl set image deployments,rc nginx=nginx:1.9.1 --all
+
+      # Update image of all containers of daemonset abc to 'nginx:1.9.1'
+      kubectl set image daemonset abc *=nginx:1.9.1
+
+      # Print result (in yaml format) of updating nginx container image from local file, without hitting the server
+      kubectl set image -f path/to/file.yaml nginx=nginx:1.9.1 --local -o yaml
       Options:
       --all=false: If true, select all resources in the namespace of the specified resource types
       --allow-missing-template-keys=true: If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats.

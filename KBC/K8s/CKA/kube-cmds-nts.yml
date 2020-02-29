@@ -610,6 +610,15 @@ appConfiguration:
  
 # TO resume the deployments
  kubectl rollout resume deploy <deployment-name>
+
+# Set a deployment's nginx container image to 'nginx:1.9.1', and its busybox container image to 'busybox'.
+ kubectl set image deployment/nginx busybox=busybox nginx=nginx:1.9.1
+
+# Update all deployments' and rc's nginx container's image to 'nginx:1.9.1'
+ kubectl set image deployments,rc nginx=nginx:1.9.1 --all
+
+# Update image of all containers of daemonset abc to 'nginx:1.9.1'
+ kubectl set image daemonset abc *=nginx:1.9.1
  
 #note:
  ####Deployment revision is triggered only when the 'rollout' is triggered
@@ -1007,6 +1016,9 @@ DaemonSets:
  - it creates one replica of pod in each node.
  - these are coreDNS (say weavenet) and KubeProxy
  - These are same like replicaSet only 'kind' feild is changed
+ - It is similar to Deployment in manifest file  but with few changes In the DaemonSet it 
+   won't have replicas, strategy type.
+ - While creating a daemonsets from yaml for first time make sure status feild is not present.
 -------------------------------------------------------------------
 fluentd-elasticsearch-daemonset.yaml
    
@@ -1185,6 +1197,12 @@ BackupAndRestore:
         kubectl logs etcd-master -n kube-system
       #To see the etcd ENDPOINTs
         kubectl describe pod etcd-master -n kube-system    #    and look for --listen-client-urls
+
+      # At what address do you reach the ETCD cluster from your master node?
+      # Check the ETCD Service configuration in the ETCD POD
+        Use the command:
+          kubectl describe pod etcd-master -n kube-system 
+        and look for:  --listen-client-urls
 
 Drain: This is used to move pods from one node to other nodes. It is done in case of patching or OS Upgrades
 Cordon: This is used to prevent schedulng new pods on the node.
