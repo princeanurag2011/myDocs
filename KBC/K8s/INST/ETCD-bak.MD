@@ -50,5 +50,5 @@
    --key=/etc/kubernetes/pki/etcd/healthcheck-client.key snapshot status /tmp/etcd-backyp.db -w table
    
 
-  
+     <a href="https://github.com/mmumshad/kubernetes-the-hard-way/blob/master/practice-questions-answers/cluster-maintenance/backup-etcd/etcd-backup-and-restore.md">[ETCD - BACKUP AND RESTORE]</a>
   
