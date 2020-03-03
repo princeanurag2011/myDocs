@@ -1,9 +1,22 @@
 #https://aws.amazon.com/certification/certified-solutions-architect-associate/
 #https://aws.amazon.com/faqs/
-CSAA -   Certified Solution Architect Associate
+CSAA -   Certified Solution Architect - Associate
+CSAP - Certified Solution Architect - Professional
+
 CDA - Certified Developer Associate
 CSOPA - Certified SysOPS Administrator
-CSAP - Certified Solution Architect Professional
+
+READ: FAQ's: WHITEPAPERS: Deep Dive Videos: and Re: Invent: Videos:
+
+WELL ARCHITECTED AWS SOLUTION:
+
+   - Security
+   - performance Efficiency
+   - Operational Excellence
+   - Reliability
+   - Cost Optimizations
+
+
 
 CSAA-8-topics:
 	- Compute:
@@ -92,7 +105,9 @@ CSAA-8-topics:
 		 - AWS WHITEPAPERS
 		 - WELL ARCHITECTED FRAMEWORK
 		 - Security BEST PRACTISES
-
+=============================================================================================
+                                IAM 
+=============================================================================================
 
 IAM:
 	 - Identity Access Mgmt:
@@ -104,6 +119,7 @@ IAM:
 			- we can use arn for 
 				users(IAM and federated),groups,policies, instance profiles, vMFA devices, server certificates
 			- These are important part of IAM Polices to identify them easily.
+
 			- IAM POLICY:
 					- This is attached to either principals or Identity (users, groups, roles)  or resources(s3 bucket)
 					- These are stored in JSON format
@@ -115,6 +131,8 @@ IAM:
             - resource: List of resources on which action can occur (typically contains ARN resources)
             - principal: Resource based policy who is granted permissions
             - conditions: Circumstances under which the policy grants permissions.
+
+          sample Policy:
 
           -------------------------------------------------------------------------
            {
@@ -129,7 +147,7 @@ IAM:
            {
               "Version":"2012-07-15"
               "Statement":{
-                "Effect":"Allow"
+                "Effect": "Allow"
                 "Principal":{"AWS":"arn:iam::777797997897:user/bob"}
                 "Action":[
                   "s3:PutObjets"
@@ -141,22 +159,67 @@ IAM:
            } 
           
           -------------------------------------------------------------------------
-          
-          
+          sample Policy:
+          -------------------------------------------------------------------------
+          example1:
 
-          
+             {
+               "Version": "2012-05-17"
+               "Statement": [
+                  {
+                    "Effect": "Allow"
+                    "Action": [
+                       "s3:ListAllMyBuckets",
+                       "s3:GetBucketLocation"
+                   ],
+                   "Resource": "arn:aws:s3:::*"
+                  },
+                  {
+                    "Effect": "Allow"
+                    "Action": "s3:ListBucket"
+                    "Resource": "arn:aws:s3::::<BUCKET-NAME>",
+                    "conditions": "*"
+                  },               
+
+               ]            
+
+             }
+
+            -------------------------------------------------------------------------
+            example2:
+               {
+                 "Version": "2012-05-17"
+                 "Statement": [
+                  {
+                    "Effect": "Allow"
+                    "Action": "s3:*"
+                    "Resources": "*"
+                  }
+                 ]
+               }
+           -------------------------------------------------------------------------
 
 					- Identity Policies:
 							- Managed Policies:
-									- AWS Managed Polices
-									- Customer Managed Policies
+									- AWS Managed Polices: policies creatd by AWS
+									- Customer Managed Policies:
+                      - IAM > Policies > Filters > select Customer Managed Policies 
+                      - We need not to write the JSON . we can use visual editor and 
+                      choose the permissions and JSON will be automatically populated.
 							- Inline Policies:
 								 - These are attached to particular users,roles
 					- Resource Policies:
 							- These are attached to the resources like S3 directly.
+              - At present, there is only one type of resource-based policy called 
+                a role trust policy, which is attached to an IAM role.
+              - An IAM role is both an identity and a resource that supports resource-based policies.            
 					- POLICY EVALUATION LOGIC:
-							- Explicit-deny --> Explicit-allow --> default deny
+               - if multiple policies are attached to a user either directly or indirectly from 
+                  a group. then it proceeds with default deny.
+                  order:
+							- Explicit-deny > Explicit-allow  > default deny
           
+
 			- IAM ROLES:
 					- Users in AWS account access resources which they dont have access usually.
 					- Users in one AWS account to access resource in another AWS account.
@@ -168,37 +231,89 @@ IAM:
 						 -  users in different aws accounts
 						 -  Users from externally authenticated Users (web Identity Federation) - google, facebook etc.
 						 -  Provide AWS  account owned by third party SAML 2.0 
-						 -  WE CAN ATTCH ONLY ONE IAM ROLE TO EC2  Instance AT this time:
+						 -  WE CAN ATTCH ONLY ONE IAM ROLE TO EC2 Instance at this time:
 									- It can be attached to running/stopped instance.
 									- free of cost
-						 - can't be aded to groups
+						 - can't be added to groups
 						 - can't make direct request to AWS services; they are meant to be used by authorized entities
-							 such as IAM USER , apps , AWS service like EC2     
+							 such as IAM USER , apps , AWS service like EC2.
+
+          - STS:
+             - You assume an IAM role by calling the AWS 'Security Token Service' 
+               Assume Role API's :
+                  - AssumeRole
+                  - AssumeRoleWithWebIdentity
+                  - AssumeRoleWithSAML (Security Assertion Markup Language)
+
+             - These API's return a set of temporary security Credentials that applications
+               can then use to sign requests to AWS service APIs.
+
+          Role:
+             A set of permissions that grant access to the aws resources.
+          AWS Service Role:
+             A role that a service assumes to perform actions in your account on your behalf.
+          AWS Service Linked Role:
+             Prefedined by service and inludes all the perissions that the service requires to 
+             call other AWS services on your behalf.
+          Role Chaining:
+             Roll chaining occurs when you use a role to assume a second role through AWS CLI.
+
+          Federation:
+             Creation of trust relationship between and external Identity provider and AWS.
+
+          Trust Policy:
+             JSON format document in which who is allowed to assume role is defined.
+
+          Principal:
+             AWS root user, IAM user, role
+
+          Role for cross account access:
+             Granting access to the resource in one account to a trusted principal in another account.
+
       - IAM Best Practises:
           - Lock Away AWS root user access keys
           - Create Individual IAM User
           - Configure strong policy for user
           - Rotate Credentials regularly
           - Remove Unneccesary Credentials
-          - Enable MFA for Priviliged Users
+          - Enable MFA for Priviliged Users (i.e user accessing sensitive resources)
           - Use Groups to Assign permission to IAM Users
           - Use AWS defined policies whenever Possible
           - Use policy condition for exta security.
           - Grant Least Priviliges
-          - Use AWS Access level to review IAM permissions
+          - Use AWS Access level to review IAM permissions i.e List, read, Write, All
           - Use Roles to delegate Permissions
-          - Monitor activity in AWS account
-          - Loggign features are available in CloudFront, CloudTrail, CLoudWatch, Config and S3
+          - Monitor activity in AWS account  using Logging features.
+          - Logging features are available in CloudFront, CloudTrail, CLoudWatch, Config and S3
+
+
+  Read IAM Works: 
+    https://docs.aws.amazon.com/IAM/latest/UserGuide/intro-structure.html
+
+  You can create your own IAM policy using the following link:
+    https://awspolicygen.s3.amazonaws.com/policygen.html
+
+    aws s3 ls; #to see the s3 bucket list from cli
+    aws s3 mv file1.txt  s3://<bucketname>  #to move file to the bucket
+    aws s3 ls s3://<bucketname>  #to see list of files in bucketname
+
+  Read Latest FAQ's:
+    https://aws.amazon.com/iam/faqs/
+==================================================================================================
+                                     ROUTE 53
+==================================================================================================
 
 Route53:
 	Here we can purchase the Domain.
-		- If it is Public hosted zone it can be acessed from internet.
-		- If it is private hosted zone only can  be accessed from AWS resources.
+		- Public hosted zone:
+         it can be acessed from internet.
+		- Private hosted zone:
+         only can be accessed from AWS resources.
 	DNS Query:
 		- A req that is submitted by user to the DNS for a resource that is associated with domain name.
 
 	DNS Record:
-		- By deafult when we  purchase a domain in AWS . By default it creates 'ns record' and 'SOA' record.
+		- When we  purchase a domain in AWS . By default it creates 'ns record' and 'SOA' record.
 		NOTE:
 			- We can create anyone of the below records or all of them. But we can't create two records of Same Types
 					EX: we can't have two A Type records for a Single domain with same values.(say same IP's) 
@@ -208,15 +323,18 @@ Route53:
 		Types:
 		
 			A Record:
-				- Maps a domain/sub-domain to the IP Address
-
+				- Maps a domain/sub-domain to the IPV4 Address
+      AAAA:
+        - Maps a domain/sub-domain to the IPV6 address
 			CName:
 				- Canonical Name Record
 				- Points a Domain or sub domain name to another domain or subdomain 
 					 ex: gmail.com to mail.google.com
+
 			Alias Record:
 				- A type of record that can be created to route the traffic to the amazon resource
 					 like Cluod Front or s3
+
 			ns Record:
 				- nameserver record. These servers provide DNS name services.
 
