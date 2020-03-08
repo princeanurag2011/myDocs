@@ -79,7 +79,7 @@
        free -h
        cat /proc/swaps
       ```
-   - *NOTE*: if we don't turn off swap permanently, then after restating instances. we will get the connection
+   - *NOTE*: if we don't turn off swap permanently, then after restarting instances. we will get the connection
        refused error. The connection to the server <master-ip>:6443 was refused - did you specify the right host or port? 
        
    - then To resolve this issue: use the below commands:
