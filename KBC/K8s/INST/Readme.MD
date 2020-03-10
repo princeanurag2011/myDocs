@@ -79,6 +79,22 @@
        free -h
        cat /proc/swaps
       ```
+   - *NOTE*: if we don't turn off swap permanently, then after restarting instances. we will get the connection
+       refused error. The connection to the server <master-ip>:6443 was refused - did you specify the right host or port? 
+       
+   - then To resolve this issue: use the below commands:
+       
+   - check whether the port is listening
+      ```
+       netstat -a | grep 6443
+      ```
+   - if port is not in listening state; then use the following commands:
+      ``` 
+         sudo -i
+         swapoff -a
+         exit
+         strace -eopenat kubectl version
+      ```
 ### 5. To add a node to this master run the following command on ONLY ON NODE instance (Other EC2 INSTANCE)
   ##### This below command is already auto-generated from step 3 and In your case it would be different.
   ```

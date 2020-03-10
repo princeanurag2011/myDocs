@@ -5,7 +5,7 @@ echo "=================================================================";
 echo "=================================================================";
 echo "Installing kube Master - Updating packages step- 1/10"; 
 echo "=================================================================";
-sudo apt-get update && apt-get upgrade -y;
+sudo apt-get update && apt-get upgrade -y && apt install wget curl -y;
 echo "=================================================================";
 echo "Installing kube Master - Installing docker step- 2/10";
 echo "=================================================================";

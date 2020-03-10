@@ -7,7 +7,8 @@ echo "=================================================================";
 echo "Installing kube node - Updating packages 1/9"; 
 echo "=================================================================";
 
-sudo apt-get update && apt-get upgrade -y;
+sudo apt-get update && apt-get upgrade -y && apt install wget curl -y;
+
 
 echo "=================================================================";
 echo "Installing kube node - Installing docker 2/9";
