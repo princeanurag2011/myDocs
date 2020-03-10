@@ -1,0 +1,24 @@
+---
+ - hosts: webservers
+   remote_user: ansadmin
+   become: true
+   tasks:
+    - name: Ensure apache webserver is installed..
+      yum:
+       name: httpd
+       service: installed
+    - name: copy files into server
+      template:
+       src: /srv/httpd.j2
+       dest: /etc/httpd.conf
+      notify:
+       - restart apache
+    - name: Ensure apache is running
+      service:
+       name: httpd
+       state: started
+   handlers:
+    - name: restart apache
+      service:
+        name: httpd
+        state: restarted

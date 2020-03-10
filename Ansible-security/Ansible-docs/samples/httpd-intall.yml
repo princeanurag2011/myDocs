@@ -1,0 +1,24 @@
+---
+- hosts: webservers
+  remote_user: ansadmin
+  become: yes
+  tasks:
+  - name: ensure apache is at the latest version
+    yum:
+      name: httpd
+      state: installed
+  - name: copying templates to webservers
+    template:
+      src: templates/index.html
+      des: /var/www/html
+    notify:
+    - restart apache     
+  - name: ensure apache is running
+    service:
+      name: httpd
+      state: started
+  handlers:
+    - name: restart apache
+      service:
+        name: httpd
+        state: restarted

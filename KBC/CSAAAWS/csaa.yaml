@@ -472,7 +472,119 @@ ELB AND AutoScaling:
 	 	  	   	  - Operates in the Transport Layer @ Layer4
 
 	 	  
- 
+ =======================================================================================
+                      S3 - Simple Storage Service
+ =======================================================================================
+
+   S3: It's OBJECT based storage.
+       objects: IMAGE/AUDIO/VIDEO/WORD/EXCEL/POWERPOINT etc., any file.
+       There is no ability to edit content of the file. only get ,upload, delete and download.
+     - Durability: 99.999999999%  # total 11 - 9's over a year
+     - By default objects stored in s3 are stored in min, 3 available zones within a region.
+     - Highly Scalable and mnaged by AWS
+     - Highly Reliable 
+     - Fast uploads suing multipart upload options
+     - Low price inexpensive:
+         s3 standard > s3 standarad infrequent access > s3 on zone infrequent access.
+     -  Highly Secure , provide server side and client side encryptions
+     - Easy interface for data transfer 
+     - Easy integration with other services
+
+   USE-Cases:
+   
+     - Backup and Recovery
+     - Data Archiving
+     - Data Lake for Big Data Analytics
+     - Hybrid coud Storage
+     - Cloud Native Application Data
+     - Disaster recovery
+     - Don't cases:
+         - should not be use for installing OS .
+         - should not be used as mounting volume where high I/O operations is needed.
+         -  To do these above opeartions EBS should be used:
+               - In EBS data is stored in volumes and blocks and split into evenly sized blocks.
+               - Each block has its own address but no metadata.
+               - When storing large amount of data, the files are split into smaller chunks and
+                 distributed among the storage nodes.
+
+
+     TOPICS:
+        - Basic concepts
+        - Bucker management
+        - Managing Access and Permissions
+        - Storage Classes
+        - Data Proctection
+        - Metadata, tags, and Events
+        - Create a Static website
+        - Object life cycle management
+        - Logging
+        - performance management
+        - Cross Object Resource sharing
+        - Best Pracatises
+        - Summary    
+       
+       Bucket: 
+          - A container that stores objects that are uploaded to s3 
+          - There wont be any object without a bucket.
+          - S3 service console allows to create folders inside a bucket.
+          - Every time an object is added to it . it geneerates an unique ID.
+          - You can create buckett in any region
+            (choose a bucket region that is geographically closest to you.)
+          - An object consists of Object data and metadata of objects 
+          - S3 doesnt read the Object , but it only reads the metadata associated with it.
+        ENDPOINTS:
+           this endpoint url is generated based on the bucket region.
+           https://s3.us-east-2.amazonaws.com/<bucketname>/image.png
+        KEY:
+           - Key is basically name of the unique identifier of the Object.
+           - Every object in the bucket has exactly one key.
+           - The combination of 
+              - bucketname
+              - key
+              - versionID 
+             uniquely identifies the objecct in s3.
+        Region:
+          - while creating bucket we need to choose a region.
+          - we can acces the buket from any region.
+          - we can replicate the object in a bucket in one region to another region 
+             via Cross - Region Replications.
+        Data consistency:
+          - Depicts how the result would be after certian operation like puts, deletes , gets
+            performed on the objects.
+
+          - Eventual consistency for overwrite PUTS and DELETES
+              - Object is still readble even after deleting for some period of time.
+              - if file name is changed. it takes time to update the change.
+
+          - Read after write consisteny for new PUTS. 
+             - if we upload a new object and it is readable immediately.
+
+        API:
+          - REST based web services. 
+          - PUT, GET, DELETE, POST  for creating, reading, deleting, and updating operations.
+          - SOAP supports over HTTP is deprecated. but it is still avilable over HTTPS
+
+
+
+      Versioning:
+        States of Buckets:
+           - Un versioned:
+           - Versioning ENABLED:
+                 once versoning is enable we cant go backto unversioned state.
+           - Versioning Suspened:
+                once versioning is enable we can suspend the version
+
+        - Versioning state applies to all of the buckets.
+        - Once versioning is enabled. All subsequent add/modified objects are versioned and 
+           given an unique id.
+        - Object stored in Un-versioned bucket have null as their version id.
+        - You have to make the objects of each version as public even if the previous 
+           version was public. because newly created objects are not public by default.
+        - If we delete and object inthe un version bucket . it 's lost forever
+        - if we delete the object in verion enabled bucket. then it adds a delte marker 
+        which hides the  objects, to estore deleted object we can delete that marker 
+
+
 
 
 

@@ -1,0 +1,145 @@
+-
+    name: 'Execute a script on all web server nodes and start httpd service'
+    hosts: web_nodes
+    tasks:
+        - #https://docs.ansible.com/ansible/latest/modules/lineinfile_module.html
+            name: 'Update entry into /etc/resolv.conf'
+            lineinfile:
+                path: /etc/resolv.conf
+                line: 'nameserver 10.1.250.10'
+        - #https://docs.ansible.com/ansible/latest/modules/user_module.html
+            name: 'To create a new web user'
+            user:
+              name: web_user
+              uid: 1040
+              group: developers
+        - #https://docs.ansible.com/ansible/latest/modules/script_module.html
+            name: 'Execute a script'
+            script: /tmp/install_script.sh
+        - #https://docs.ansible.com/ansible/latest/modules/service_module.html
+            name: 'Start httpd service'
+            service:
+                name: httpd
+                state: present
+        - #https://docs.ansible.com/ansible/latest/modules/firewalld_module.html
+            name: 'Disable SNMP Port'
+            firewalld:
+                port: 160-161
+                permanent: true
+                state: disabled
+
+- #Using varaibles_in_playbooks
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html
+    name: 'Update nameserver entry into resolv.conf file on localhost'
+    hosts: localhost
+    vars:
+      car_model: BMW M3
+      country_name: USA
+      title: Systems Engineer
+    tasks:
+        -
+            name: 'Print my car model'
+            command: 'echo "My car''s model is {{car_model}}"'
+        -
+            name: 'Print my country'
+            command: 'echo "I live in the {{country_name}}"'
+        -
+            name: 'Print my title'
+            command: 'echo "I work as a {{title}}"'
+- # Using conditonals
+  # https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html
+  #https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html
+  #https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html#the-when-statement
+    name: 'Execute a script on all web server nodes using conditions'
+    hosts: all_servers
+    tasks:
+        -
+            service: 'name=mysql state=started'
+            when: 'ansible_host == "sql01.xyz.com"'
+            #check the host file for anisble_host vasiraible
+- # example to use conditionals
+#https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html
+#https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html#the-when-statement
+    name: 'Am I an Adult or a Child?'
+    hosts: localhost
+    vars:
+        age: 25
+    tasks:
+        -
+            command: 'echo "I am a Child"'
+            when: 'age < 18'
+        -
+            command: 'echo "I am an Adult"'
+            when: 'age >= 18'
+- #example to use register the output and then run the tasks
+#https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html#register-variables
+    name: 'Add name server entry if not already entered'
+    hosts: localhost
+    tasks:
+        -
+            shell: 'cat /etc/resolv.conf'
+            register: command_output
+            # register is used to store the output of file in the given vriable command_output
+        -
+            shell: 'echo "nameserver 10.0.250.10" >> /etc/resolv.conf'
+            when: 'command_output.stdout.find("10.0.250.10") == -1'
+
+- #loops / with_items
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_loops.html
+    name: 'Print list of fruits'
+    hosts: localhost
+    fruits:
+        - Apple
+        - Banana
+        - Grapes
+        - Orange
+    tasks:
+        -
+            command: 'echo "{{ item }}"'
+            with_items: '{{ fruits }}'
+
+- #install Multiple packages with with_items
+    name: 'Install required packages'
+    hosts: localhost
+    packages:
+        - httpd
+        - binutils
+        - glibc
+        - ksh
+        - libaio
+        - libXext
+        - gcc
+        - make
+        - sysstat
+        - unixODBC
+        - mongodb
+        - nodejs
+        - grunt
+    tasks:
+        -
+            yum: 'name={{ item }} state=present'
+            with_items: '{{ packages }}'
+
+
+#- Ansible Roles
+
+#example-1:
+
+  ---
+    - name: Database Setup
+      hosts: dbservers
+      remote_user: root
+      roles:
+        - common  #include the yaml files in this directory
+        - database #include the yaml files in this directory
+
+#example-2:
+     # TO download roles from ansible galaxy
+     #   ansible-galaxy install username.package
+     #   ex: ansible-galaxy install jeqo.nginx
+  ---
+    - name: Web Server Setup
+      hosts: webservers
+      remote_user: root
+      roles:
+       - { role: jeqo.nginx }

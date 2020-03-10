@@ -1,0 +1,67 @@
+ansible ad-hoc commands
+
+module
+  -a:
+    ansible webservers -a "/sbin/reboot" -f 10 --become
+  ping:
+    ansible all -m ping
+  shell:
+     ansible webservers -m shell -a 'uname -a'
+  copy:
+    ansible webservers -m copy -a "src=/etc/hosts dest=/tmp/hosts"
+  file:
+    ansible webservers -m file -a "dest=/srv/foo/b.txt mode=600 owner=mdehaan group=mdehaan"
+    ansible webservers -m file -a "dest=/srv/foo/b.txt state=absent"
+  yum:
+    ansible webservers -m yum -a "name=acme state=latest"
+                                           #state=latest (to check installed version is latest)
+                                           #state=present (to ensure whether installed)
+                                           #state=absent (To ensure a package is not installed)
+
+
+  service:
+    ansible webservers -m service -a "name=httpd state=started"
+                                           #state=started (Ensure a service is started on all webservers)
+                                           #state=stopped (Ensure a service is stopped)
+                                           #state=restarted (restart a service on all webservers)
+
+  user:
+
+  raw:
+   ansible webservers -m raw -a "test -e /usr/bin/python || apt install python -y "
+
+
+  authorized_key:
+
+   ansible webservers -m authorized_key -a "user=root exclusive=no key='{{  lookup (\'file,\' \'\/.ssh\/id_rsa.pub\/\') }}'"
+
+  setup:
+      ansible all -m setup
+
+  template:
+
+  package:
+
+  register:
+
+  lineinfile:
+
+  blockinfile:
+
+  fetch:
+
+  stat:
+
+
+Package Management:
+  - apt , yum,  pkg, apt_repository - Use 'Package' Instead
+
+Files and Directories:
+  - template, file, lineinfile, blockinfile, copy, fetch and stat
+
+System:
+  - service, user, group, cron, hostname, authorized_keys, iptables, modprobe,
+    kernel_blacklist, gluster_volumes, lvm, zfs
+
+Various_Useful:
+  - raw, synchronize, get_url, unarchive, ec2, rds

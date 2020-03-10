@@ -1,0 +1,18 @@
+---
+name: Test connectivity of nodes
+hosts: all
+tasks:
+  - name: Ping Test
+    ping:
+
+  - block:
+    
+     - name: List root
+       command: "ls /"
+
+       rescue:
+         - name: Only run when a task inside a block throws error
+           debug: msg="Domething went wrong"
+       always:
+         - name: Always Run
+           debug: msg="Runs regardless of what happens"

@@ -2921,11 +2921,25 @@ The volumeClaimTemplates will provide stable storage using PersistentVolumes
 provisioned by a PersistentVolume Provisioner.
 
 
+========================================================================
+                  Kubernetes dashboard 
+========================================================================
+
+#To download dashboard
+kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+#To run the dashboard
+kubectl proxy &
 
 
+#To create access to dashboard
+kubectl create serviceaccount dashboard -n default  
+kubectl create clusterrolebinding dashboard-admin -n default  --clusterrole=cluster-admin  --serviceaccount=default:dashboard
+
+#To get the service token for dashboard
+kubectl get secret $(kubectl get serviceaccount dashboard -o jsonpath="{.secrets[0].name}") -o jsonpath="{.data.token}" | base64 --decode
 
 
-
+http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
 
 
 

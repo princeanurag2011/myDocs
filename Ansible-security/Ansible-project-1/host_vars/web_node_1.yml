@@ -1,0 +1,4 @@
+ansible_host: web01.xyz.com
+ansible_connection: winrm
+ansible_user: administrator
+ansible_password: Win$Pass
