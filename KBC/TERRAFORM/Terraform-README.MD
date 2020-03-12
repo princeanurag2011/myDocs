@@ -87,6 +87,7 @@ unzip -v terraform_0.12.20_linux_amd64.zip
       #ubuntu-os
       ami = "ami-0620d12a9cf777c87"
       instance_type = "t2.micro"
+      key_name= "key-pair" #check for exisiting key in aws ec2-dashboard > network security > key-pair  #key-pair  if already it's present you can use that.
 
       tags = {
         name = "demoInstance"
