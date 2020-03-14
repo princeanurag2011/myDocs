@@ -26,7 +26,7 @@ sudo mv ./kubectl /usr/local/bin/kubectl
 
 ### 3) Setup S3 bucket
 ### 4) Setup hosted Zone
-
+ 
 ### 5) Public keys
 --------------------------------------------------------------------------------
 ssh-keygen -f ~/.ssh/kbdatacorplogin
@@ -35,6 +35,8 @@ ssh-keygen -f ~/.ssh/kbdatacorplogin
 ### 6) awscli setup
 
 ### 7) Terraform setup
+ https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip
+
 --------------------------------------------------------------------------------
 ```
 kops create cluster \
