@@ -1776,10 +1776,10 @@ k -n app-space get ingress -o yaml
                 - 1.We are using openssl  to create CA 
            	           # 1. Generate keys using open ssl 
                                openssl genrsa \ 
-                               -out ca.key 2048
+                               -out ca.key 2048 
                                #outputs ca.key
                          # 2. Certificate signing request
-                                openssl req -new \ 
+                               openssl req -new \ 
                                -key ca.key \ 
                                -subj "/CN=KUBERNETES-CA" \ 
                                -out ca.csr
@@ -1910,7 +1910,14 @@ k -n app-space get ingress -o yaml
                          -key adminuser.key \ 
                          -subj "/CN=adminuser" \ 
                          -out adminuser.csr;
-                         
+
+                         #or 
+ 
+                         openssl req -new \ 
+                         -key adminuser.key \ 
+                         -out adminuser.csr;
+                         #if we dont enter subject , then it will prompt for CN name etc.,
+
                          cat adminuser.csr | base64
                          #copy the generated key and paste it under request section of yaml file below
                          -------------adminuser-csr.yaml-----------------------
@@ -2210,17 +2217,14 @@ k -n app-space get ingress -o yaml
               metadata:
                 name: devuser-developer-binding
               roleRef:
-                kind: Role
-                name: developer
-                apiGroup: rbac.autherization.k8s.io
+                 kind: Role
+                 name: developer
+                 apiGroup: rbac.autherization.k8s.io
               subjects:
                - kind: User
-                  name: devuser
-                  apiGroup:  rbac.autherization.k8s.io
-               - apiGroups: [ "" ]
-                  resources: [ "pods" ]
-                  verbs: [ "list", "get", "create", "update", "delete" ]
-            ----------------------------------------------------------
+                 name: devuser
+                 apiGroup:  rbac.autherization.k8s.io
+             ----------------------------------------------------------
             kubectl create -f    devuser-developer-role-binding.yaml
             
            #To view the roles
@@ -2256,9 +2260,11 @@ k -n app-space get ingress -o yaml
             #To check access to (other users) 
              kubectl auth can-i create deployments --as dev-user
              kubectl auth can-i create pods --as dev-user
+             kubectl get pods --as dev-user
             #To check access to (other users)  in different namespaces
              kubectl auth can-i create deployments --as dev-user
              kubectl auth can-i create pods --as dev-user --namespace test   
+
 
           CLUSTER-SCOPE ROLES:
              #To see the api-resource in namespaces
@@ -2300,9 +2306,9 @@ k -n app-space get ingress -o yaml
                   metadata:
                     name: cluster-admin-role-binding
                   roleRef:
-                    kind: ClusterRole
-                    name: cluster-administrator
-                    apiGroup: rbac.autherization.k8s.io
+                     kind: ClusterRole
+                     name: cluster-administrator
+                     apiGroup: rbac.autherization.k8s.io
                   subjects:
                    - kind: User
                      name: cluster-admin
