@@ -157,20 +157,55 @@ AWS Organization:
    - easy to search and filter.
 
  Tags Types:
-   - Technical Tags
-   - Tags for Automation
-   - Business tags 
-   - Security Tags
+   - Technical Tags:
+       Name,AppID,AppRole,Cluster,Env,Version
+   - Tags for Automation:
+       DateandTime, Opt-in/Opt-out, Security
+   - Business tags:
+       Owner, Business Unit, Customer, Project Name
+   - Security Tags:
+       Confidentiality, and Compliance.
+  Strategies:
+    - Tags for AWS console Organization: easy to search and filter resources
+    - Tags for Cost Allocation: 
+        - This eables detailed Billng report
+        - Customer can activate an AWS generated createdBy tag to Avoid uncategorized resources.
+    - Tags for Automation:
+        Automation tags are used for opt-in and Opt-out of automated tasks to identify  
+        specific version of resources to achive update or delete.
+    - Tags for Access Control:
+        - IAM support tag based conditions 
+        - Enable constraints based on the tags
+
+  Best Practises:
+      - Create stadardised tags in case sensitive format.
+      - Too many tags are better than few tags.
+      - Leverage automated tools such as Resource Groups
+      - Be watchful while editing tags.
+
+=================================================================================
+               1. Design for Organization Complexity -  Security across Accounts
+=================================================================================
+
+ Security in Single Account:
+   - IAM 
+ Mgmt and governanace:
+   - Amazon Cloud Watch: Manage Metrics, Trace logs
+   - AWS Cloud Trail: Monitor allAPI activity
+   - AWS Config: Manage All Confguration of resources 
+   - AWS Organizations: Centralized control of Multiple AWS Accounts
+
+ Strategy:
+   Master account ---> security account --> Developer Accont
+                                        --> Production Account
+
+   - In the above schema centralized security account:
+            - should only be used to store logs.
+            - should have limited user access.
+            - should not have ability to delete LOGS.
 
 
-
-
-
-
-
-
-
-
+=================================================================================
 
 
 
