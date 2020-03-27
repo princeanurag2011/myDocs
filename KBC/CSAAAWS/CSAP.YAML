@@ -10,3 +10,195 @@ CSAP - Certified Solution Architect - Professional
   - Implement cost control Strategies.
 
   
+AWS SolArchProfessional:
+
+1. Design for Organization Complexity:
+  - AWS Organization
+  - Cross Account Access
+  - Tagging
+  - Security across Accounts
+
+2. Design Networks for Complex Organizations:
+  - VPN
+  - AWS DIRECT CONNECT
+  - VPC PEERING
+  - NETWORK SECURITY (EP, NACL,SG )
+  - AWS TRANSIT GATEWAY
+  - NTWRK LB
+  - PRVT HOSTED ZONE 
+  - OTHER ROUTING POLICIES
+  - GEOPROXIMITY ROUTING POLICY
+  - Complex networking Configuration
+  - SAML federation
+
+2.1 Design for new solutions:
+ - AWS directory Service
+ - AWS cognito
+ - IAM credentials  and Access mgmt roles
+ - encryption in S3,KMS,EBS
+ - AWS certificate mgr
+ - AWS insector
+ - AWS Guard Duty
+ - AWS Sheild
+ - Security against Man-in-middle attacks
+ - Securing against DDOS attacks
+ - EC2 intrusion Detection and Prevention
+ - The Key mgmt service
+
+2.2 Solution Strategy to meet reliability requirements:
+ - Disaster recovery Platforms
+ - EC2-Autoscaling
+ - Network Redundancy
+ - route 53 Health Checks
+ - AWS lambda and SQS
+ - S3- Cross region replications
+ - Dynamo DB HA
+
+2.3 Solution to meet performance Objectives:
+ - Cloud Front with S3
+ - Data Analytics
+ - Amazon Machine Learning tools
+ - Amazon Athena
+ - Amazon Workspaces
+ - Amazon App stream 
+ - AWS Kinesis Data Stream
+ - kinesis Data Firehouse
+ - Instance Types
+ - API gateway AWS Lambda
+ - Labs AWS Batch
+
+3.Migration Planning:
+ - Data Transfer methods
+ - Data Migration Services
+ - Migrating Workloads uses cases
+
+4. Cost Control:
+ - AWS cost Explorer
+ - Cost Consideration
+ - EC2 Cost optimization
+ - S3 Intelligent tiering/storage classes
+
+5. Continuous Improvement for Existing Solutions:
+ - Security
+ - CI and CD tools
+ - Blue Green Deployments
+ - Rolling deployments
+ - Elastic beanstalk
+ - Elastic Container Service
+ - AWS Ops Works
+ - Improving Network Performance
+ - Compute HA
+ - EBS HA
+ - AWS Storage Gateway
+ - EFS
+ - Serverless Application Model
+ - Network Devices HA
+ - AWS Tools
+ - Improving Performance of Applications
+
+=================================================================================
+               1. Design for Organization Complexity - AWS Organization
+=================================================================================
+
+AWS Organization:
+   - Multiple AWS master accounts can be controlled using AWS Organizations.
+   - This AWS Organization can be create from one MAster account and we can add
+     the remaining account as the members.
+   - We can group accounts into organizational units.
+   - We can have consolidated billing for all the accounts under AWS organization.
+
+   - The resources usages can be controlled through 'Service Control policies' in the
+     AWS organizations. These are applied to root level. 
+
+
+=================================================================================
+=================================================================================
+               1. Design for Organization Complexity -  Cross Account Access p173789 o512790
+=================================================================================
+   Let's give our S3 access to user in other AWS account:
+   from present account (say id:123456789)
+     -> Click on Create a role in IAM section.
+     -> Choose another aws account 
+     -> give other aws account-id (to which you are trying to give access. say id:123456790) 
+          NOTE: (click on the account name -> my account on top right banner in mgmt 
+                console to see the account id)
+     -> can select MFA / external id if required. while creating.
+     -> attach permission policies 
+     -> Click on create role.
+     -> Click on the newly created ROLE and Copy the Role ARN (in sumary section ).
+     -> Now goto that AWS account (say 123456790) to which you are trying to give access.
+     -> goto IAM select an user to whom we need to give access
+     -> Click on that user -> permissions -> inline policies -> Click on JSON
+     -> try to add the code in below format. and attach it to user
+     -----------------------------------------------------------------------------
+      {
+        "Version":"2020-03-27",
+        "Statement": {
+          "Effect": "Allow",
+          "Action": "sts:AssumeRole" #sts - Security Token Service -Assumed Role.
+          "Resource": "arn:aws:iam::123456789:role/externals3role" #This is the arn copied earlier.
+        }
+
+      }
+     -----------------------------------------------------------------------------
+     -> Now login with that user.
+     -> by default he can't see anything.
+     -> Now click on the Switch role.
+         NOTE: (click on the account name -> switch role on top right banner of the mgmt console)
+     -> Give the account ID 123456789 and role name created in that account.
+     -> Now click on switch role that's it.
+                
+=================================================================================
+=================================================================================
+               1. Design for Organization Complexity -  Tagging
+=================================================================================
+ Tags:
+   - Metadata in the form of key value pair.
+   - easy to search and filter.
+
+ Tags Types:
+   - Technical Tags
+   - Tags for Automation
+   - Business tags 
+   - Security Tags
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
