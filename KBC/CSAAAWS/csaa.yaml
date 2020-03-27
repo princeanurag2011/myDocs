@@ -110,10 +110,12 @@ CSAA-8-topics:
 =============================================================================================
 
 IAM:
-	 - Identity Access Mgmt:
-			 #when we create user/group by default it wont have any access to aws resources.
+	 - Identity Access Mgmt: 
+			 #when we create user/group by default it won't have any access to aws resources.
 			 #This is called default deny or Non-Explicit -Deny
 			 #IAM Users and Groups should be given least access(only the required)  to AWS resources
+       This is a Global service and not restricted to any specific region.
+       - 'Access Advisor' shows the permissions granted to User and when theay are last used.
 			- ARN - amazon resource name
 			- arn:partition:service:region:account:resource #format
 			- we can use arn for 
@@ -231,7 +233,7 @@ IAM:
 						 -  users in different aws accounts
 						 -  Users from externally authenticated Users (web Identity Federation) - google, facebook etc.
 						 -  Provide AWS  account owned by third party SAML 2.0 
-						 -  WE CAN ATTCH ONLY ONE IAM ROLE TO EC2 Instance at this time:
+						 -  WE CAN ATTACH ONLY ONE IAM ROLE TO EC2 Instance at this time:
 									- It can be attached to running/stopped instance.
 									- free of cost
 						 - can't be added to groups
@@ -299,6 +301,121 @@ IAM:
 
   Read Latest FAQ's:
     https://aws.amazon.com/iam/faqs/
+
+   ---------------------------------------------------------------------------------------------
+
+                          STS - SECURITY TOKEN SERVICE
+   ---------------------------------------------------------------------------------------------
+     
+     - It is a web service, that enables  you to request temporary credentals for a limited period of time.
+       to the IAM users or federated users.(external users)
+
+     - Federated Users:
+         - external users - managed  in external directory.
+         - Using STS we ca give temporary access to this users.
+     - AWS has soft limit of 5000 IAM users per account.
+
+      - AssumeRoleWithWebIdentity:
+          Provides access to the authorized apps throuh scail media apps like fb and gmail
+          - Starts using the app
+          - redirects authentication and receive ID token.
+          - Login with Amazon IdP (fb gmail etc.,) 
+          - Exchange IF token for cognito token
+          - Exchange cgnito token fo temporary credentials.
+          - Uses temporary credentials to acces the service.
+
+      - AssumeRoleWithSAML (Security Assertion Markup Language): 
+         provides single Signon link. using a external directory like LDAP
+          - Users Bowses to IdP (Identity provider)
+          - IdP authenticates User.
+          - IdP return SAML assertion.
+          - Client Posts SAML  assertion to sign-in url
+          - ENdpoint validates and send redirect.
+          - Client is sent to the AWS mgmt console.
+
+ ---------------------------------------------------------------------------------------------
+                        WAF - WEB APPLICATION FIREWALL &  SHEILD
+ ---------------------------------------------------------------------------------------------
+   WAF: free of cost.
+   Helps in Protecting web applications from common exploits. like security, avilability and consumeexcessive resources.
+  
+  - This is used for Monitor the HTTP and HTTPS requests  that are forwarded to 
+     AMAZON API,
+     AMAZON CloudFront
+     Application Load Balancer
+  - It gives control over which trafic to allow/block using custom define security rules.
+
+  vulnerebilities: WAF look for following vulnerebilties.
+    - XSS - cross site scripting
+    - IP address or address ranges that originating from .
+    - Country or geographical location that requests originating from.
+    - length of specified part of requests, such a query string.
+    - SQL injection
+    - HTTP headers or string inside the query string.
+
+  WEB ACL:
+    - these check conditon are defined in rules. and they are executed based on the order.
+
+  AWS SHEILD:
+    - provide protection against DDos Attacks.
+
+   DDos Attack:
+     Distributed Denial of services. Creates a overwhelming false traffic and makes the application 
+     unavailabe to users. In shots it crases the applications.
+ 
+  Types of sheilds:
+    - AWS Sheild standard - free of cost:
+       - Sheilds Network and Transport Layer DDos attacks that targets your webapplication.
+    - AWS Sheild Advanced -addditional charges :
+       - provides expanded DDos Attack protection for web applications running on EC2, CloudFront,
+          ELB, ROUTE53
+ ---------------------------------------------------------------------------------------------
+ 
+ --------------------------------------------------------------------------------------------
+                      SECURITY GROUPS
+ --------------------------------------------------------------------------------------------
+   - proctects Instances by applying security rules like firewall
+   - we can configur re rules on security groups for different type of requests like
+     HTTP,HTTPS,UDP,ICMP and port numbers.
+   - By default when a new security grou is created. It 'denies' all traffic. Incoming/Inbound traffic.
+   - By default Outgoing/outbound traffic is allowed.
+   - Thes are called stateful. beacuse if inbound traffic is  allowed outgoing is automatically alowed.
+
+ --------------------------------------------------------------------------------------------
+                KMS & Cloud HSM
+ --------------------------------------------------------------------------------------------
+   KMS:
+      - Key management service.
+      - Used to create and control the encrypted keys
+      - Integrated with most AWS services that encrypts ur data.
+      - Creates and securely stres ur master keys  called   CMKs Customer manged Keys.
+      - These CMKs are protected by FIPS-140-2 Validated Cryptographic modules.
+           (FIPS - Federal Information Processing Standard.)
+      - AWS CMK's are stored in default AWS KSM key store, but in a shared env.
+      - Also supports custom keys tores backed by AWS cloudHSM Clusters.
+           - this cloudHSM is used in the case of:
+                - keys cnan'r stored in shared env.
+                - keys must be backed to multiple env
+                - The HSM that geerates and stores the material that must be certified at 
+                   FIPS-140-2 LEVEL3
+      - Types of CMK's contains (Customer Managed keys and Data Key)
+         - Customer managed - customer can view,manage
+         - AWS managed      - customer can view only.
+         - AWS owned.       - can't be viewed or manged by customers.
+
+  CloudHSM:
+       - A Hardware Secuity Module (HSM). It's a computing device that process the Cryptographic 
+         operations and provie secure storage for Cryptographic keys. 
+       -  AWS provides HSM in cluster which we can create within the VPC.
+       -  Comply with FIPS-140-2 Level3.
+       - Comply with PCI-DSS 
+             PAYMENT CARD INDUSTRY - DATA SECURITY STANDARD.
+        - task with cloudHSM:
+           - Generate, store, import, export and manage cryptographic keys including symmetric/assymetric keys.
+           - symmetric/assymetric keys asre used to encrypt/decrypt the data. 
+           - HMAC- Hash Based Message Authentication Codes.
+           - Cryptographically sign data and verify signatures.
+
 ==================================================================================================
                                      ROUTE 53
 ==================================================================================================
