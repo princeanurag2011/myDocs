@@ -416,6 +416,140 @@ IAM:
            - HMAC- Hash Based Message Authentication Codes.
            - Cryptographically sign data and verify signatures.
 
+ =======================================================================================
+                                 VPC Networking
+ =======================================================================================
+  VPC:
+   - VPC belong to Single region
+   - We can create multiple VPC's in a single region.
+
+  CIDR:
+   - Classless Inter Domain Routing
+   - When creating the VPC, we need to provide the range of IP's in the CIDR format
+     ex: 10.0.0.0/16 (Primary CIDR BLock)
+  subnet:
+   - A subnet is just a part of VPC that also has CIDR block.
+   - A VPC can span multiple AZs, a subnet can only be inside a single AZ.
+  subnet Types:
+      - Public Subnet: 
+          - Resources that have access to the internet and reachable from Internet.
+      - Private Subnet:
+          - Resources that are not exposed to internet.
+  NAT:
+     Network Address Traslation:
+       - It's a physical device acts as a mediator b/w the instance inside the netwoek and Internet.
+
+       - when an instance tries to access the website from internet. Then NAT
+         keeps the track of the instance -> gets the information as NAT is actually tried to acces it
+         and return to the instance without exposing IP of the instance inside the network.
+     NAT Instance:
+       - It's just an EC2 Instance with NAT capability which stays in Public subnet.
+       - All private instances requests go through this NAT to access the Internet.
+     NAT gateway:
+       - It's a AWS managed NAT device.
+       - Highly available and Scalable Solutions from AWS.
+     Internet Gateway: (IGW)
+       - A horizontally scalable, redundant, HA VPC compononent that enables internet.
+       Purpose:
+           - To provie target in our VPC route tables for Internet routable traffic and to 
+             perform NAT for instances that have been assigned with Public IP.
+     NAT vs IGW:
+         NAT works at subnet level.
+         IGW works at VPC level.
+     Route table:
+         - Contains set of rules. that determines where the traffic is redirected.
+         - Each route in a table specifies a destination CIDR and a target.
+         - Each subnet should be associated with a route table.
+         - If we don't associate a route table then it is associated with maain table.
+         - We can't delete the main table but replace it with the custom table.
+         - Every route table contains the local route for communication within the VPC over IPV4
+         - When we add - IGW
+                       - Egress oly IGW
+                       - Virtual private gateway
+                       - NAT device
+                       - peering connection
+                       - VPC endpoint in VPC
+           we must update the route table for any subnet that uses these gateways or connections.
+
+     SECURITY GROUPS: STATEFUL:works at Instance level:
+      - proctects Instances by applying security rules like firewall.
+      - we can configur re rules on security groups for different type of requests like
+        HTTP,HTTPS,UDP,ICMP and port numbers.
+
+      - By default when a new security group is created. It 'denies' all Incoming/Inbound traffic.
+      - By default Outgoing/outbound traffic is allowed.
+      - These are called 'stateful' because if inbound traffic is  allowed outgoing is 
+        automatically alowed.
+
+     NACL: Network Access Control Lists: works at Subnet Level: STATELESS
+       - These works at subnet level.
+       - Manually enable both inbound/outbound traffic IP and ports.
+       - It consists of ordered rules:
+           - Rule number
+           - Protocols
+           - The source of the traffic (CIDR range) and destination (listening port or port range (Inbound Only)
+           - The destination of the traffic (CIDR range) and destination (listening port or port range (Outbound Only)
+       - CHOICE to ALLOW/DENY specific traffic. 
+
+      - default NACL allows all the traffic by default,
+      - Custom NACL denies all the traffic by default.
+
+     When we create vpc with CIDR AWS uses 1st 5 ip addresses. ex: 10.0.0.0/24
+       - 10.0.0.0  Network Address
+       - 10.0.0.1  Reserved for AWS VPC Router
+       - 10.0.0.2 Reserved by AWS. The IP address of the DNS server is always n/w base address +2.
+          NOTE: if we have multiple CIDR blocks, then DNS server located on primary CIDR.
+       - 10.0.0.3 Reserved by AWS future use.
+       - 10.0.0.255 Network Broadcast Address. However AWS desnot support n/w broadcast. So it is reserved.
+
+
+  Creating a VPC:
+      - Click on create vpc , give the name and cidr ex:10.0.0.0/16
+    - Create subnets:
+      - click on subnets and create subnets pub/private 
+         and select the vpc and select the zones and give the cidr within the range of primary cidr.
+    - Create NACL:
+      - create n/w ACL give name public/private nacl and select the VPC
+      - now NACL has inbound/outbount/subnet associations. associate public/prvt NACL with pub/prvt subnets
+      - now click on inbound/outbound and allow all traffic for both public and prvt subnet 
+        rules with rule number. and destination CIDR as 0.0.0.0/0
+    - Create IGW:
+      - Click on internet gateway. click on create and save it.
+      - click on the newly created IGW and attach it to VPC.
+        NOTE: we can aatach only one IGW to VPC.
+
+    - Create RouteTables:
+      - Click on the route tables pub/prvt route tables and associate with pub/prvt subnets.
+      - Now click on the routetables.  here routes should be 10.0.0.0/16 default for public 
+        and prvt route tables
+      - To the publi route table.  add the additional route as 0.0.0.0/0 and select IGW. for internet access
+    - Create ec2 instane one in public subnet and another in private subnet:
+      - we can connect to the ec2 instance which is launched in the pub subnet. through public ip.
+      - But we can't connect to the instance in prvt subnet. 
+         - To connect to the prvt instance we  need to copy keys to the pub subnet instance and access it.
+         - This instance is called as 'BASTION host' or 'JUMP server.'
+         - By default the private subnet instance can't connect to internet. TO enable connectivity 
+           we need to Add the NAT GATEWAY.
+    - NAT gateway:
+      - Click on the NAT Gateway and select the public subnet.
+      - Then Click on Create a EIP (Elastic IP address) and click on create NAT gateway.
+      - Now goto the private route table click on the routes-> add new route
+        and route 0.0.0.0/0 and target select the NAT.
+      - Now you can connec tto the instane in the prt subnet throgh JUMP server and test
+         the internet connectivity it will work.
+
+         
+
+
+    
+
+
+
+ =======================================================================================
+
+
+
+
 ==================================================================================================
                                      ROUTE 53
 ==================================================================================================
@@ -700,8 +834,6 @@ ELB AND AutoScaling:
         - If we delete and object inthe un version bucket . it 's lost forever
         - if we delete the object in verion enabled bucket. then it adds a delte marker 
         which hides the  objects, to estore deleted object we can delete that marker 
-
-
 
 
 
