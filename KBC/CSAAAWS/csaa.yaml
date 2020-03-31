@@ -1116,31 +1116,117 @@ ELB AND AutoScaling:
            - Versioning Suspened:
                 once versioning is enable we can suspend the version
 
-        - Versioning state applies to all of the buckets.
+        - Versioning state applies to all of objects in the buckets.
         - Once versioning is enabled. All subsequent add/modified objects are versioned and 
            given an unique id.
         - Object stored in Un-versioned bucket have null as their version id.
         - You have to make the objects of each version as public even if the previous 
-           version was public. because newly created objects are not public by default.
-        - If we delete and object inthe un version bucket . it 's lost forever
-        - if we delete the object in verion enabled bucket. then it adds a delte marker 
-        which hides the  objects, to estore deleted object we can delete that marker 
+          version was public. because newly created objects are not public by default.
+        - If we delete and object in the un version bucket . it 's lost forever
+        - if we delete the object in verion enabled bucket. then it adds a delete marker 
+          which hides the  objects, to restore deleted object we can delete that marker.
+        - If we suspend the versioning and upload the updated file, then version id is set as null. 
+        - We can optionally add the another layer of security by enabling MFA Delete.
 
       OBS vs EBS:
+      
        Object Based Storage:
-         - treats the data is stored as objects
-         - file metadata is avaialble for S3
+         - treats the data is stored as objects.
+         - file metadata is avaialble for S3.
          - no ability to incrementally edit one part of file.
          - Should be used as Highly avilable and Higly Durable storage.
          - SHOULD NOT BE USED FOR INSTALLING OS or MOUNTING IT AS VOLUME.
        Elastic Block Storage:
          - stored in volumes and blocks where file are evenly split into evnly sized blocks.
          - Each block has its own address but no metadata.
-         - Can be used to mount as volume, install OS, can be used for High IOPS 
+         - Can be used to mount as volume, install OS, can be used for High IOPS.
+ 
+      Server Access Logging vs Object Level logging:
+         - Useful fore security and access auditing
+         - Server access logging provides the records for the requests that are made to hte bucket.
+         - Amazon s3 Log delivery group write permission shoudl be enabled.
+         - Object Level logging gives full detailed view of logs and enables CloudTrail Trails.
+         
+      Static Website Hosting:
       
-
-
-
-
-
-
+      S3 TAGS:
+      
+      S3 EVENTS: upload or deleteing fil in the bucket can be notified using below techniques.
+        - SNS TOPICS
+        - SQS QUEUE
+        - LAMBDA FUNCTION
+        
+      S3 RequestorPays:
+        - the requestor pay if he downloads(data transfer) anything. whereas bucket owner pays for the data.
+        - the requestor must include 'x-amz-request-payer' in their request either in the header(POST, GET, HEAD request) or
+          as a paramater(in the REST request).  Otherwise owner will be charged for requestor downloads.
+      
+      S3 Access Control List:
+        - Enables you to access the bucket and object . it is avilable as a sub resource to the each bucket and object.
+        - Checks for grante access to aws account/groups/type of access and gives the access to the object.
+        
+      S3 Bucket Policy:
+        - Grants other AWS account or IAM user access permissions for the buckets and its objects.
+        - Object permission applies to objects that bucker owner creates.
+        
+      S3 Access Control List vs S3 Bucket Policy:
+        - Both are resourcec based policies
+        - ACL primarily used to grant basic read/write permissions for  other AWS accounts
+        - In Bucker policy you specify who has access to that particular bucket.
+        - You should use bucket policy when you want to manage cross-account permissions for all amazon s3 permissions.
+        
+      S3 Object life cycle Management:
+         - Manages the storage of the objects and the cost asociated with it throughout the life of the object.
+       USE-CASE:
+        - To move the objects to different storage classes - depending upon how frequently  they are used to reduce the cost.  (Transistion)      
+        - Set expiry date on the objects taht would no longer be used after certian period and delete them (Expiration).
+        - Transistion and Expiration is done via Lifecycle rules.
+        
+        Storage types/Classes: EXcept s3-standard all the storage classs are charged per data per GB.
+        
+         - S3-standard: genereal purpose. Availability = 99.99% , Durability=99.999999999%
+         - S3-IA: low cost, rapid infrequently access. Availability = 99.9% , Durability=99.999999999%
+         - S3-OneZone-IA: 20% less cost than S3-IA. Availability = 99.5% , Durability=99.999999999% .Good choice for cross region replications and secondary backups of data.
+         - S3-Intelligent-Tiering: 
+             - Availability = 99.9% , Durability=99.999999999%
+             - Automatically manages the lifecycle of objects.
+             - No retrival fee and no additional tiering fee per object when objects are moved b/w access tiers.
+             - Charged for 30 days once enabled. suitable for object size >128KB
+         - Glacier Vault:
+            - AMAZON S3 GLACIER:
+                - extrememly low cost storage,
+                - Options for retrieveal: Standard, Expedited, Bulk
+                - Archived data can be retrieved from few minutes to hours. and charges are acordingly
+            - AMAZON S3 GLACIER Deep-Archive:    
+                - extermely lowest cost and retrieval takes 12 hours.
+                - desinged for long term retention of data i.e 7-10 years.
+                
+         - Cost: s3 standard > s3 standarad infrequent access > s3 one zone infrequent access > Glacier
+         
+         - You can add filetr to the objects 
+         - You can transistion the current or previous version.
+         - you cannot transfer the objects to another storage class before 30 days. (min 30 days)
+         - for Deletion, we can delete the object within 1 day of  the transistion.
+         - we can clean up expired deletion markrs and incomplete multipart upload using the lifecycle rules.
+       
+      S3 Cross Region Replications:
+        - For CRR,  the source and destination buckets must be in different region and versioning must be enabled.
+        - There are certain things that get replciated
+             -  decrypted and encrypted, tags, metadata and newly added objects after enabling replication.
+        - There are certain things that won't get replciated
+             - objects before enabling replication, object encrypted with SSE-C, object that we result of another previous replication.
+        - Without version ID, deelte markers are replicated.
+        - With version id, delte markers are not replicated. deletingon source doesn't delete  on destination.
+      
+      S3 Analytics,Metrics,Invntory:
+         - Analytics takes 24 hrs to generate report - (15-30days) analysis: we can get the statastical data to improve life cycle policies. Also, we can download the CSV file.
+         - Metrics- newly adde filter would take 15 min. to gather data:
+            - Used for monitoring buckets, to collect and process storage data readable, daily metrics for free.
+            - S3 CLOUD WATCH request metrics such as GET, PUT, bytesDOWNLOADED etc., to monitor S3 requests. It is chargable.
+         - Inventory: To genereate first report it would take 48 hours.
+             - Audit and report on the replicaiton and encryption status of your Objects.
+             - Provides CSV files that lists the objects corresponding data on daily and weekly basis.
+             - configure multiple inventories list for buckets. 
+         
+        
+      
