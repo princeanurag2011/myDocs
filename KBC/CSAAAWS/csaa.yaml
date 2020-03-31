@@ -1033,7 +1033,7 @@ ELB AND AutoScaling:
    USE-Cases:
    
      - Backup and Recovery
-     - Data Archiving
+     - Data Archiving - s3 /Glacier
      - Data Lake for Big Data Analytics
      - Hybrid coud Storage
      - Cloud Native Application Data
@@ -1072,6 +1072,8 @@ ELB AND AutoScaling:
             (choose a bucket region that is geographically closest to you.)
           - An object consists of Object data and metadata of objects 
           - S3 doesnt read the Object , but it only reads the metadata associated with it.
+          - by default s3 bucket is not public. 
+          - bucket name should be 3 - 63 chars long, should comply with DNS names.
         ENDPOINTS:
            this endpoint url is generated based on the bucket region.
            https://s3.us-east-2.amazonaws.com/<bucketname>/image.png
@@ -1092,7 +1094,7 @@ ELB AND AutoScaling:
           - Depicts how the result would be after certian operation like puts, deletes , gets
             performed on the objects.
 
-          - Eventual consistency for overwrite PUTS and DELETES
+          - Eventual consistency for OVERWRITE PUTS, PUTS and DELETES
               - Object is still readble even after deleting for some period of time.
               - if file name is changed. it takes time to update the change.
 
@@ -1124,7 +1126,18 @@ ELB AND AutoScaling:
         - if we delete the object in verion enabled bucket. then it adds a delte marker 
         which hides the  objects, to estore deleted object we can delete that marker 
 
-
+      OBS vs EBS:
+       Object Based Storage:
+         - treats the data is stored as objects
+         - file metadata is avaialble for S3
+         - no ability to incrementally edit one part of file.
+         - Should be used as Highly avilable and Higly Durable storage.
+         - SHOULD NOT BE USED FOR INSTALLING OS or MOUNTING IT AS VOLUME.
+       Elastic Block Storage:
+         - stored in volumes and blocks where file are evenly split into evnly sized blocks.
+         - Each block has its own address but no metadata.
+         - Can be used to mount as volume, install OS, can be used for High IOPS 
+      
 
 
 
