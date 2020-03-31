@@ -623,17 +623,26 @@ IAM:
         - Traffic b/w the endpoint n/w interface and Load balancer n/w interface.
 
    CREATE THE FLOW LOGS:
+   
      VPC level flow logs:
       - Click on the vpc and click on your VPC and look for Flow logs at the bottom section.
       - Click on create flow logs.
+      
      Subnet level flow logs:
       - Click on the VPC and click on the subnets and look for Flow logs at the bottom section.
       - Click on create flow logs.
-     N/w Intereface level flow logs:
+      
+     N/W Intereface level flow logs:
       - Click on EC2 on the left pane look for N/W interfaces and look for Flow logs 
         at the bottom section.
         
-
+     ENI: Elastic N/W Interface:
+      - EC2 instnac come with the default network interface. which we can't detach it.
+      - You can have multiple network interfaces attached to the instance.
+      
+      Types:
+         - created and managed by us.
+         - created and managed by AWS service.
 
 
 
@@ -647,103 +656,159 @@ IAM:
 ==================================================================================================
                                      ROUTE 53
 ==================================================================================================
+  Route53: 
+    
+    - Its Amazon's higly available and highly scalable (Domain naming system) DNS web service.
+    - Route the Internet traffic to the resource of the domain.
+    - Check the health of the resources.
+    - Here we can purchase the Domain.
+    
+    - Public hosted zone:
+        It can be acessed from internet.
+    - Private hosted zone:
+        Only can be accessed within the amazon VPC
+        
+        
+BASICS:
 
-Route53:
-	Here we can purchase the Domain.
-		- Public hosted zone:
-         it can be acessed from internet.
-		- Private hosted zone:
-         only can be accessed from AWS resources.
-	DNS Query:
-		- A req that is submitted by user to the DNS for a resource that is associated with domain name.
+   Domain Name: google.com, pastudios.in  etc.,
+   
+   Top level domain:  .com, .in, org etc.,
+   
+   subdomain: maps.google.com, mail.google.com www.google.com, abcd.dcf.google.com etc.,
+   
+   Domain Registrars: 
+    - A company  taht is accredited by ICANN ( Internet Corporation for Assigned Names and Numbers) to process
+        domain registartion for TLD (top level domains) like .com , .in, .org etc.,
+        
+   Domain registry:
+    - A company that owns the right to sell domains that have specific TLD. 
+        For ex:veriSign
+        
+   Name Servers:
+    - Servers in the Domain Name Systems DNS that help to translate domain names into IP address.
+    
+   Authoritative Name server:
+    - The server that has the definitive info about the TLD (.com) and 
+      responds to DNS resolver when requested for example.com
+   
+   DNS resolver:
+    - A DNS server often managed by ISP, that acts as intermediatery b/w user request and DNS
+      name servers.
+    
+   DNS Query:
+    - A req that is submitted by user to the DNS for a resource that is associated 
+      with domain name.
 
-	DNS Record:
-		- When we  purchase a domain in AWS . By default it creates 'ns record' and 'SOA' record.
-		NOTE:
-			- We can create anyone of the below records or all of them. But we can't create two records of Same Types
-					EX: we can't have two A Type records for a Single domain with same values.(say same IP's) 
-			- But A record can have multiple Values. 
-					EX: we can repressent two IPs for single A record.
+   DNS Record:
+    - When we  purchase a domain in AWS . By default it creates 'ns record' and 'SOA' record.
+    
+    NOTE:
+        - We can create anyone of the below records or all of them. But we can't create 
+          two records of Same Types
+          EX: we can't have two A Type records for a Single domain with same values.
+          (say same IP's) 
+        - But A record can have multiple Values. 
+          EX: we can repressent two IPs for single A record.
 
-		Types:
-		
-			A Record:
-				- Maps a domain/sub-domain to the IPV4 Address
+    Types:
+    
+      A Record:
+        - Maps a domain/sub-domain to the IPV4 Address
+            
       AAAA:
         - Maps a domain/sub-domain to the IPV6 address
-			CName:
-				- Canonical Name Record
-				- Points a Domain or sub domain name to another domain or subdomain 
-					 ex: gmail.com to mail.google.com
+    
+      CName:
+        - Canonical Name Record
+        - Points a Domain or sub domain name to another domain or subdomain 
+          ex: gmail.com to mail.google.com
+              www.gmail.com to gmail.com 
 
-			Alias Record:
-				- A type of record that can be created to route the traffic to the amazon resource
-					 like Cluod Front or s3
+      Alias Record:
+        - A type of record that can be created to route the traffic to the amazon resources
+           - S3 website endpoint
+           - ELB classic
+           - ELB AppLB
+           - ELB N/W LB
+           - CloudFornt Distribution
+           - ElasticBeanStalk
+           - Recordsets in Hosted Zone.
+          
 
-			ns Record:
-				- nameserver record. These servers provide DNS name services.
+      ns Record:
+        - nameserver record. These servers provide DNS name services.
 
-			SOA:
-				- Start of Authority. It has jus the info about 
-					 - domain authority  
-					 - domain of zone admin.
-					 - Zone serial number
-					 - refresh time
-					 - retry time
-					 - expire time
-					 - negative caching TTL
+      SOA:
+        - Start of Authority. It has just the info about 
+             Example:        
+             [ns-7678-awsdns-09.co.uk aws-dns-hostmaster.aws.com 1 7200 900 1209600 86400]
+             
+             - domain authority : ns-7678-awsdns-09.co.uk
+             - domain of zone admin: aws-dns-hostmaster.aws.com
+             - Zone serial number: 1
+             - refresh time: 7200
+             - retry time: 900
+             - expire time: 1209600
+             - negative caching TTL: 86400
 
-	TTL:
-		- Time to live: The amount of time in seconds that you want the DNS resolver to cache the values
-										of that record before submitting another request to the Route 53 to get the
-										current value of that record.
+  TTL:
+    - Time to live: The amount of time in seconds that you want the DNS resolver to 
+      cache the values of that record before submitting another request to the 
+      Route 53 to get the current value of that record.
 
-	Zone Apex : 
-		-  that is just a domain name like google.com, whizlabz.com
+  Zone Apex : 
+    -  that is just a domain name like google.com, whizlabz.com
 
-	Routing Policy:
-		- A setting of record that defines how Route53 responds to DNS queries  and route traffic.
+    
+  
+Routing Policy:
+    - A setting of record that defines how Route53 responds to DNS queries  and route traffic.
 
-		NOTE:
-			For 'A record' type:
-			  - You can choose alias type as ELB, S3 etc., by selecting Alias as 'YES'
-			  - Else we need to mention the IP address in the 'Value' Section if the alias is slected as 'NO'
+    NOTE:
+        For 'A record' type:          
+          Alias record:
+          - You can choose alias type as ELB, S3 etc., by selecting Alias as 'YES'
+          - you can attach a Health check to this record.
+          Non-Alias record:
+          - Else we need to mention the IP address in the 'Value' Section if the alias is slected as 'NO'
+          - You can't attach health check for this.
 
-		types:
-			- Simple Routing Policy:
-				 - Its just a redirection policy. We can do this using ALIAS or IP for A type Record. 
-			- Weighted Routing Policy:
-				 -  Traffic routed to resource = weight of specific record / sum of weight of all the record.
-				 -  We can test the policy using the 'Test Record test.'
-				 -  USECASE: 
-							This is used incase of redirecting traffic betweeen different version of applications. 
-				 - In the management console we have option to enter the weightage value fo a record.
-			- Latency Routing Policy:
-				 - routing is done based on the request from a region and redirecting that req to the 
-					 nearest available hosted server based on the caluclation of latency.
-					 NOTE: Latency is calculate d over a period of time. and it may change based on the 
-								 routing and connections.
-								 For testing purpose we can use this website below for IP's to ping form a specific region
-												www.nirsoft.net/countryip/ca.html
+    Types:
+        - Simple Routing Policy:
+             - Its just a redirection policy. We can do this using ALIAS or IP for A type Record. 
+        - Weighted Routing Policy:
+             -  Traffic routed to resource = weight of specific record / sum of weight of all the record.
+             -  We can test the policy using the 'Test Record test.'
+             -  USECASE: 
+                 This is used incase of redirecting traffic betweeen different version of applications. 
+             - In the management console we have option to enter the weightage value fo a record.
+        - Latency Routing Policy:
+             - routing is done based on the request from a region and redirecting that req to the 
+                 nearest available hosted server based on the caluclation of latency.
+                 NOTE: Latency is calculate d over a period of time. and it may change based on the 
+                             routing and connections.
+                             For testing purpose we can use this website below for IP's to ping form a specific region
+                                            www.nirsoft.net/countryip/ca.html
 
-			- Geographical Routing Policy:
-				 - routing is done based on the geo loaction and connects to that server in that region.
-				 - we have to choose the country region from routing policy.
-				 - if we don't mention the default location . Then Traffic originating from 
-				   other than the mentioned regions won't get any connection to that server.
+        - Geographical Routing Policy:
+             - routing is done based on the geo loaction and connects to that server in that region.
+             - we have to choose the country region from routing policy.
+             - if we don't mention the default location . Then Traffic originating from 
+               other than the mentioned regions won't get any connection to that server.
 
-			- Failover Routing Policy:
-				 - This is used if one server goes down then connect to the another server.
-				 - It has two Failover record types primary and secondary.
-				 - And these failover record types can be associated with the 'Health checks.'
-				 - WE CAN FIND THE HEALTH CHECK OPTION BELOW THE HOSTED ZONE.
+        - Failover Routing Policy:
+             - This is used if one server goes down then connect to the another server.
+             - It has two Failover record types primary and secondary.
+             - And these failover record types can be associated with the 'Health checks.'
+             - WE CAN FIND THE HEALTH CHECK OPTION BELOW THE HOSTED ZONE.
 
-			- Multi value Answer Routing Policy:
-				 - This is used in case of Multiple server hosting smae applications.
-				 - It return the IP of the server upto 8 Healthy servers(selected as random) 
-				   and doesn't return the ip value of the unhelathy server.
-				 -  These A records can be asociated with heath checks.
-				 
+        - Multi value Answer Routing Policy:
+             - This is used in case of Multiple server hosting smae applications.
+             - It return the IP of the server upto 8 Healthy servers(selected as random) 
+               and doesn't return the ip value of the unhelathy server.
+             -  These A records can be asociated with heath checks.
+             
 		
 
 
@@ -751,36 +816,36 @@ Route53:
 
 
 OSI MODEL:
-	  Open Systems Interconnections
+    Open Systems Interconnections
 
    DATA:
-     - Layer 7:  
-     	   - APPLICATION LAYER
-     	   - End User layer (HTTP, FTP, SSH, DNS)
-     	   - APPLICATION LOAD BALANACER operates @LAYER7 i.e is in DATA Section
-     - Layer 6:
-     	   - PRESENTATION Layer
-     	   - Syntax Layer of SSH, SSL, FTP, JPEG
-     - Layer 5:
+    - Layer 7:  
+       - APPLICATION LAYER
+       - End User layer (HTTP, FTP, SSH, DNS)
+       - APPLICATION LOAD BALANACER operates @LAYER7 i.e is in DATA Section
+    - Layer 6:
+       - PRESENTATION Layer
+       - Syntax Layer of SSH, SSL, FTP, JPEG
+    - Layer 5:
          - SESSION LAYER
          - Sync and send to port (API,Socket)
    Segment:
-   	 - LAYER 4:
-   	 	   - TRANSPORT LAYER
-   	 	   - E2E connection (TCP, UDP)
-   	 	   - NETWORK LOAD BALANACER operates @LAYER4 i.e in TRANSPORT section
+    - LAYER 4:
+       - TRANSPORT LAYER
+       - E2E connection (TCP, UDP)
+       - NETWORK LOAD BALANACER operates @LAYER4 i.e in TRANSPORT section
    Packet:
-   	 - LAYER 3:
-   	 	   - NETWORK LAYER
-   	 	   - packets (IP, IPSec, ICMP)
-   Frames:
+    - LAYER 3:
+       - NETWORK LAYER
+       - packets (IP, IPSec, ICMP)
+  Frames:
      - LAYER 2:
          - DATA LINK
          - FRAMES (Switches and Bridges)
    Bits:
-   	 - LAYER 1:
-   	 	   - BITS
-   	 	   - Physical structure (Co-ax Cable, Fiber)
+     - LAYER 1:
+       - BITS
+       - Physical structure (Co-ax Cable, Fiber)
 
 
 
@@ -788,35 +853,165 @@ OSI MODEL:
 
 ELB AND AutoScaling:
 
-	 - ELB:
-	 	  - Elastic Load Balancer
-	 	  - Supports Cross-Zone Load Balancing:
-	 	  	  - Redirecting the traffic to one or more avilability zones.
-	 	  	  - NOTE: 
-	 	  	  	  - This is always ENABLED for 'APPLICATION LOAD BALANACER.'
-	 	  	      - And DISABLED for the 'NETWORK LOAD BALANACER.'
-	 	  - Works with Service like:
-	 	  	  - EC2
-	 	  	  - ECS
-	 	  	  - AutoScaling
-	 	  	  - CLOUD Watch
-	 	  	  - VPC
-	 	  	  - Route53
-	 	  	  - Also Supports HYbruid load balancing: 
-	 	  	  	  redirecting traffic to On prem and Cloud both based on Health checks
-	 	  	  - APPLICATION LOAD BALANCER:
-	 	  	   	  - It deals with HTTP/HTTPS Traffic.
-	 	  	   	  - operates in the Data Layer @ Layer 7
-	 	  	   	  - Highly available
-	 	  	   	  - Internet facing or Internal
-	 	  	   	  - Health checks
-	 	  	   	  - Supports SSL and TLS Certificates
-	 	  	   	  - Cross Zone Load Balncing is ENABLED by default
-	 	  	  - NETWORK LOAD	BALANCER:
-	 	  	   	  - It deals with the TCP/IP Traffic.
-	 	  	   	  - Operates in the Transport Layer @ Layer4
+ - ELB:
+      - Elastic Load Balancer
+      - Supports Cross-Zone Load Balancing:
+          - Redirecting the traffic to one or more avilability zones.
+          - NOTE: 
+              - This is always ENABLED for 'APPLICATION LOAD BALANACER.'
+              - And DISABLED for the 'NETWORK LOAD BALANACER.'
+      - Works with Service like:
+          - EC2
+          - ECS
+          - AutoScaling
+          - CLOUD Watch
+          - VPC
+          - Route53
+          - Also Supports HYbruid load balancing: 
+              redirecting traffic to On prem and Cloud both based on Health checks
+          - APPLICATION LOAD BALANCER:
+              - It deals with HTTP/HTTPS Traffic.
+              - operates in the Data Layer @ Layer 7
+              - Highly available
+              - Internet facing or Internal
+              - Health checks
+              - Supports SSL and TLS Certificates
+              - Cross Zone Load Balncing is ENABLED by default
+          - NETWORK LOAD	BALANCER:
+              - It deals with the TCP/IP Traffic.
+              - Operates in the Transport Layer @ Layer4
 
-	 	  
+ =======================================================================================
+                      EC2 - Elastic Cloud Computing
+ =======================================================================================
+  
+  EC2-INSTANCES:
+      - AWS supports two types of virtualization:
+              - HyperVisor
+              - ParaVirtualaization
+      - By deafult all the instance launched will be runnng on the Hypervisor.
+  
+  Purchase Options:
+     - On Demand:
+          - Pay As You go. Purchas instance as and when needed.
+          - Costliest of all options
+          - Suitable when you are not sure about the capacity need beforehand. 
+              
+              Use case: your application has sudden spike of traffic, short projects etc.,
+     - Reserved:
+          - Pro active type
+          - You purchase the VM before hand. Longer the period we reserve, we get significant discount
+          - Instance can be reserved for a term of 1-3 years
+          - Use cae: suitable when we know the capacity needed to run the application smooothly.
+     
+     - Scheduled:
+          - Purchase the instances that are always avialble on the s[ecified recurring schedule for 1 year term.
+     - Spot: 
+         - Bidding type
+         - If actual price increase than our bid price then the instance gets terminated within a half n hour notice.
+         - Here we bid for unused EC2 instance capacity
+          NOTE: it will not be charge for partial hour in whch instance was terminated
+          Spot instance Pool:   A set of unsed ec2 instances with same type, os, availability zone.
+          Spot Price: Current hourly price of the spot instance
+          Spot instance request: You bid of price that you are willing to pay.
+          Spot fleet: Launches spot instance pool as per our bid.
+          Spot instance interuption: when spot price exceeds or no capcity is available, then the instances gets terminated, hibernated.
+          
+     - Dedicated Hosts:
+        - Our VM instance will be launched on the Dedicated Machine's Hypervisor
+     
+     - Dedicated Instance:
+        - Our VM instances will be launched on One of the Dedicated Machines Hypervisors
+     - Shared Hypevisor:
+        - Along with our VM instances others VM instances also will be running on the same HyperVisor.
+       NOTE: There will not any performance issue on any of the three types above.
+  
+    EBS - STORAGE:
+     - General Purpose SSD:
+         - suitbale where it balances cost and performance.
+         - It provides basline performance of 3 IOPS per GiB
+         - It can be used as the root volume of EC2 instance ans mostly used for Dev and Test environments.
+         - Provides Min. 100 to 10K IOPS 
+          NOTE: IOPS (Input/ Output Operations Per Second) -> IOPS usage can be simply calculated by knowing the total read and write throughputs (ops) of your disk divided by the time in seconds within that period
+          
+     - Provisioned IOPS SSD:
+         - suitbale for applications that demands extensievely High throughtput and Low-latency i.e >10K IOPS 
+            or  160 MiB/s of throughtput per Volume.
+         - It provides basline performance of 50 IOPS per GiB
+         - It can be used for DB when workloads are high.
+         - Provides Min. 100 to 32K IOPS 
+         
+     - Magnetic HDD:
+          - Old Generation and used where data is aaccessed infrequently.
+          - Used where low cost storage and small volume izes are important.
+          - These Volumes deliver approximately 100 IOPS and max. throughtput of 90 Mib/s
+          Other HDD OPTIONS:
+            - Throughtput Optimized: 
+                - max throughtput 500MiB/s, used for applications which has frequently accessed workloads.
+                - Low Cost HDD
+            - Cold HDD:
+                - Lowest Cost HDD, max throughput 250MiB/s
+                - less frequently accessed not intensive workloads
+            NOTE: these above two types can be used as root volumes for EC2 isntance.
+            
+     SSD vs HDD:
+      - SSD are costlier than  HDD
+      - SSD backed volumes are optimized and more suitable for applications that require Read and Write operations
+        with small I/O size.
+      - HDD are more suitbalw when throughtput(MiB/s)is more critical than IOPS
+        MiB = MibiByte ; 1MiB= 1.074 Megabytes
+     TAGS:
+      - We can add max of 50 Tags pre instances.
+     Security Groups: 
+     instance System checks 2/2:
+      1/2 - System Status Checks - Checks for Hardware issues. - if issues present, then stop and start the instance.
+      2/2 - System software and Network checks -if issues present, then restart the instance.
+     Monitoring: most important CPU Metrics - CPU, MEMORY, NETWORK and status Check.
+     
+     NOTE:     
+     - We can change the security groups. attached to EC2 instances -> select instances - Actions-> networking-> change  security groups.
+     - We can attach the additional N/W interface.
+       NOTE: can't detach the primary N/W interface.
+       
+       
+     Snapshot-Backup:
+       - To create Backup or snapshot - Click on aactions and clic on the Create image.
+       - To launch an instance with backed up image-> click on the launh instance and slect MyAMI- here we can find our image and we can launch the instance form it.
+       - By default the AMI is region specific, if we want AMI in some other region , we have to copy the AMI
+       -> goto the image sections slect the snapshot click on actions and click on copy the AMI
+       
+     AMI type:
+      - backed by Amazon EBS: the root deviec is the AMZOn EBS volume.
+      - Instance Store: the root device is an instance store volume. (Created form atemplate store din Amazon s3)
+      - Cross Account AMI copy: Your can share AMI with Other AWS accounts. while copying it.
+      - De-registering AMI doesnot affect any instance that is launched from it.
+     
+     Instance Store:
+        - TEMPORARY Block level Storage located on the disks that are physically attached to the Host computer.
+        - ideal for temporarry storage.
+        - Data exists if the instance reboots 
+        - once the isntance is stopped/terminated then the data is deleted.
+        - These instance store volumes can't be detached and attached to another instance.
+        
+     Placement groups: Arrangeent of the instance on the underlying hardware. No charge for creating placement groups
+         While launching the instance we can select add instance to placement groups -> select add to new placement group
+         then select Placement group startegy: as below. 
+        -  Two types:
+            - Cluster: Instance on single hypervisor and single AZ
+              NOTE: 
+                - Launch same type of instance in the placement group otherwise we can get capacity error. 
+                - if there is capacity issue restart the instance in placement group.
+                    
+            - Spread: Each instance on the separate Hypervisor in sperate AZ.
+              NOTE:             
+                - High availability Low harware failure rate.
+                - Instances can span acros different AZs (max. 7 instances per AZ per group.)
+                - NOT SUPPORTED FOR DEDICATED INSTANCE AND DEDICATED HOSTS.
+        
+            
+     BAstion Host/Jump Server: This is the instance exists in the Public subnet form hich we can connect to the instance in the private subnet instances in the same VPC.
+ 
+ =======================================================================================
  =======================================================================================
                       S3 - Simple Storage Service
  =======================================================================================
@@ -825,7 +1020,7 @@ ELB AND AutoScaling:
        objects: IMAGE/AUDIO/VIDEO/WORD/EXCEL/POWERPOINT etc., any file.
        There is no ability to edit content of the file. only get ,upload, delete and download.
      - Durability: 99.999999999%  # total 11 - 9's over a year
-     - By default objects stored in s3 are stored in min, 3 available zones within a region.
+     - By default objects stored in s3 are stored in min. 3 available zones within a region.
      - Highly Scalable and mnaged by AWS
      - Highly Reliable 
      - Fast uploads suing multipart upload options
