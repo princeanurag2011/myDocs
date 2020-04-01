@@ -1228,5 +1228,156 @@ ELB AND AutoScaling:
              - Provides CSV files that lists the objects corresponding data on daily and weekly basis.
              - configure multiple inventories list for buckets. 
          
-        
+      S3 LIMITATIONS:
+        - OBJECT SIZE:
+        - BuCKET SIZE:
+        - NO. OF BUCKETS:
+          
+ ---------------------------------------------------------------------------------------------------
+                                          AWS Athena
+ ---------------------------------------------------------------------------------------------------
+ 
+     - An interactive   Query service that make it easy to analyse the data from s3 buckets.
+     - Athena directly queries S3.
+     - Athena can query structured and unstructured data.
+     
+     USE CASE:
+         - very useful when we have large chunk of data in the form of files. (Upload the files to bcuket)
+         - Just in case of cloud trails upload the log file to s3 bucket and we can start quering the data.
+ 
+     Limitations:                             
+       - Athena doesnot support different storage classses within the bucket,
+       - doesnot query previous versions,
+       - doesnot support requestor pays buckets,
+       - if data is encrypted it must be store in the same region.
+       
+ ========================================================================================================
+ ========================================================================================================
+                        AWS MONITORING
+ ========================================================================================================
+   - Monitoring EC2,EBS,ELB for usage and outages.
+   - Monitoring AWS s3 for storag and request metrics
+   - Monitoring Billing and create alarm for excess usage.
+   
+   Cloud WAtch:
+     - Monitoring and mgmt service.
+     - Collects LOGS,METRICS and EVENTS:
+                Metrics:
+                  - Default metrics:
+                       CPU METRICS
+                       DISK
+                       N/W
+                       STATUS
+                  - Custom Metrics: WE NEED TO RUN SCRIPTS IN EC2 INSTANCE FOR THESE DETAILS
+                       MEMORY
+                       SWAP
+                       DISK-SPACE
+                       
+     
+     - Monitoring, Dashboards, ALARMs :
+                 - MONITORING:
+                       - BASIC: every 5 min. Enabled by default
+                       - Detailed: every 1 min. must be nebaled at instance level
+                 - Dashboards:
+                     - monitor dashboards in a a single view.
+                 - Alarms:
+                     - Alarms perform one or more actions basde on the threshold value set.
+                     - You can also add alarm to cloud watch dashboard and monitor them visually.
+                     - Auto scale group actions
+                     - EC2 Actions
+                  - Cloud Watch events:
+                      - state changes: ec2 instance state changing form pending state to running state.
+                      - targets: A target progress events and routes them to the target for processing 
+                  - Analyse:
+                      - Process cloud watch log events through KINESIS and LAMBDAs for custom processing and analysis.     
+     - Application Monitoring:
+     - System wide vsibilty:
+     - Resource optimization:
+     - Unified view of Operational Health:
+     
+     
+   
+   AWS CLOUD WATCH VS AWS CLOUD TRAIL:
       
+      - CLOUD WATCH:
+           - tracks the preformance of the AWS resources by collecting metrics.
+           - reports metrics in 1 or 5 minutues period
+           - helps to gain system wide visibility resource utilization, application performance, operational health
+           - To be used for monitoring health of the applications built on aws resources.
+           
+           
+      - CLOUD TRAIL:
+           -  Tracks every activity of the API calls made throught the AWS mgmt console, AWS CLI, AWS SDK,  and API's to
+              AWS resources on your AWS account.
+           -  Within 15 delivers the logs.  Keeps the events upto 90 days.
+           -  Helps to gain vivisibilty into your resources and resource actvity by recording AWS API calls.
+           -  To be used for monitoring actions performned on aws resources by users on your AWS account.
+           
+ ========================================================================================================          
+ ========================================================================================================
+                  AWS  Cloud Formation
+ ========================================================================================================
+   - Infrastructure as  a code.
+   - Provisions configues and manages the stack
+   USES:
+    - simple infrastructure mgmt
+    - provides the ability to view the resources before provisioning
+    - Qucikly replicates the infrastructure.
+    - Controls and tracks infrastructure chanfges
+    - handles  the dependies b/w the resources in the templates.
+    
+   Stack:
+     - Collection of AWS resources.
+     - CloudFormation manages resources by creating, updating and deleting the stacks.
+     - Can be as simple as one region or entire web application.
+     - If any resource can't be created , then CF rolls the stack back and automatically deletes any resource that were created.
+   Stack updates:
+     - Upon upadates , only updates the changed resources.
+     - Unintentional updateion or deleteion of stack can  be prevented by stack update policy.
+     - Progress can be monitored by vewing the stack events.
+     - TYpes of Updates:
+         - Direct Updates:
+             - Changes deployed immedieately
+             - Used for quick deployments
+         - Via change sets:
+             - Changes can be previewd before deciding whether to apply the changes or not.
+     - Updates can be cancelled if it is UPDATE_INPROGRESS state.
+     
+   Templates:
+    -  Contians All configuration details
+    - JSON or YAML
+    - Template designer can be used to visualize how the resources can be created and modified.
+   google for AWS cloud formation templates.
+   
+ ========================================================================================================  
+ ========================================================================================================
+                  AWS  ELASTIC BEAN STALK
+ ========================================================================================================   
+   
+     - No need to worry about the infrastructure , you can quickly  deploy and manage your applicaiton
+     - Elastic Beanstalk supports applicaitons developed in:
+            - java
+            - go
+            - .NET
+            - nodejs
+            - php
+            - python
+            - PHP
+            - Ruby
+            - dOCKER 
+            - mULTI CONTAONER DOCKER
+            - gLASS fiSH
+            - tOMCAT
+            - 
+      - As well as differernt platform confugurations for each language on familiar services such as:
+          - apache 
+          - nginx
+          - paasenger
+          - IIS
+       - can also perform deployment tasks, such as changing the size of your fleet of Amazon
+         EC2 INSTANCE,  MONITORING YOUR APPLICAITON DERECTLY FROM THE ELASTIC WEBINTERFACE
+           
+   
+   
+ 
+ ========================================================================================================
