@@ -24,9 +24,12 @@ sudo mv ./kubectl /usr/local/bin/kubectl
 
 ### 3) Terraform setup
  https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip
+ 
 --------------------------------------------------------------------------------
 
 ### 4) Setup S3 bucket
+  create a bucket in s3 with name kbdatacorp.com
+  
 ### 5) Setup hosted Zone
  
 ### 6) Public keys
@@ -80,9 +83,20 @@ kops create cluster \
 ```
 
 --------------------------------------------------------------------------------
-[root@ip-172-31-32-211 devopsinuse_terraform]# kops validate cluster
 
-Using cluster from kubectl context: kbdatacorp.com
+#### Terraform output has been placed into 'kops_terraform'
+Run these commands to apply the configuration:
+```
+   cd kops_terraform
+   terraform init
+   terraform plan
+   terraform apply
+```
+
+#### validate cluster: 
+```
+kops validate cluster --state s3://kbdatacorp.com
+```
 
 Validating cluster kbdatacorp.com
 --------------------------------------------------------------------------------
