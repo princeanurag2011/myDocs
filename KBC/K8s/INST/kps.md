@@ -22,21 +22,34 @@ sudo mv ./kubectl /usr/local/bin/kubectl
 
 --------------------------------------------------------------------------------
 
+### 3) Terraform setup
+ https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip
+--------------------------------------------------------------------------------
 
-
-### 3) Setup S3 bucket
-### 4) Setup hosted Zone
+### 4) Setup S3 bucket
+### 5) Setup hosted Zone
  
-### 5) Public keys
+### 6) Public keys
 --------------------------------------------------------------------------------
 ssh-keygen -f ~/.ssh/kbdatacorplogin
 
 --------------------------------------------------------------------------------
-### 6) awscli setup
+### 7) Create a Role with these policies and attach it to EC2
+AmazonRDSFullAccess
+AWS managed policy
 
-### 7) Terraform setup
- https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip
+ AmazonEC2FullAccess
+AWS managed policy
 
+ IAMFullAccess
+AWS managed policy
+
+ AmazonS3FullAccess
+AWS managed policy
+
+ AmazonRoute53FullAccess
+ AWS managed policy
+ 
 --------------------------------------------------------------------------------
 ```
 kops create cluster \
