@@ -44,6 +44,8 @@ https://www.edureka.co/blog/interview-questions/git-interview-questions/
 
 https://www.edureka.co/blog/interview-questions/jenkins-interview-questions/
 
+https://www.edureka.co/blog/interview-questions/maven-interview-questions/
+
 https://www.edureka.co/blog/interview-questions/category/devops/
 
 https://www.edureka.co/blog/interview-questions/category/cloud-computing/
