@@ -1468,3 +1468,33 @@ ELB AND AutoScaling:
 
  - Minor version upgrades are carried duwing the maintanence window
  - After creation DB , we can connect to it using the Endpoint URL and port no. 
+
+ RDS Multi AZ:
+  - master and standby configuration
+  - HIgh availability
+  - Synchronous replication
+  - durin updates standby promtes to  primary
+  - DB endpoint swtiches from primary to standy during recovery.
+
+ RDS Read Replicas:
+  - Read replicas creates readonly instance from the snapshot.
+  - Read replicas allow read only connections
+  - Scale out is possible 
+  - Copying is done asynchronously so there might be some latency and data is also stale data.
+  - provides enchanced performance for read heavy workloads.
+  - Cross region replication is available. Multi AZ.
+  - best suited for running business queries instead of running them on primary DB.
+
+ RPO vs RTO:
+  - RPO - Recovery Point Objective:
+  - Max. period of data loss is acceptable in the event of failure or incident.
+  - measured in minutes 
+  - RPO of 5 min. means loosing transcation logs  of >5 min. is not aaceptable.
+
+  - RTO - Recovery TIme Objective:
+    - Max. downtime pemitted to recover and function normal.
+    - measured in hours or days.
+    - RTO of 1 hr means . it should recover in 1 hour.
+    - 
+
+
