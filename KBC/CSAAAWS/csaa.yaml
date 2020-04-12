@@ -881,6 +881,26 @@ ELB AND AutoScaling:
               - It deals with the TCP/IP Traffic.
               - Operates in the Transport Layer @ Layer4
 
+   Auto Scaling:
+    - Configuration:
+        - The launch configuration contains AMI,instance type, key pair, sg, block device mapping
+        - configuration can't be modified once created.
+        - One launch config can be used by many   ASG's. But one ASG can have one configuration only.
+        - Scale the no. of instances automaticaly based on the criteria.
+
+
+    - ASG: features
+       - Scaling Options:
+           - Maintain current instance level all the times.
+           - Manual Scaling.
+           - Scaling based on the schedule.
+           - Scaling based on the demand.
+    - Multiple Scaling Policies:
+         - ASG can have more than one scaling policy attached to it. Also we can 
+           combine the sacling policy
+
+
+
  =======================================================================================
                       EC2 - Elastic Cloud Computing
  =======================================================================================
@@ -1381,3 +1401,70 @@ ELB AND AutoScaling:
    
  
  ========================================================================================================
+
+  ========================================================================================================
+                  AWS  RDS
+ ========================================================================================================
+ RDS - RElational Data Base Services:
+   - Micosoft SQL Server
+   - MYSQL
+   - PostgreSQL  
+   - Amazon Aurora
+   - MariaDB
+   - Oracle
+   Why AWS RDS?:
+      - Managed by AWS
+      - High Scalability via read replicas
+      - High Avilability via Multi-AZ
+      - Provision for taking backups
+      - Security via AWS IAM Roles.
+  
+  - Amazon RDS contains multiple user created databases and these can be accessed using the 
+    same client tools for ex:: mysql workbench for mysql.
+  - Each DB instance has 'DB Instance Identifier' - This is unique for all DB instances 
+    owned by our AWS account in the current region.
+    later while creating we can give these details - (DATABASE NAME) MASTER USERNAME/MASTER PASSWORD
+    
+  - each instance should be chosen based on applicaiton requirements
+     - db.m4, db.m5, db.x1
+  - We can see the health status of instance from the console or using aws cli command
+    'describe-db-instances'
+  
+  - Micosoft SQL Server, MYSQL, PostgreSQL, MariaDB, Oracle uses 'EBS Volumes' for database and log
+   storage.
+  -  EBS Volumes of three types:
+         - gp2
+         - io1
+         - Magnetic
+  - Can create upto 16TiB=1024 GiB of storage with upto 32 vcpu's and 244GB memory.
+  - Billed based on:
+       - DB instance hours
+       - Storage
+       - i/o requests
+       - Provisioned IOPS
+       - Backup Storage 
+       - Data Transfer
+
+  - DB Subnet groups:
+     - it should have minimum 2 availability zones in a given region.
+     - if the primary DB instance of the Multi AZ deployment fails, then AWS RDS will create
+       a new standby using an IP address of the Subnet in one of the availability zones.
+
+  - OPtions groups and parameters groups:
+  - Automated Backups:
+      - Amzoan RDS creates automated storage snapshot of entire db for disaster recovery
+      - Maintaenance Window - backup window time (default is 30 min.) it may take more time depends on data.
+      - Default backup retention period is 7 days. and max. is 30 days.
+      - Multi AZ DB Instances are not effected by i/o suspension during backup since 
+        backup is taken on standby
+      - Backup are deleted when we delete db instances. however we can take one final snapshot of db.
+      - single AZ results in I/O suspension for few seconds to few minutes during creation of DB snapshot.
+  - Manual backups:
+      -  These backup are incremental
+      - Not deleted automatically when we delete the DB instance
+
+ - Logs: Genral , Error,  slow query logs
+    - Logs requires IAM Role  RDS service linked role.
+
+ - Minor version upgrades are carried duwing the maintanence window
+ - After creation DB , we can connect to it using the Endpoint URL and port no. 
