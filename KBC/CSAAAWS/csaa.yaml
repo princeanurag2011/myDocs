@@ -1495,6 +1495,87 @@ ELB AND AutoScaling:
     - Max. downtime pemitted to recover and function normal.
     - measured in hours or days.
     - RTO of 1 hr means . it should recover in 1 hour.
-    - 
+    
+
+ AMAZON Redshift: DATA WARE HOUSING
+    - Fully managed petabyte-scale data warehouse service in cloud
+    - Redshift data warehouse is collection of node called Clusters:
+         - It has leader node that coordinates with compute nodes
+         - Use JDBC and ODBC drives for connection with clients
+         - To imporve performance it caches cetain type of queries in memory on leader nodes.
+    - Each cluster runs an Amazon Redshift engine and contains one or more Databases.
+ Why to use:
+    - Specifically desinged for  OLAP and BI that requires complex queries to run against large
+      datsets.
+    - Integrates with ETL(Extract, transform and load) and BI, data mining and analytics tools.
+
+ Amazon Redshift Workload Management:
+    - It enables users to manages th priorities.
+    - WLM config enables to create separate queues for long and short running queries.
+      since long running queries takes more time to complete.
+    - By default 1 queues has concurrency level 5  plus 1 predefined queues 
+
+
+SQL vs NoSQL DB:
+
+   SQL:
+   - SQL DB are RDBMS
+   - TAble based
+   - uses Struutred query language
+   - Schema is predefined
+   - scales vertically..
+   - Foreign key concept query intensive environment and transcation al applications
+   - best suited for complex query intensive environment and transactional applications
+   - Emphasizes on ACID properties. (Atomicity, oOnsistency, Isolation, Durability)
+   - ex: mysql,orcale, postgresql, MS-SQL
+
+  NoSQL:
+   - Non RDBMS
+   - Document based, key value pairs, graph db's
+   - Queries are focused on Document collection.
+   - Schema is dynamic.
+   - scales horizontally
+   - best suited for hierarchial data storage as it follows the key-value pair.
+   - Emphsizes CAP (COnsistency, Availability and PArtition tolerance)
+   - ex: DynamoDB, MongoDB
+
+
+ Dynamo DB: NoSQL DB fully manged by AWS
+   - FUlly managed multi region multi Master NoSQl DB with single digit millisecond latency.
+   - Distributed: scales horizontally by expanding a single table over multiple servers.
+   - In-memory cache: reduces response time from milliseconds to microseconds  withouor app changes.
+   - Provides fast access to local data by replicating tables across Multi AWS regions.
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    - Based on PostgreSQL , most exisitng client applicaitons work with only minimal changes.
 
 
