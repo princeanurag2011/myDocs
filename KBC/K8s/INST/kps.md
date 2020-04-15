@@ -124,3 +124,6 @@ Validating cluster kbdatacorp.com
 --------------------------------------------------------------------------------
 
 Your cluster kbdatacorp.com is ready
+
+### if you want delete cluster:
+```terraform destroy```
