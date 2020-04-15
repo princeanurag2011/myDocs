@@ -116,5 +116,3 @@
     ` ps -aux | grep kubelet`
     #### and finally we can get the overall information and status of the cluster using the kubectl
     ` kubectl cluster-info`
-### if you want delete cluster:
-```terraform destroy```
