@@ -1,0 +1,215 @@
+CDA - certified docker associate: 90 min. 55Q
+    
+     - Orchestration: 25%
+     - Image creatiion, Mgmt, Registry: 20%
+     - Installation and  Configuration: 15%
+     - Networking: 15%
+     - Security: 15%
+     - Storage and Volumes: 10%
+     
+Container format:
+    - The default contianer format is lib container and combine the following
+    - Namespaces and control groups: (CGroups)
+        - namespaces: limits what container can see, ex: PID, N/w interfaces/ interprocess comm, file sysytem and mount points
+        - Cgroups: limits the cpu and memory block io and network
+    
+    - Union mounting is a way of combining multiple directories into one that appears to contain their combined contents.
+    
+Images and continaners:
+    - Readonly templates with instructions for runnning a Docker Container.
+    - Hihgly portable can be shared , stored and updated.
+    - One image can be based on other image with some additional customization.
+    - Multiple container can access  the sane undelaying image and yet they have their  own data state.
+    
+VM vs Containerization:
+    - Docker containers are executed with docker Engine rather than  HYpervisor.
+    - Docker containers are able to share the OS kernel, 
+    - VIrtual machine uses hyper visor and each VM has its own kernel and OS.
+    - Containerization is a abstraction of application layer that packages code and dependencies together.
+    - VIrtualization is abstarction of physical hardware turning one server into many servers.
+    - Containers take less space than VM's and is about 10's of MB
+    - Containers take seconds to start , where as VM's takes minutes.
+    - Containers are very light weight.
+    - Containers support micro service architecture.
+
+
+Docker eco-System:
+
+   - Service Discovery:
+        - Generally load is blanced across many hosts.
+        - Service Discovery enable app consumers to  learn about location of the devices providing the application.
+        - Containers providing a particular application, register themselves so that other toolsknow about their avialbility.
+        -  This makes scalble and flexible
+   - Load balancing:
+      - Distributes applicationtraffic across multiple backends.
+      - Keeps a list of service backends with their IP address and port Location.
+      - Continuous health Testing of backends to ensure they respond to requests correctly.
+      
+   - Orchestration:
+      - Automated Configuration, Coordination andmanagement of the backend servers which collectievely provides a service.
+      
+      - Important responsiblities of Orchestration tools are:
+          - Provisioning and deployment.
+          - Scaling up/down containers.
+          - Allocation of resources.
+          - Movement of containers from one host to another.
+          - Availability of the containers.  
+          
+      - Popular orchestration Engines: Docker swarm, Kubernetes, Apcahe MESOS/Marathon
+      
+      
+Docker Installation:
+     - Docker support two types of Editions:
+         - Community edition:  
+             - it has three update channels
+                   - stable: lateset release for general availability.
+                   - Test: Beta
+                   - Nightly: alpha
+              - Ideal for small developers and teams expermenting with container based apps.
+         - Enterprise edition:
+                -  ideal for production and enterprise developments and deploymetns.
+         
+     - Platform and requirements:
+           - Supports all majotrversion of linux.
+           - The os kernal mustsuuport the namespaces, cgroups(control groups) , appropriate storafge drivers ex - AUFS
+           - Currently supprts 64bit architecture only.
+           - 
+    Docker instalation commands for centos:
+    
+    #sudo yum install -y yum-utils device-mapper-persistence-data lvm2
+    #sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    ## saved the repo to /etc/repo.d/docker-ce.repo
+    #sudo yum-config-manager --enable docker-ce-nightly
+    #sudo yum-config-manager --disable docker-ce-nightly
+    #sudo yum-config-manager --disable docker-ce-test
+    
+    #To see the list of avilable versions:
+    #yum list docker-ce --showduplicates | sort -r  
+    #sudo yum install docker-ce-18.09.3 docker-ce-cli-18.09.3 containerd.io
+    #To install  latest version
+    #sudo yum install docker-ce docker-ce-cli containerd.io
+    #sudo systemctl start docker
+    #sudo systemctl enable docker
+   
+   mange docker as a non-root -user:
+   
+    - The docker daemon always runs as the root user.
+    - Create a UNIX group called Docker and add users to it.
+    - The docker group grants privilige equivalent to the root user.
+    - Add your user to the 'docker' group.
+        sudo usermod -aG docker <Username>
+    - Ensure docker is ready.  
+        ``` docker info ```
+    - run a docker commadn without sudo
+   Other ways of installing docker :
+      - from rpm (redhatpackage managers)
+          - manage upgrade manually
+      - install from convinient scripts:
+          - get.docker.com
+      
+      
+   Docker containers:
+     - docker attach vs docker exec:
+        - docker run -it <imageName> # enteres into shell mod of container. creates only one session of shell (ps -ef)
+        - docker attach <containerID> #creates only one session of shell 
+        - docker exec -it <containreid> bash #creates two session of bash.
+     - docker container name and hostname:
+         #docker run -it --name webserver --hostname test -d -p 80 nginx
+         #This above command automatically assign the hostport ,check with 'docker ps' command 
+         #to see the allocated hostport no.
+        
+     - docker stats:
+         #to see the docker mem and cpu utilization
+         ```docker stats <containerID> ```
+         
+
+   Docker networking:
+   
+     - Three typs of networks exists on docker:
+          - bridge n/w:
+             - defult n/w  172.17.0.0/16 
+             - we need to publish the private containr port using -p <portno>
+             - IP to the network in automatically assigned by DHCP internally.
+          - host n/w: 
+              -  default no IP is assigned . it takes the host IP and the host port. directly you can connect 
+                 to the continer just like an other process running on the hosts.
+              -  creates a container sam like a process on the hosts and shares the hosts network.  
+              -  There is no isloation between the host and the container.
+              - 'docker run -it --rm --network=host --name=nginx nginx;' # this command will run
+                 if the default port is not used by any other process.
+          - none:
+              - to disbale the network for docker container we can use none network
+          
+     #commands:
+        - 'docker nertwork inspect bridge' to see the ip address of containers.
+        - 'docker inspect <containerid>'  to see the network and other details.
+        
+     
+     - How to remove none network and add bridge n/w to the container.
+          - Start a container on the docker host.
+              'docker run -itd --rm --net=none -p 8080 tomcat'
+          - disconnect the none nwetwork.
+              'docker network disconnect none <containerid> or <containerName>'
+          - Add the bridge network and Inspect again.
+              'docker network connect bridge <containerID>'
+         
+      Overlay networks:
+        - The network that are built on the physical network are called overlay network.
+          'docker network create --driver=bridge  subnet=172.99.11.0/24 --gateway=172.99.11.1 new_bridge-2'
+        - 'docker network prune' -prunes the custom networks which are not utilized by any containers.
+     
+     
+
+   Docker Images:
+      - Readonly templates for running docker containers.
+      - writable layers gets created once the image is run as a container
+      - Registry holds repositories
+      - repositories hold images.
+      
+    commands for docker images:
+       - docker images ls --filter "before=s3df1dsf53"  #shows the images downloaded before that image
+       - docker images ls --filter "since=s3df1dsf53"  #shows the images downloaded AFTER that image
+       
+     Dangling images:
+       - dangling images means creating new image with same name which exists already. Then the older image called as dangling image and it is saved as 'none'
+       
+        #command to see the dangling images:
+           - docker images --filter "dangling=true"
+        #command to print the output in specified format
+           - docker images --format "{{.ID}}:{{.Repository}}"
+        #Command
+            - docker images prune  #remves all unused and dangling images
+                
+    Dockerfile:
+       -  images are built using docker build command
+       -  Build context is set of files at either.
+            - Specified location path.
+            - URL  - Git repository location.
+       - The build is run by docker daemon not the docker CLI.
+       
+       - SampleDocker file
+          .dockerignore file   - used to ignore file while building an image
+          ARG CODE_VERSION=latest
+          FROM <image>:CODE_VERSION
+          #following commands support command type and shell type
+          RUN <commands>   or ["executable","param1","param2"]
+          CMD <commands>   or ["executable","param1","param2"]
+          # when used with ENTRYPOINT , CMD provides the default parameters.
+          # There can be only on CMD instrcution in the dockerfile. if we use multiple CMD then it takes the last CMD
+          #
+            
+          
+          
+      # commands: to build image from a docker file
+          docker build -t username/imagename:tag .
+          
+          docker image history <imageName>  # To see the layers of images an its memory size.
+      # docker commit or docker container commit
+         After making changes inside the docker container and if we want to persist the changes we can commit those changes using the docker commit.
+         
+         by default the container process will be paused while the image being commited.
+         
+         - docker contianer commit <imagename>   <username/image:tag>
+         - docker container commit --message="A new image"  --author="authorname" <imagename> <username/image:tag>
+      # The message we provided will be saved as the comment we can checkthat using the command   
+          docker inspect image  <username/image:tag> | grep -i Comment 
