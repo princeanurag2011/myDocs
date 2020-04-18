@@ -1,8 +1,8 @@
-# Welcome to my GitHub  - princeanurag2011 :)
+# Welcome to my GitHub!
 #### This repo is continuously updated with latest tools and technologies. Just follow it.
 ###### This is now updated with DevOps related Stuff!! 
 ----------------
-### About Me:
+### About Me:  princeanurag2011 :)
 --------------------------------
 
 |USER INTERFACE   |                     |
