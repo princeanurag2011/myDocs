@@ -192,14 +192,22 @@ Docker Installation:
           ARG CODE_VERSION=latest
           FROM <image>:CODE_VERSION
           #following commands support command type and shell type
-          RUN <commands>   or ["executable","param1","param2"]
-          CMD <commands>   or ["executable","param1","param2"]
+           RUN <command> <flags> <parameters>  or ["command","flag","param1"]
+           CMD <command> <flags> <parameters>  or ["command","flag","param1"]
           # when used with ENTRYPOINT , CMD provides the default parameters.
           # There can be only on CMD instrcution in the dockerfile. if we use multiple CMD then it takes the last CMD
-          #
-            
-          
-          
+           ENTRYPOINT <command> <flags> <parameters>  or ["command","flag","param1"]
+          #ENTRYPOINT   sets the commands & parameters that will be executed first when a container is run.     
+           ENV <key>=<value>
+          #there can be one or more ENV variable set.
+           WORKDIR <path>
+          #we can use this multiple times in the docker file.
+           ADD <SourcePath> <DestinationPATH>
+          #add command adds files and directoried from the build environemnt to the image.
+          #ex: ADD abc.zip /usr/share/tomcat/webapps/
+           COPY <SourcePath> <DestinationPATH>
+          #Difference between COPY and ADD is that it doesn't have extraction or decompression capabilities.
+           
       # commands: to build image from a docker file
           docker build -t username/imagename:tag .
           
