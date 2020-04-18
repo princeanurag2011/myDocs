@@ -1,10 +1,5 @@
-# Welcome to my GitHub  - princeanurag2011 :)
-
-#### This repo is continuously updated with latest tools and technologies. Just follow it.
-
 # About Me
 ####  MY-SKILLS
-
 
 
 JAVA FULL STACK DEVELOPER
@@ -27,13 +22,7 @@ JAVA FULL STACK DEVELOPER
 |**DEVELOPER TOOLS**||
 |IDE FOR UI AND JAVA| ECLIPSE, VISUAL STUDIO CODE|
 |IDE FOR DATABASE:| MySQL Workbench, Oracle SQL Developer|
--------------------------------------------------------------------------
-
-# DEVOPS
-
---------------------------------------------------------------------------
-
-| **DEVOPS TOOLS**|                                                          |
+| **DEVOPS TOOLS**|                                              |
 | | |
 | SCRIPTING: | BASH,SHELL |
 | TOOLS: | MOBAXTERM, PUTTY, RDP |
@@ -43,24 +32,8 @@ JAVA FULL STACK DEVELOPER
 |ARTIFACTORY REPOSITORY|JFROG, NEXUS|
 |Code Quality TOOLS|SonarQube|
 |CONFIGURATION MANAGEMENT TOOLS|CHEF, ANSIBLE|
-|CONTAINERS AND ORCHESTRAIZATION|
-DOCKER, KUBERNETES |
+|CONTAINERS AND ORCHESTRAIZATION|DOCKER, KUBERNETES |
 |MONITORING TOOLS|NAGIOS|
 |OS|windows: 10 ,LINUX:  REDHAT LINUX, CENT OS 7, UBUNTU 18.04 |
-|||
-
-# CLOUD 
--------------------
-|||
+|**CLOUD**|
 |AWS CLOUD TECHNOLOGIES| EC2, S3, RDS, IAM, EXTERNAL LOAD BALANCING, VPC, ROUTE53|
-|||
-
-
-
-
-
-
-
-
-
-
