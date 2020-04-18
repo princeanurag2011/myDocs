@@ -1,6 +1,6 @@
 # DevOps Tools
 ------------
-
+### This repo is updated with latest tools and notes, just follow it. :)
 
 | **DEVOPS TOOLS**|                                              |
 |-- | ---|
@@ -12,8 +12,9 @@
 |ARTIFACTORY REPOSITORY|JFROG, NEXUS|
 |Code Quality TOOLS|SonarQube|
 |CONFIGURATION MANAGEMENT TOOLS|CHEF, ANSIBLE|
-|CONTAINERS AND ORCHESTRAIZATION|DOCKER, KUBERNETES |
+|CONTAINERIZATION|DOCKER|
+|CONTAINER ORCHESTRAIZATION|KUBERNETES |
 |MONITORING TOOLS|NAGIOS|
 |OS|windows: 10 ,LINUX:  REDHAT LINUX, CENT OS 7, UBUNTU 18.04 |
-|**CLOUD**|
+|**CLOUD**|AWS, GCP|
 |AWS CLOUD TECHNOLOGIES| EC2, S3, RDS, IAM, ROUTE53, ELB, VPC, ASG|
