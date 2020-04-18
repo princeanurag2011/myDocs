@@ -1,0 +1,185 @@
+
+#to set ipaddress to two systems and connect them through switch(192.168.1.0)
+   
+ Classless inter-domain routing (CIDR):
+  https://www.geeksforgeeks.org/classless-inter-domain-routing-cidr/
+  
+  #To see the network interfaces IN LINUX:
+    ip link
+    
+ network -1:
+   s-1:
+     ip addr add 192.168.1.10/24 dev eth0
+   s-2:
+     ip addr add 192.168.1.11/24 dev eth0
+     
+   switch-1:
+     s-1 and s-2 can connect through switch-1:  192.168.1.0
+ 
+ network -2:
+    s-3:
+      ip addr add 192.168.2.10/24 dev eth0
+    s-4:
+      ip addr add 192.168.2.10/24 dev eth0
+      
+    switch-2: 
+    s-3 and s-4 can connect through switch-2: 192.168.2.0
+    
+
+ router: 
+  network -1 and network -2 can connect to 'router' through switch1 and 2
+  
+  has two ip address of networks-1,2  i.e  192.168.1.1 and 192.168.2.1
+  
+  These details should be present in route tables to connect two networks-1
+  
+  #To add these networks
+    ip route add 192.168.2.0/24 via 192.168.1.1
+    ip route add 192.168.1.0/24 via 192.168.2.1
+    to add these ip's permanantly  if not added when we restrt these gets deleted.
+      etc/network/interfaces
+    
+    #to add default gateway 
+     ip route add default via 192.168.2.1
+     #or 
+     ip route add 0.0.0.0 via 192.168.2.1
+    
+    #enable comm b/w two interfaces eth0,1  0 - prvt and 1 - pub
+    cat proc/sys/net/ipv4/ip_forward   # default value is 0 to establish comm set value to 1
+    also change in /etc/sysctl.conf 
+      net.ipv4.ip_forward=1
+   
+    #To setup hostname in linux
+    cat >> /etc/hosts
+    192.168.2.10 db #assigning name to ip is called as name resolution
+    #now u can ping the system with  below command instead of ip
+     ping db 
+    
+    #To add entry in DNS server 
+    cat /etc/resolve.conf
+    nameserver        192.168.1.100  #internal dns server
+    www.facebook.com   8.8.8.8     #we dont know facebooks ip so we added dns who knows all ip's 8.8.8.8
+    
+    - First  ping looks for 'hosts' file and then 'resolve.conf' file for name 'db'
+      This is configured in  /etc/nsswitch.conf
+    
+  www.facebook.com
+  
+   - www -> sub-domain
+   - facebook -> domain-name
+   - com -> top-level-domain  
+     #.com - commercial, .net- network, .org - Non-profit-organization, .edu - educational
+  
+  #to resolve name  i.e www.facebook.com
+    looks in local hosts file -> Our DNS server -> public DNS server -> .com DNS server -> facebook DNS
+  
+  #Record types in DNS server:
+    A     web-server 192.168.0.1 # stores ipv4 address 
+    AAAA  web-server 2190:219e:2901:7834:d2e8:f892:29e9:2910 # stores ipv6 address
+    CNAME food.webserver.com eat.web-server.com # stores sub-domains
+ 
+  #TO get the public ip address in linux use command 
+   nslookup www.google.com
+   dig www.google.com #gives more detailed info
+  
+  #TO see about DNS server
+  https://github.com/kubernetes/dns/blob/master/docs/specification.md
+  https://coredns.io/plugins/kubernetes/
+  
+  NAMESPACES:
+    These are created to make separate network which isolates from host network
+    
+   #To create two network namespaces (netns)
+     ip netns add red #here red is the namespace name
+     ip netns add blue
+   
+   #To see list of namespaces on the host
+     ip netns
+   
+   #To see the list of network interfaces on host 
+     ip link
+   
+   #To see list of network interfaces in namespaces
+     ip netns exec red ip link
+     #or
+     ip -n red link
+   
+     ARP - ADDRESS RESOLUTION PROTOCOL :
+      - it is used to  store ipaddress and mac address of devices
+    #To see the ARP table in host or namespaces
+      arp
+   # To see the route tables in host pr namespaces
+     route 
+  
+   #LOCAL HOST IP ADRESS IS 192.168.1.2
+   #To establish virtual connectivity between the namespaces (veth -virtual ethernet interface )
+      ip link add veth-red type veth peer name veth-blue  #veth-red, veth-blue are the netwrk interface for namespace red and blue .
+ 
+   #To attach the virtual network interfaces (veth) to namespaces:
+      ip link set veth-red netns red #for namespace red
+      ip link set veth-blue netns blue #for namespace blue
+  
+   #To add ip address to namespaces and make them up and running
+      ip -n red addr add 192.168.15.1 dev  veth-red
+      ip -n red  link set  veth-red up
+      
+      ip -n blue addr add 192.168.15.2 dev veth-blue
+      ip -n blue  link set  veth-blue up
+      
+     #Ping test within namespaces 
+      ip netns exec red ping  192.168.15.2
+    -----------------------------------------------------------------------------------------  
+     # To check the ARP tables in namespaces
+      ip netns exec red arp  #run this in red
+      ip netns exec blue arp  #run this in blue
+    
+    # To add virtual switch in namspaces
+      ip link add v-net-0 type 	bridge
+      ip link #to check the interface list  ( by default newly created v-net-0 will be DOWN.)
+      ip link set dev v-net-0 up  #to make  switch up and running
+    
+    # To delete the links in namespace
+      ip -n red link del veth-red 
+    ========================================================
+    # To link with bridge 
+      ip  link add veth-red type veth peer name veth-red-br       
+      ip  link add veth-blue type veth peer name veth-db-br
+        
+    # To link namspace with veth
+      ip link set veth-red  netns red
+      ip link set veth-blue  netns blue
+    
+    # To link veth with bridge  
+      ip link set veth-red-br  master v-net-0
+      ip link set veth-db-br  master v-net-0
+      
+    # To add ip address to namespaces and make them up and running
+      ip -n red addr add 192.168.15.1 dev  veth-red
+      ip -n red  link set  veth-red up
+      
+      ip -n blue addr add 192.168.15.2 dev veth-blue
+      ip -n blue  link set  veth-blue up
+           
+    # To connect from host to namespace network 
+      ping  192.168.15.1  #doesn't work no entry in table
+     
+     # To make an entry into route table
+      ip addr  add 192.168.15.5/24 dev v-net-0      
+     
+     # In the namespace add the entry to the route table
+      ip netns exec blue  ip route add 192.168.1.0/24 via 192.168.15.5
+     
+     # To connect from namespace to other network via localhost
+      ip netns exec blue ping 192.168.1.3 # doesn't work beause we nee to use NAT gateway
+      
+     #To add NAT 
+      iptables -t nat  -A POSTROUTING -s 192.168.15.0/24 -j MASQUERADE
+     
+     #To connect to Internet from ns
+      ip netns exec blue ip route add default via 192.168.15.5
+      #or
+      ip netns exec blue ip route add 0.0.0.0 via 192.168.15.5
+       
+     #To connect from other n/w to namespace
+      iptables -t nat  -A POSTROUTING --dport 80 --to-destination 192.168.15.2:80 -j DNAT
+  

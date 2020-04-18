@@ -1,0 +1,32 @@
+===================intro========================
+
+kubernetes or k8s or kube
+container orchestrization
+
+kubectl: CLI to configure kubernetes and manage apps
+  or kube control
+  
+Node : single server operating in kubernetes cluster.
+
+Kubelet: Kubernetes agent running on nodes.
+Kube proxy : running on node
+
+Control pane: Set of containers that manage the cluster
+ -includes API SERVER
+ -SCHEDULER
+ -CONTROLLER MANAGER
+ -ETCD
+ -MASTER
+=========================================================
+==============kubernetes installation===================
+docker desktop : Enble in settins.
+         sets up everything nside docker existing Linux VMs
+
+Docker Toolbox:  (windows)
+-MiniKube: Uses Virtualbox to make Linux VM's
+
+Own Linux Host or VM : MicroK8s
+-Installs kubernetes Right on OS.
+
+Kubernetes on browser.
+katacode.com

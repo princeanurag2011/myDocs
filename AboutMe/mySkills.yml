@@ -1,4 +1,7 @@
+# About Me
 #############################----MY-SKILLS-------################################
+
+
 
 ============================JAVA FULL STACK DEVELOPER=====================
 
@@ -57,117 +60,15 @@ DOCKER, KUBERNETES
 NAGIOS
 -------------------------------------------------------------------------
 ------------------------OS-----------------------------------------------
-windows: 7, 8.1, 10    
-LINUX:  AMI, REDHAT LINUX, CENT OS 7, UBUNTU 18.04 
+windows: 10    
+LINUX:  REDHAT LINUX, CENT OS 7, UBUNTU 18.04 
 -------------------------------------------------------------------------
 ########################----CLOUD ------############################
 =======================AWS CLOUD TECHNOLOGIES==================
 EC2, S3, RDS, IAM, EXTERNAL LOAD BALANCING, VPC, ROUTE53
 ===============================================================
 
-===========AWS CERTIIFIED SOLUTIONS ARCHITECT - ASSOCIATE - 2020===============
-SYLLABUS:
-    -IAM:
-       NAME: IDENTITY ACCESS MANAGEMENT 
-       TOPICS: 
-         - user and groups creation, 
-         - password policies, 
-         - MFA, 
-         - ROLES, 
-         - GROUP POLICIES
-    -EC2:
-       NAME: ELASTIC CLOUD COMPUTING
-       TOPICS: 
-         - HANDS ON WITH EC2 INSTANCE, 
-         - SECURITY GROUP BASICS, 
-         - EBS, 
-         - VOLUMES AND SNAPSHOTS, 
-         - AMI TYPES, 
-         - CLOUD WATCH, 
-         - IAM ROLES WITH EC2, 
-         - BOOTSTRAP SCRIPTS, 
-         - EC2 INSTANCE METADATA
-         - ELASTIC FILE SYSTEM, 
-         - EC2 PLACEMENT GROUPS, 
-         - AWS COMMAND LINE
-    -S3:
-       NAME: SIMPLE STORAGE SERVICE
-       TOPICS: 
-         - CREATION OF BUCKETS, 
-         - SECURITY AND ENCRYPTION, 
-         - VERSION CONTROL, 
-         - LIFE CYCLE MANAGEMENT
-         - CROSS REGION REPLICATION, 
-         - TRANSFER ACCELERATION, 
-         - CLOUD FRONT OVERVIEW, 
-         - SNOWBALL, 
-         - STORAGE GATEWAY       
-    -DATABASE:
-       NAME: DATABASES ON AWS
-       TOPICS:
-         - RDS: 
-            - RELATIONAL DATABASE SERVICES:
-                - MYSQL, 
-                - ORACLE, 
-                - POSTGRE SQL, 
-                - MARIA DB, 
-                - AMAZON AURORA
-            - RDS BACKUPS, MULTI AZ READ REPLICAS:
-            - OTHER DATABASES: 
-                - DYNAMO DB, 
-                - REDSHIFT, 
-                - ELASTIC CACHE    
-         
-    -ROUTE 53: 
-      NAME: DOMAIN PURCHASE/REGISTERING SERVICE
-      TOPIC: 
-            - REGISTERING A DOMAIN, 
-            - ROUTING POLICIES: 
-                - SIMPLE, 
-                - WEIGHTED, 
-                - LATENCY, 
-                - FAILOVER, 
-                - GEOLOCATION, 
-                - GEOPROXIMITY        
-    -VPC:
-       NAME: VIRTUAL PRIVATE CLOUD
-       TOPIC: 
-         - BUILD A CUSTOM VPC, 
-         - NAT, 
-         - ACL, 
-         - ELB, 
-         - VPC FLOW LOGS, 
-         - DIRECT CONNECT, 
-         - VPC END POINTS
-       
-    -HA ARCHITECTURE: 
-        NAME: HIGH AVAILABILITY ARCHITECTURE
-        TOPICS: 
-          - LOAD BALANCERS THEORY, 
-          - HEALTH CHECKS, 
-          - HA ARCHITECTURE, 
-          - SETTING UP EC2, 
-          - AUTOSCALING, 
-          - CLEANING UP, 
-          - CLOUD FORMATION, 
-          - ELASTIC BEANSTALK
-                
-    -APPLICATIONS:
-        NAME: APPLICATION SECURITY
-        TOPIC: 
-          - SQS, 
-          - SWF, 
-          - SNS, 
-          - ELASTIC TRANSCODER, 
-          - API GATEWAY, 
-          - KINESIS, 
-          - WEB IDENTITY FEDERATION 
-          - COGNITO
-        
-    -SERVERLESS:
-        NAME: LAMBDA SERVICES
-        TOPIC: LAMBDA CONCEPTS 
-==============================================================================
+
 
 
 

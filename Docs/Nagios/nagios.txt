@@ -1,6 +1,7 @@
 NAGIOS
 
-yum install nagios 
+yum install nagios -y;
+yum install nagios-plugins-all.x86_64 -y;
 
 
 
