@@ -1,8 +1,6 @@
 # About Me
 ####  MY-SKILLS
-
-
-JAVA FULL STACK DEVELOPER
+--------------------------------
 
 |USER INTERFACE   |                     |
 |   ------------------|----------------------------|
