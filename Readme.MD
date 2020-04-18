@@ -1,9 +1,12 @@
-# About Me
-####  MY-SKILLS
+# Welcome to my GitHub  - princeanurag2011 :)
+#### This repo is continuously updated with latest tools and technologies. Just follow it.
+###### This is now updated with DevOps related Stuff!! 
+----------------
+### About Me:
 --------------------------------
 
 |USER INTERFACE   |                     |
-|   ------------------|----------------------------|
+|-----------------|----------------------------|
 |UI/UX Design         |  HTML5, CSS3, BOOTSTRAP (RWD)|
 |Client side scripting| JAVA SCRIPT, AJAX, JQUERY |
 |**SERVICES**||
@@ -34,4 +37,4 @@
 |MONITORING TOOLS|NAGIOS|
 |OS|windows: 10 ,LINUX:  REDHAT LINUX, CENT OS 7, UBUNTU 18.04 |
 |**CLOUD**|
-|AWS CLOUD TECHNOLOGIES| EC2, S3, RDS, IAM, EXTERNAL LOAD BALANCING, VPC, ROUTE53|
+|AWS CLOUD TECHNOLOGIES| EC2, S3, RDS, IAM, ROUTE53, ELB, VPC, ASG|
