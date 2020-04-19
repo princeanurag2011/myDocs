@@ -221,19 +221,108 @@
               - docker container commit --message="A new image"  --author="authorname" <imagename> <username/image:tag>
            # The message we provided will be saved as the comment we can checkthat using the command   
                docker inspect image  <username/image:tag> | grep -i Comment 
-               
-               
-               
+ 
      ---
-           DOCKER STORAGE:
-           
-              - Types of storage in Docker:
-                  -  local storage for container:
-                     - Storage provided for docker image run.
-                     - Uses Storage Drivers to read filesystem layers from the contianres.
-                 -  Persistence Data Storage:
-                     - saving the data beyond the container lifecycle.
-                     - Data is stored outised the container lifecycle.
-                 - Static Image  storage:
-                     - Storing images in the registry.
-                     - ex: docker hub
+       DOCKER STORAGE:
+       
+          - Types of storage in Docker:
+              -  local storage for container:
+                 - Storage provided for docker image run.
+                 - Uses Storage Drivers to read filesystem layers from the contianres.
+             -  Persistence Data Storage:
+                 - saving the data beyond the container lifecycle.
+                 - Data is stored outised the container lifecycle.
+             - Static Image  storage:
+                 - Storing images in the registry.
+                 - ex: docker hub
+
+        #TO see the size of writable layer of containers 
+           docker ps -s #outputs the conatiner writable layer used size and virtualsize(image size)
+        #To format the output
+           docker ps -s --format 'table{{.Names}}\t{{.Images}}\t{{.Size}}'
+        #To see the total disk space used by all running contianers
+           docker system df  #shows the docker disk usage.
+        #To see the storage driver used
+           docker info | grep "Storage Drivers"
+
+      Types of stoarge Drivers:
+         - overlay-2 : default driver for 18.09 recommended - file level storage
+         - AUFS: default for centos7 - - file level storage
+         - device-mapper: default for centos7 may deprecate in future. - block level storage
+         - Btfrs & ZFS: -support snapshots -  - block level storage 
+         - Vfs: only for testing purpose not recommended for production
+
+      How to change the storage driver:
+         - Change the default stoarge form overlay2 to device mapper.
+         - default directory for Docker:
+             /var/lib/docker/
+         - By changing the storage drivers, all current  docker resources (containers and images)
+           will be unavilable for accessing with new storate driver.
+         - Process: - manual process
+              - Export the data
+              - Stop Docker
+              -  Edit  /etc/docker/daemon.json #if not present then create this file 
+              #add the below content in it
+              {
+                "storage-driver":"devicemapper"
+              }
+
+              - start the docker
+              - check the status of docker.
+         - Proces: command mode
+            - stop the docker
+            - run the command :
+                 dockerd --storage <storagedrivername>
+     
+     Docker drawbacks of storage:
+        - Downside storing the writable layer of the  container:
+             - data is not persistent when the container is removed.
+             - Writable layer is tightly coupled to the host machine.
+             - performance impact for write-heavy workloads.
+     
+     Persistence Storage:
+        - Volumes provide persistent storage.
+        - Allow to share data among other containers.
+        - Can be managed using the docker CLI
+        - Volumes does not increase the size of the containers using it. 
+        - Docker volume plug-in allow you to provison and mount shared storage.
+          such as iSCSI, NFS, FC.
+        - Data is translated by volume driver plug-in, which is then accessed by the container.
+
+    Manage Applicatiom Data:
+        - Volumes:
+            - Stored in the docker managed file system.
+            - Support use of volume drivers.
+        - Bind Mounts:
+             - Stored anywhere on the host system.
+        - tmpfs Mounts:
+             - Stored in host system's Memory.
+    
+    #Commands to create docker volume
+      docker volume create <volumename>
+
+    #To see the list of docker volume
+      docker volume ls 
+
+    #assging volumes to the container to tore data on host and this will name volumes with some hash code
+     ocker container run -d --name mysql3 -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v /var/lib/mysql mysql
+
+      #NOTE: in the above command /var/lib/mysql directory is inside the container
+      #on the hosts it is stored in /var/lib/docker/volumes/  #since we didn't mention any name 
+      #hashcode name will be present in that directory and inside that _data directory we can have content from container.
+
+      #To Know exact path of the volume you can trace using 'docker inspect <containerid>' command
+
+      #named volumes:  -v tag is used to give location to store data and name that data volume..
+        docker container run -d --name mysql3 -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v mysql-db:/var/lib/mysql mysql
+      #OR we can do it using mount command
+        docker container run -d --name mysql3 -e MYSQL_ALLOW_EMPTY_PASSWORD=True --mount type=volume, source=mysql-db, \
+        target=/var/lib/mysql mysql
+
+      #To Know exact path of the volume you can trace using 'docker inspect volume mysql-db' command for the 
+      #above container. Check the 'mountpoint' for the path.
+      #possible path on host would be /var/lib/docker/volumes/mysql-db/_data
+      #Whatever data stored inside the container /var/lib/mysql/ would be saved in the above location on hostPath.
+
+
+

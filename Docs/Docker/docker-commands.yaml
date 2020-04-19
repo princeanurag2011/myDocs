@@ -315,11 +315,25 @@ docker volume inspect <volume-id>
 #assging volumes to the container to tore data on host and this will name volumes with some hash code
 docker container run -d --name mysql3 -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v /var/lib/mysql mysql
 
+#NOTE: in the above command /var/lib/mysql directory is inside the container
+#on the hosts it is stored in var/lib/docker/volumes/  #since we didn't mention any name 
+#hashcode name will be present in that directory and inside that _data directory we can have content from container.
+
+#To Know exact path of the volume you can trace using 'docker inspect <containerid>' command
+
 #named volumes:  -v tag is used to give location to store data and name that data volume..
 docker container run -d --name mysql3 -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v mysql-db:/var/lib/mysql mysql
 #OR we can do it using mount command
 docker container run -d --name mysql3 -e MYSQL_ALLOW_EMPTY_PASSWORD=True --mount type=volume, source=mysql-db, \
 target=/var/lib/mysql mysql
+
+#To Know exact path of the volume you can trace using 'docker inspect volume mysql-db' command for the 
+#above container. Check the 'mountpoint' for the path.
+#possible path on host would be /var/lib/docker/volumes/mysql-db/_data
+#Whatever data stored inside the container /var/lib/mysql/ would be saved in the above location on hostPath.
+
+
+
 
 #bind Mounts: To give common directory to both container and host
 docker container run -d --name mysql4 -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v $(pwd):/var/lib/mysql mysql
