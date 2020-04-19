@@ -305,7 +305,7 @@
       docker volume ls 
 
     #assging volumes to the container to tore data on host and this will name volumes with some hash code
-     ocker container run -d --name mysql3 -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v /var/lib/mysql mysql
+      docker container run -d --name mysql3 -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v /var/lib/mysql mysql
 
       #NOTE: in the above command /var/lib/mysql directory is inside the container
       #on the hosts it is stored in /var/lib/docker/volumes/  #since we didn't mention any name 
@@ -324,5 +324,59 @@
       #possible path on host would be /var/lib/docker/volumes/mysql-db/_data
       #Whatever data stored inside the container /var/lib/mysql/ would be saved in the above location on hostPath.
 
+      NOTE: Docker volumes can't be deleted unless the container is stopped and removed.
+
+      #assging volumes to the container to tore data on host and this will name volumes with some hash code
+      docker container run -d --name mysql3 -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v /var/lib/mysql mysql
+
+      #NOTE: in the above command /var/lib/mysql directory is inside the container
+      #on the hosts it is stored in var/lib/docker/volumes/  #since we didn't mention any name 
+      #hashcode name will be present in that directory and inside that _data directory we can have content from container.
+
+      #To Know exact path of the volume you can trace using 'docker inspect <containerid>' command
+
+      Named Volume Mounts:
+      #named volumes:  -v tag is used to give location to store data and name that data volume..
+      docker container run -d --name mysql3 -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v mysql-db:/var/lib/mysql mysql
+      #OR we can do it using mount command
+      docker container run -d --name mysql3 -e MYSQL_ALLOW_EMPTY_PASSWORD=True --mount type=volume, source=mysql-db, \
+      target=/var/lib/mysql mysql
+
+      #To Know exact path of the volume you can trace using 'docker inspect volume mysql-db' command for the 
+      #above container. Check the 'mountpoint' for the path.
+      #possible path on host would be /var/lib/docker/volumes/mysql-db/_data
+      #Whatever data stored inside the container /var/lib/mysql/ would be saved in the above location on hostPath.
+
+      Bind Mounts:
+      #bind Mounts: To give common directory to both container and host
+      docker run --rm -itd -v /home/mount/vol1:/app nginx
+
+      #If we use the bind mount options , then it won't list in the docker volumes list
+      docker volume ls # this command wiol not show any volumes if we use bind mount options
+
+      #bind ounts using mount tag
+      docker run -itd --mount type=bind,source=/home/mount/vol2/config.txt,target=/app/config.cfg nginx
 
 
+      Multiple mounting volumes:
+      #We can mount multiple volumes:
+       docker run -itd --rm   --mount source=test-vol-1,target=/app1 \
+       --mount source=test-vol-2,target=/app2 nginx
+
+      tmpfs Mount:
+      #To mount the tmpfs mount volume
+       docker run -itd --mount type=tmpfs,destination=/app tomcat   
+       #Note: here there is no source , becuase source is RAM
+
+      #To delete the docker volumes 
+      docker volume rm <volumename>
+
+      #TO delete all the volumes that are not being used by the containers
+      docker volume prune
+
+      NOTE: Docker volumes can't be deleted unless the container is stopped and removed.
+
+      External Storage:
+       we can use the external storage using docker volume driveres. check the documentation sections.
+
+     
