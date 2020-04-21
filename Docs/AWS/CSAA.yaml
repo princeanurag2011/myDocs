@@ -19,10 +19,9 @@ WELL ARCHITECTED AWS SOLUTION:
 
 
 CSAA-8-topics:
-	- Compute:
-			- EC2:
-				 #https://aws.amazon.com/ec2/faqs/
-
+  - Compute:
+  - EC2:
+    #https://aws.amazon.com/ec2/faqs/
         Instanes:
         - General Purpose        
             -> t,m   
@@ -59,20 +58,19 @@ CSAA-8-topics:
              - Foe encrypted volumes snapshots also creates the same encrypted 
 
 			- Elastic Beanstalk
-			- Lambda
-	- Storage:
-			- S3:
-					#https://aws.amazon.com/s3/faqs/
-			- Glacier
-	- DB:
-			- RDS:
-					#https://aws.amazon.com/rds/faqs/
-			- DyanamoDB
-			- Redshift
-	- Networking and content delivery:
-			- VPC:
-					#https://aws.amazon.com/vpc/faqs/
-
+      - Lambda
+     - Storage:
+       - S3:
+        #https://aws.amazon.com/s3/faqs/
+       - Glacier
+       - DB:
+         - RDS:
+             #https://aws.amazon.com/rds/faqs/
+             - DyanamoDB
+             - Redshift
+      - Networking and content delivery:
+      - VPC:
+         #https://aws.amazon.com/vpc/faqs/
            Public Subnet: for weba nd app servers
            Private Subnet: for database servers
            NAT gateway: private internet access gateway
@@ -82,49 +80,49 @@ CSAA-8-topics:
            Route table associations
 			- CloudFront
 			- Route53:
-					#https://aws.amazon.com/route53/faqs/
-			- Direct Connect
-			- Elastic Load Balancer
-	- Security Identity and Compliance:
-			- IAM
-			- WAF
-	- Mgmt and Governance:
-			- Cloud Watch 
-			- Cloud Formation
-			- AutoScaling
-			- Config
-			- Cloud trail
-			- Trusted Advisor
-	- Analytics:
-			- Kinesis
-	- Application Integrations:
-			- SQS
-			- SNS
-			- SWF
-	- Others:
-		 - AWS WHITEPAPERS
-		 - WELL ARCHITECTED FRAMEWORK
-		 - Security BEST PRACTISES
+          #https://aws.amazon.com/route53/faqs/
+      - Direct Connect
+      - Elastic Load Balancer
+      - Security Identity and Compliance:
+         - IAM
+         - WAF
+      - Mgmt and Governance:
+         - Cloud Watch 
+         - Cloud Formation
+         - AutoScaling
+         - Config
+         - Cloud trail
+         - Trusted Advisor
+       - Analytics:
+         - Kinesis
+       - Application Integrations:
+         - SQS
+         - SNS
+         - SWF
+      - Others:
+        - AWS WHITEPAPERS
+        - WELL ARCHITECTED FRAMEWORK
+        - Security BEST PRACTISES
 =============================================================================================
                                 IAM 
 =============================================================================================
 
 IAM:
-	 - Identity Access Mgmt: 
-			 #when we create user/group by default it won't have any access to aws resources.
-			 #This is called default deny or Non-Explicit -Deny
-			 #IAM Users and Groups should be given least access(only the required)  to AWS resources
-       This is a Global service and not restricted to any specific region.
-       - 'Access Advisor' shows the permissions granted to User and when theay are last used.
-			- ARN - amazon resource name
-			- arn:partition:service:region:account:resource #format
-			- we can use arn for 
-				users(IAM and federated),groups,policies, instance profiles, vMFA devices, server certificates
-			- These are important part of IAM Polices to identify them easily.
+      - Identity Access Mgmt: 
+          #when we create user/group by default it won't have any access to aws resources.
+         #This is called default deny or Non-Explicit -Deny
+         #IAM Users and Groups should be given least access(only the required)  to AWS resources
+         This is a Global service and not restricted to any specific region.
+        - 'Access Advisor' shows the permissions granted to User and when theay are last used.
+        - ARN - amazon resource name
+        - arn:partition:service:region:account:resource #format
+        - we can use arn for users(IAM and federated),groups,policies,
+           instance profiles, vMFA devices, server certificates
+        - These are important part of IAM Polices to identify them easily.
 
-			- IAM POLICY:
-					- This is attached to either principals or Identity (users, groups, roles)  or resources(s3 bucket)
-					- These are stored in JSON format
+      - IAM POLICY:
+         - This is attached to either principals or Identity (users, groups, roles)  or resources(s3 bucket)
+         - These are stored in JSON format
           - Template of typical IAM policy
             - version: Optional policy wide information
             - statement: one or more
@@ -202,43 +200,43 @@ IAM:
            -------------------------------------------------------------------------
 
 					- Identity Policies:
-							- Managed Policies:
-									- AWS Managed Polices: policies creatd by AWS
-									- Customer Managed Policies:
+            - Managed Policies:
+                  - AWS Managed Polices: policies creatd by AWS
+                  - Customer Managed Policies:
                       - IAM > Policies > Filters > select Customer Managed Policies 
                       - We need not to write the JSON . we can use visual editor and 
                       choose the permissions and JSON will be automatically populated.
-							- Inline Policies:
-								 - These are attached to particular users,roles
-					- Resource Policies:
-							- These are attached to the resources like S3 directly.
+            - Inline Policies:
+                - These are attached to particular users,roles
+            - Resource Policies:
+              - These are attached to the resources like S3 directly.
               - At present, there is only one type of resource-based policy called 
                 a role trust policy, which is attached to an IAM role.
               - An IAM role is both an identity and a resource that supports resource-based policies.            
-					- POLICY EVALUATION LOGIC:
+           - POLICY EVALUATION LOGIC:
                - if multiple policies are attached to a user either directly or indirectly from 
                   a group. then it proceeds with default deny.
-                  order:
-							- Explicit-deny > Explicit-allow  > default deny
+                 order:
+                - Explicit-deny > Explicit-allow  > default deny
           
 
-			- IAM ROLES:
-					- Users in AWS account access resources which they dont have access usually.
-					- Users in one AWS account to access resource in another AWS account.
-					- a mobile app  to use aws resources withoutany aws keys
-					- Users who has identities outside of the AWS   
-					- Third parties to perform temporary audits.
-					- example:
-						 -  AWS EC2 to access to S3 (No need to store keys in EC2 if IAM roles are used)
-						 -  users in different aws accounts
-						 -  Users from externally authenticated Users (web Identity Federation) - google, facebook etc.
-						 -  Provide AWS  account owned by third party SAML 2.0 
-						 -  WE CAN ATTACH ONLY ONE IAM ROLE TO EC2 Instance at this time:
-									- It can be attached to running/stopped instance.
-									- free of cost
-						 - can't be added to groups
-						 - can't make direct request to AWS services; they are meant to be used by authorized entities
-							 such as IAM USER , apps , AWS service like EC2.
+- IAM ROLES:
+  - Users in AWS account access resources which they dont have access usually.
+  - Users in one AWS account to access resource in another AWS account.
+  - a mobile app  to use aws resources withoutany aws keys
+  - Users who has identities outside of the AWS   
+  - Third parties to perform temporary audits.
+  - example:
+     -  AWS EC2 to access to S3 (No need to store keys in EC2 if IAM roles are used)
+     -  users in different aws accounts
+     -  Users from externally authenticated Users (web Identity Federation) - google, facebook etc.
+     -  Provide AWS  account owned by third party SAML 2.0 
+     -  WE CAN ATTACH ONLY ONE IAM ROLE TO EC2 Instance at this time:
+          - It can be attached to running/stopped instance.
+					- free of cost
+     - can't be added to groups
+     - can't make direct request to AWS services; they are meant to be used by authorized entities
+			 such as IAM USER , apps , AWS service like EC2.
 
           - STS:
              - You assume an IAM role by calling the AWS 'Security Token Service' 
@@ -337,7 +335,8 @@ IAM:
                         WAF - WEB APPLICATION FIREWALL &  SHEILD
  ---------------------------------------------------------------------------------------------
    WAF: free of cost.
-   Helps in Protecting web applications from common exploits. like security, avilability and consumeexcessive resources.
+   Helps in Protecting web applications from common exploits. like security, avilability and
+    consumeexcessive resources.
   
   - This is used for Monitor the HTTP and HTTPS requests  that are forwarded to 
      AMAZON API,
@@ -808,13 +807,7 @@ Routing Policy:
              - It return the IP of the server upto 8 Healthy servers(selected as random) 
                and doesn't return the ip value of the unhelathy server.
              -  These A records can be asociated with heath checks.
-             
-		
-
-
-	
-
-
+  
 OSI MODEL:
     Open Systems Interconnections
 
@@ -925,17 +918,19 @@ ELB AND AutoScaling:
           - Use cae: suitable when we know the capacity needed to run the application smooothly.
      
      - Scheduled:
-          - Purchase the instances that are always avialble on the s[ecified recurring schedule for 1 year term.
+          - Purchase the instances that are always avialble on the specified recurring schedule for 1 year term.
      - Spot: 
          - Bidding type
-         - If actual price increase than our bid price then the instance gets terminated within a half n hour notice.
+         - If actual price increase than our bid price then the instance gets terminated within a 
+            half n hour notice.
          - Here we bid for unused EC2 instance capacity
           NOTE: it will not be charge for partial hour in whch instance was terminated
           Spot instance Pool:   A set of unsed ec2 instances with same type, os, availability zone.
           Spot Price: Current hourly price of the spot instance
           Spot instance request: You bid of price that you are willing to pay.
           Spot fleet: Launches spot instance pool as per our bid.
-          Spot instance interuption: when spot price exceeds or no capcity is available, then the instances gets terminated, hibernated.
+          Spot instance interuption: when spot price exceeds or no capcity is available, then 
+           the instances gets terminated, hibernated.
           
      - Dedicated Hosts:
         - Our VM instance will be launched on the Dedicated Machine's Hypervisor
@@ -952,7 +947,9 @@ ELB AND AutoScaling:
          - It provides basline performance of 3 IOPS per GiB
          - It can be used as the root volume of EC2 instance ans mostly used for Dev and Test environments.
          - Provides Min. 100 to 10K IOPS 
-          NOTE: IOPS (Input/ Output Operations Per Second) -> IOPS usage can be simply calculated by knowing the total read and write throughputs (ops) of your disk divided by the time in seconds within that period
+          NOTE: IOPS (Input/ Output Operations Per Second) -> IOPS usage can be simply calculated by 
+          knowing the total read and write throughputs (ops) of your disk divided by the time in seconds 
+          within that period.
           
      - Provisioned IOPS SSD:
          - suitbale for applications that demands extensievely High throughtput and Low-latency i.e >10K IOPS 
@@ -976,45 +973,52 @@ ELB AND AutoScaling:
             
      SSD vs HDD:
       - SSD are costlier than  HDD
-      - SSD backed volumes are optimized and more suitable for applications that require Read and Write operations
-        with small I/O size.
+      - SSD backed volumes are optimized and more suitable for applications that require Read and
+        Write operations  with small I/O size.
       - HDD are more suitbalw when throughtput(MiB/s)is more critical than IOPS
         MiB = MibiByte ; 1MiB= 1.074 Megabytes
      TAGS:
       - We can add max of 50 Tags pre instances.
      Security Groups: 
      instance System checks 2/2:
-      1/2 - System Status Checks - Checks for Hardware issues. - if issues present, then stop and start the instance.
+      1/2 - System Status Checks - Checks for Hardware issues. - if issues present, then stop and 
+      start the instance.
       2/2 - System software and Network checks -if issues present, then restart the instance.
      Monitoring: most important CPU Metrics - CPU, MEMORY, NETWORK and status Check.
      
      NOTE:     
-     - We can change the security groups. attached to EC2 instances -> select instances - Actions-> networking-> change  security groups.
+     - We can change the security groups. attached to EC2 instances -> select instances - Actions
+     -> networking-> change  security groups.
      - We can attach the additional N/W interface.
        NOTE: can't detach the primary N/W interface.
        
        
      Snapshot-Backup:
        - To create Backup or snapshot - Click on aactions and clic on the Create image.
-       - To launch an instance with backed up image-> click on the launh instance and slect MyAMI- here we can find our image and we can launch the instance form it.
-       - By default the AMI is region specific, if we want AMI in some other region , we have to copy the AMI
+       - To launch an instance with backed up image-> click on the launh instance and slect MyAMI- 
+         here we can find our image and we can launch the instance form it.
+       - By default the AMI is region specific, if we want AMI in some other region , we have to copy 
+        the AMI
        -> goto the image sections slect the snapshot click on actions and click on copy the AMI
        
      AMI type:
       - backed by Amazon EBS: the root deviec is the AMZOn EBS volume.
-      - Instance Store: the root device is an instance store volume. (Created form atemplate store din Amazon s3)
+      - Instance Store: the root device is an instance store volume. (Created form atemplate stored 
+        in Amazon s3)
       - Cross Account AMI copy: Your can share AMI with Other AWS accounts. while copying it.
       - De-registering AMI doesnot affect any instance that is launched from it.
      
      Instance Store:
-        - TEMPORARY Block level Storage located on the disks that are physically attached to the Host computer.
+        - TEMPORARY Block level Storage located on the disks that are physically attached to the 
+          Host computer.
         - ideal for temporarry storage.
         - Data exists if the instance reboots 
         - once the isntance is stopped/terminated then the data is deleted.
         - These instance store volumes can't be detached and attached to another instance.
         
-     Placement groups: Arrangeent of the instance on the underlying hardware. No charge for creating placement groups
-         While launching the instance we can select add instance to placement groups -> select add to new placement group
+     Placement groups: Arrangeent of the instance on the underlying hardware. No charge for 
+      creating placement groups While launching the instance we can select add instance to 
+      placement groups -> select add to new placement group
          then select Placement group startegy: as below. 
         -  Two types:
             - Cluster: Instance on single hypervisor and single AZ
@@ -1029,7 +1033,8 @@ ELB AND AutoScaling:
                 - NOT SUPPORTED FOR DEDICATED INSTANCE AND DEDICATED HOSTS.
         
             
-     BAstion Host/Jump Server: This is the instance exists in the Public subnet form hich we can connect to the instance in the private subnet instances in the same VPC.
+     BAstion Host/Jump Server: This is the instance exists in the Public subnet form hich we can 
+     connect to the instance in the private subnet instances in the same VPC.
  
  =======================================================================================
  =======================================================================================
@@ -1041,9 +1046,9 @@ ELB AND AutoScaling:
        There is no ability to edit content of the file. only get ,upload, delete and download.
      - Durability: 99.999999999%  # total 11 - 9's over a year
      - By default objects stored in s3 are stored in min. 3 available zones within a region.
-     - Highly Scalable and mnaged by AWS
+     - Highly Scalable and managed by AWS
      - Highly Reliable 
-     - Fast uploads suing multipart upload options
+     - Fast uploads using multipart upload options
      - Low price inexpensive:
          s3 standard > s3 standarad infrequent access > s3 on zone infrequent access.
      -  Highly Secure , provide server side and client side encryptions
@@ -1059,7 +1064,7 @@ ELB AND AutoScaling:
      - Cloud Native Application Data
      - Disaster recovery
      - Don't cases:
-         - should not be use for installing OS .
+         - should not be used for installing OS .
          - should not be used as mounting volume where high I/O operations is needed.
          -  To do these above opeartions EBS should be used:
                - In EBS data is stored in volumes and blocks and split into evenly sized blocks.
@@ -1162,55 +1167,63 @@ ELB AND AutoScaling:
          - Can be used to mount as volume, install OS, can be used for High IOPS.
  
       Server Access Logging vs Object Level logging:
-         - Useful fore security and access auditing
-         - Server access logging provides the records for the requests that are made to hte bucket.
-         - Amazon s3 Log delivery group write permission shoudl be enabled.
+         - Useful for security and access auditing
+         - Server access logging provides the records for the requests that are made to the bucket.
+         - Amazon s3 Log delivery group write permission should be enabled.
          - Object Level logging gives full detailed view of logs and enables CloudTrail Trails.
          
       Static Website Hosting:
       
       S3 TAGS:
       
-      S3 EVENTS: upload or deleteing fil in the bucket can be notified using below techniques.
+      S3 EVENTS: upload or deleting file in the bucket can be notified using below techniques.
         - SNS TOPICS
         - SQS QUEUE
         - LAMBDA FUNCTION
         
       S3 RequestorPays:
         - the requestor pay if he downloads(data transfer) anything. whereas bucket owner pays for the data.
-        - the requestor must include 'x-amz-request-payer' in their request either in the header(POST, GET, HEAD request) or
-          as a paramater(in the REST request).  Otherwise owner will be charged for requestor downloads.
+        - the requestor must include 'x-amz-request-payer' in their request either in the header(POST,
+          GET, HEAD request) or  as a paramater(in the REST request).  Otherwise owner will be charged 
+          for requestor downloads.
       
       S3 Access Control List:
-        - Enables you to access the bucket and object . it is avilable as a sub resource to the each bucket and object.
-        - Checks for grante access to aws account/groups/type of access and gives the access to the object.
+        - Enables you to access the bucket and object . it is available as a sub resource to the each 
+          bucket and object.
+        - Checks for granted access to aws account/groups/type of access and gives the access to the object.
         
       S3 Bucket Policy:
         - Grants other AWS account or IAM user access permissions for the buckets and its objects.
-        - Object permission applies to objects that bucker owner creates.
+        - Object permission applies to objects that bucket owner creates.
         
       S3 Access Control List vs S3 Bucket Policy:
         - Both are resourcec based policies
         - ACL primarily used to grant basic read/write permissions for  other AWS accounts
         - In Bucker policy you specify who has access to that particular bucket.
-        - You should use bucket policy when you want to manage cross-account permissions for all amazon s3 permissions.
+        - You should use bucket policy when you want to manage cross-account permissions for all 
+        amazon s3 permissions.
         
       S3 Object life cycle Management:
-         - Manages the storage of the objects and the cost asociated with it throughout the life of the object.
+         - Manages the storage of the objects and the cost asociated with it throughout the life of 
+         the object.
        USE-CASE:
-        - To move the objects to different storage classes - depending upon how frequently  they are used to reduce the cost.  (Transistion)      
-        - Set expiry date on the objects taht would no longer be used after certian period and delete them (Expiration).
+        - To move the objects to different storage classes - depending upon how frequently  they are 
+         used to reduce the cost.  (Transistion)      
+        - Set expiry date on the objects taht would no longer be used after certian period and
+         delete them (Expiration).
         - Transistion and Expiration is done via Lifecycle rules.
         
         Storage types/Classes: EXcept s3-standard all the storage classs are charged per data per GB.
         
          - S3-standard: genereal purpose. Availability = 99.99% , Durability=99.999999999%
          - S3-IA: low cost, rapid infrequently access. Availability = 99.9% , Durability=99.999999999%
-         - S3-OneZone-IA: 20% less cost than S3-IA. Availability = 99.5% , Durability=99.999999999% .Good choice for cross region replications and secondary backups of data.
+         - S3-OneZone-IA: 20% less cost than S3-IA. Availability = 99.5% , Durability=99.999999999% .
+           Good choice for cross region replications and secondary backups of data.
          - S3-Intelligent-Tiering: 
              - Availability = 99.9% , Durability=99.999999999%
              - Automatically manages the lifecycle of objects.
-             - No retrival fee and no additional tiering fee per object when objects are moved b/w access tiers.
+             - No retrival fee and no additional tiering fee per object when objects are moved b/w 
+               access tiers.
              - Charged for 30 days once enabled. suitable for object size >128KB
          - Glacier Vault:
             - AMAZON S3 GLACIER:
@@ -1230,19 +1243,24 @@ ELB AND AutoScaling:
          - we can clean up expired deletion markrs and incomplete multipart upload using the lifecycle rules.
        
       S3 Cross Region Replications:
-        - For CRR,  the source and destination buckets must be in different region and versioning must be enabled.
+        - For CRR,  the source and destination buckets must be in different region and versioning 
+          must be enabled.
         - There are certain things that get replciated
              -  decrypted and encrypted, tags, metadata and newly added objects after enabling replication.
         - There are certain things that won't get replciated
-             - objects before enabling replication, object encrypted with SSE-C, object that we result of another previous replication.
+             - objects before enabling replication, object encrypted with SSE-C, object that we result of 
+               another previous replication.
         - Without version ID, deelte markers are replicated.
         - With version id, delte markers are not replicated. deletingon source doesn't delete  on destination.
       
-      S3 Analytics,Metrics,Invntory:
-         - Analytics takes 24 hrs to generate report - (15-30days) analysis: we can get the statastical data to improve life cycle policies. Also, we can download the CSV file.
-         - Metrics- newly adde filter would take 15 min. to gather data:
-            - Used for monitoring buckets, to collect and process storage data readable, daily metrics for free.
-            - S3 CLOUD WATCH request metrics such as GET, PUT, bytesDOWNLOADED etc., to monitor S3 requests. It is chargable.
+      S3 Analytics,Metrics,Inventory:
+         - Analytics takes 24 hrs to generate report - (15-30days) analysis: we can get the statastical
+          data to improve life cycle policies. Also, we can download the CSV file.
+         - Metrics- newly added filter would take 15 min. to gather data:
+            - Used for monitoring buckets, to collect and process storage data readable, daily 
+              metrics for free.
+            - S3 CLOUD WATCH request metrics such as GET, PUT, bytesDOWNLOADED etc., to monitor S3 
+             requests. It is chargable.
          - Inventory: To genereate first report it would take 48 hours.
              - Audit and report on the replicaiton and encryption status of your Objects.
              - Provides CSV files that lists the objects corresponding data on daily and weekly basis.
@@ -1269,7 +1287,7 @@ ELB AND AutoScaling:
        - Athena doesnot support different storage classses within the bucket,
        - doesnot query previous versions,
        - doesnot support requestor pays buckets,
-       - if data is encrypted it must be store in the same region.
+       - if data is encrypted it must be stored in the same region.
        
  ========================================================================================================
  ========================================================================================================
@@ -1322,13 +1340,14 @@ ELB AND AutoScaling:
       - CLOUD WATCH:
            - tracks the preformance of the AWS resources by collecting metrics.
            - reports metrics in 1 or 5 minutues period
-           - helps to gain system wide visibility resource utilization, application performance, operational health
+           - helps to gain system wide visibility resource utilization, application performance, 
+             operational health
            - To be used for monitoring health of the applications built on aws resources.
            
            
       - CLOUD TRAIL:
-           -  Tracks every activity of the API calls made throught the AWS mgmt console, AWS CLI, AWS SDK,  and API's to
-              AWS resources on your AWS account.
+           -  Tracks every activity of the API calls made throught the AWS mgmt console, AWS CLI, AWS SDK,
+               and API's to AWS resources on your AWS account.
            -  Within 15 delivers the logs.  Keeps the events upto 90 days.
            -  Helps to gain vivisibilty into your resources and resource actvity by recording AWS API calls.
            -  To be used for monitoring actions performned on aws resources by users on your AWS account.
@@ -1343,17 +1362,18 @@ ELB AND AutoScaling:
     - simple infrastructure mgmt
     - provides the ability to view the resources before provisioning
     - Qucikly replicates the infrastructure.
-    - Controls and tracks infrastructure chanfges
+    - Controls and tracks infrastructure changes
     - handles  the dependies b/w the resources in the templates.
     
    Stack:
      - Collection of AWS resources.
      - CloudFormation manages resources by creating, updating and deleting the stacks.
      - Can be as simple as one region or entire web application.
-     - If any resource can't be created , then CF rolls the stack back and automatically deletes any resource that were created.
+     - If any resource can't be created , then CF rolls the stack back and automatically deletes any 
+        resource that were created.
    Stack updates:
      - Upon upadates , only updates the changed resources.
-     - Unintentional updateion or deleteion of stack can  be prevented by stack update policy.
+     - Unintentional updateion or deletion of stack can  be prevented by stack update policy.
      - Progress can be monitored by vewing the stack events.
      - TYpes of Updates:
          - Direct Updates:
@@ -1364,7 +1384,7 @@ ELB AND AutoScaling:
      - Updates can be cancelled if it is UPDATE_INPROGRESS state.
      
    Templates:
-    -  Contians All configuration details
+    -  Contains All configuration details
     - JSON or YAML
     - Template designer can be used to visualize how the resources can be created and modified.
    google for AWS cloud formation templates.
@@ -1395,7 +1415,7 @@ ELB AND AutoScaling:
           - paasenger
           - IIS
        - can also perform deployment tasks, such as changing the size of your fleet of Amazon
-         EC2 INSTANCE,  MONITORING YOUR APPLICAITON DERECTLY FROM THE ELASTIC WEBINTERFACE
+         EC2 INSTANCE,  MONITORING YOUR APPLICATION DERECTLY FROM THE ELASTIC WEBINTERFACE
            
    
    
@@ -1405,7 +1425,7 @@ ELB AND AutoScaling:
   ========================================================================================================
                   AWS  RDS
  ========================================================================================================
- RDS - RElational Data Base Services:
+ RDS - Relational Data Base Services:
    - Micosoft SQL Server
    - MYSQL
    - PostgreSQL  
@@ -1436,7 +1456,7 @@ ELB AND AutoScaling:
          - gp2
          - io1
          - Magnetic
-  - Can create upto 16TiB=1024 GiB of storage with upto 32 vcpu's and 244GB memory.
+  - Can create upto 16TiB and 1TiB=1024 GiB of storage with upto 32 vcpu's and 244GB memory.
   - Billed based on:
        - DB instance hours
        - Storage
@@ -1460,13 +1480,13 @@ ELB AND AutoScaling:
       - Backup are deleted when we delete db instances. however we can take one final snapshot of db.
       - single AZ results in I/O suspension for few seconds to few minutes during creation of DB snapshot.
   - Manual backups:
-      -  These backup are incremental
+      - These backup are incremental
       - Not deleted automatically when we delete the DB instance
 
  - Logs: Genral , Error,  slow query logs
     - Logs requires IAM Role  RDS service linked role.
 
- - Minor version upgrades are carried duwing the maintanence window
+ - Minor version upgrades are carried during the maintanence window
  - After creation DB , we can connect to it using the Endpoint URL and port no. 
 
  RDS Multi AZ:
@@ -1521,12 +1541,12 @@ SQL vs NoSQL DB:
    SQL:
    - SQL DB are RDBMS
    - TAble based
-   - uses Struutred query language
+   - uses Structured query language
    - Schema is predefined
    - scales vertically..
    - Foreign key concept query intensive environment and transcation al applications
    - best suited for complex query intensive environment and transactional applications
-   - Emphasizes on ACID properties. (Atomicity, oOnsistency, Isolation, Durability)
+   - Emphasizes on ACID properties. (Atomicity, Consistency, Isolation, Durability)
    - ex: mysql,orcale, postgresql, MS-SQL
 
   NoSQL:
@@ -1540,42 +1560,9 @@ SQL vs NoSQL DB:
    - ex: DynamoDB, MongoDB
 
 
- Dynamo DB: NoSQL DB fully manged by AWS
-   - FUlly managed multi region multi Master NoSQl DB with single digit millisecond latency.
+ Dynamo DB: NoSQL DB fully manged by AWS.
+   - Fully managed multi region multi Master NoSQl DB with single digit millisecond latency.
    - Distributed: scales horizontally by expanding a single table over multiple servers.
-   - In-memory cache: reduces response time from milliseconds to microseconds  withouor app changes.
+   - In-memory cache: reduces response time from milliseconds to microseconds  without app changes.
    - Provides fast access to local data by replicating tables across Multi AWS regions.
-
-
-
-
-
-
-
-
-
-
-
-
-
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    - Based on PostgreSQL , most exisitng client applicaitons work with only minimal changes.
-
-
+   - Based on PostgreSQL , most exisitng client applications work with only minimal changes.

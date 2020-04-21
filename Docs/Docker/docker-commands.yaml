@@ -473,7 +473,7 @@ docker service create --name webserver -p 80:80 httpd:latest
 #To see the services running and no of replicas..
 docker service ls
 
-#To see the status of the replicas like which node it is running..
+#To see the status of the replicas like on which node it is running..
 docker service ps <id>
 #or 
 docker node ps
@@ -481,7 +481,7 @@ docker node ps
 #To see service running on docker node 
 docker node ps <node-name>
 
-#TO See the services running on node
+#TO See the  running  nodes in swarm
 docker node ls
 
 #To create the replicas to 3
@@ -505,6 +505,22 @@ docker service rollback <id> #ex: docker service rollback 8t877887t87t
 docker service rm <id>
 #note: after creating replicas and if we try to stop container using command: docker container stop <dockerid>
 #it will create the replicas automatically.
+
+#To inspect the services 
+ docker service inspect --pretty <servicename>   #--pretty is used to display o/p in readable format
+#otherwise we get the o/p in json format.
+
+#we can drain the worker nodes 
+ docker node update --availability drain <nodename>
+
+
+#Docker scaling the replicas  and rolling updates
+ docker service create --replicas=5 --name nginxroll --update-delay 10s nginx:1.14
+
+#to update the image 
+ docker service update --image nginx:1.15 nginxroll
+
+
 --------------------------------------------------------------------
 ====================================================================
 ===========running docker swarm on multiple nodes===================
@@ -530,6 +546,36 @@ docker service rm <id>
 # To Make node as manager
     docker node update --role manager <hostname>
 	
+# To promote the worker node as master 
+   docker node promote <nodename> <nodename>
+# TO remove as manger 
+  docker node demote <nodename> <nodename>
+
+# To remove node from swarm , run the below command on node
+  docker swarm leave
+# TO remove node from list of swarm, run the below command on manager
+  docker node rm  <nodename>
+
+AUTOLOCK SWARM:
+   - we can enable the autolock feature  in the docker swarm.
+   - if this is enabled , then token is required for the docker swarm to unlock.
+
+   docker swarm update --autolock=true # this will generate a token
+   docker swarm unlock #enter the token when prompted other docker swarm remains unlocked 
+   #state and can'r see any running services.
+
+   #We can change the token also using thr rotate option
+    docker swarm unlock-key --rotate
+
+   #To remove autolocking 
+    docker swarm update --autolock=false
+
+  Swarm Mangers maintain the consistent state of the cluster
+   - should maintain odd no. of managers to support node failures.
+   - quorum of manager should always be odd no.
+   - A 'n' manager cluster falu tolerance is at (n-1)/2
+  Docker recommends a max. of 7 mgr nodes per swarm.
+
 #To check docker network 
 docker network ls
 #------------------------------------------------------------------
