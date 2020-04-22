@@ -1,0 +1,50 @@
+#Apache securities
+
+#centos7
+firewall-cmd --permanent --add-service=http
+firewall-cmd --permanent --add-service=https
+firewall-cmd --permanent --reload
+
+
+Modules location:
+cd /usr/lib64/httpd/modules
+#modules are the script file that end with .so
+
+#Modules loaded
+#Modules that are loaded by httpd
+/usr/bin/httpd -M
+
+#Module that are compiled by httpd
+httpd -l
+
+logs:-p,
+cd /var/log/httpd/
+
+configuration files:
+cd /etc/httpd/conf/httpd.conf
+
+#TO validate the httpd  configuration file
+httpd -t -f /etc/httpd/conf/httpd.conf  #-t is used for syntax check -f used for file input
+
+#configuration file  - directives:
+ServerRoot "/etc/httpd"  # installation root directory
+Listen 80 #on which port to listen 
+User apache  #runs on which user 
+Group apache # runs on which group
+ServerAdmin  abcd@cbbd.com  # here we can mention the admin email adddres 
+ServerName  ip/dns:80 #here you can give ip address or dns name along with port no.
+                      #This avoids the startup problems 
+
+<Directory>
+  AllowOverride none  #doesn't allow to override any settings
+  RequireAll denied  #Disables the root directory access with .htaccess files
+
+</Directory>
+
+DocumentRoot "/var/www/html" # this is the place  where the document files are served by server.
+
+<Directory "/var/www">
+  AllowOverride none  #doesn't allow to override any settings
+  Require all granted  #Disables the root directory access with .htaccess files
+
+</Directory>
