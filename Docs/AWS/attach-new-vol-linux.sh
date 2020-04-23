@@ -1,3 +1,10 @@
+#REFER
+
+
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html
+
+
+
 #-------------------------------------------------------------
             #How to attach new EBS volumes 
 #-------------------------------------------------------------
