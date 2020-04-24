@@ -48,3 +48,23 @@ DocumentRoot "/var/www/html" # this is the place  where the document files are s
   Require all granted  #Disables the root directory access with .htaccess files
 
 </Directory>
+
+<VirtualHost *:80>
+  ServerName  abcd.com
+  DocumentRoot /var/ww/html/
+</VirtualHost>
+
+<VirtualHost *:80>
+  ServerName  abcd.com
+  DocumentRoot /var/ww/html/
+  Alias /img /var/www/images
+  Redirect permanent  /program.html /download.html
+</VirtualHost>
+
+
+
+#LOGS
+/etc/httpd/logs
+
+FileEtag None
+TraceEnable off

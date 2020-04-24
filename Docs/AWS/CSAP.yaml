@@ -12,13 +12,13 @@ CSAP - Certified Solution Architect - Professional
   
 AWS SolArchProfessional:
 
-1. Design for Organization Complexity:
+1.0 Design for Organization Complexity:
   - AWS Organization
   - Cross Account Access
   - Tagging
   - Security across Accounts
 
-2. Design Networks for Complex Organizations:
+2.0 Design Networks for Complex Organizations:
   - VPN
   - AWS DIRECT CONNECT
   - VPC PEERING
@@ -97,7 +97,7 @@ AWS SolArchProfessional:
  - Improving Performance of Applications
 
 =================================================================================
-               1. Design for Organization Complexity - AWS Organization
+               1.1 Design for Organization Complexity - AWS Organization
 =================================================================================
 
 AWS Organization:
@@ -113,7 +113,7 @@ AWS Organization:
 
 =================================================================================
 =================================================================================
-               1. Design for Organization Complexity -  Cross Account Access p173789 o512790
+               1.2 Design for Organization Complexity -  Cross Account Access p173789 o512790
 =================================================================================
    Let's give our S3 access to user in other AWS account:
    from present account (say id:123456789)
@@ -150,7 +150,7 @@ AWS Organization:
                 
 =================================================================================
 =================================================================================
-               1. Design for Organization Complexity -  Tagging
+               1.3 Design for Organization Complexity -  Tagging
 =================================================================================
  Tags:
    - Metadata in the form of key value pair.
@@ -184,7 +184,7 @@ AWS Organization:
       - Be watchful while editing tags.
 
 =================================================================================
-               1. Design for Organization Complexity -  Security across Accounts
+               1.4 Design for Organization Complexity -  Security across Accounts
 =================================================================================
 
  Security in Single Account:
@@ -206,6 +206,78 @@ AWS Organization:
 
 
 =================================================================================
+=================================================================================
+               2.0 Design for Organization Complexity -  VPN
+=================================================================================
+ 
+  -  If the organization of mid size workloads:
+         - 10-100Mi or  1Gi of workload , then go for VPN
+         - if 100s of TB's of workload ,then  go for Direct Connect.
+
+      AWS Site-to-Site VPN :
+       An IPSec VPN connection b/w your VPC and your remote Network.
+       - Virtual Private Gateway -  On the AWS side of site-to-site VPN Connection.
+       - Customer Gateway - On the remote side of Site-to-Site VPN Connection. (customer connecting from outside)
+       
+      AWS Client VPN: 
+        - A managed client based VPN service that enables you to securely access your AWS resources
+        in your on premise network.
+        - With AWS  Client VPN, you configure an endpoint to which your users can connect to establish 
+        a secure TLS VPN Session. You can access resources in AWS or an on-premises from any location
+        using an openVPN-based VPN Client.
+    
+      AWS Cloud VPN:
+         - If you have more than one remote n/w, you can create multiple AWS Site-to-Site VPN connections
+           via your virtual private gateway to enable communication between these networks.
+         
+         - we can use these if we have multiple branches.
+
+
+      AWS Site-to-Site VPN:
+         - Lets say we want to connect to VPC which is having Private subnet
+           (It would not have public IP) that from the data centre.
+         - Then we need to create a Virtual Private Gateway and attach it to the VPC:
+              - It will have ASN (Autonomous System Number). It's unique number to identify autonoumous 
+                  system/globally. Once it is associated with VPG  we can't change the ASN once created.
+              - if we dont specify the ASN number , then it create a default Number 64512.               
+              - after that we have to mention the private subnets in route tables.
+         - On the remote side, we have to configure Customer Gateway (Hardware device or software application):
+                 - Examples of AWS customer gateway devices:
+                     - Cisco ASA running Cisco ASA 8.2 or later.
+                     - Cisco IOS running Cisco IOS 12.4 or later.
+                     - juniper J-series running JunOS 9.5 (or later)  software.
+                     - Microsoft Windows Server 2012 R2 (or later) Software.
+              - On the customer gateway side We have to give internet routable IP Address Static.
+              - and the other one is routable table:
+                    - static/dynamic type it depens on make and build of device.
+
+         - When both the VPG and Customer gateway is established then IPsec VPN Tunnel is established.
+         - Customer gateway is responsible for the IPSec Tunnelling and it is tuned on when traffic is 
+           generated from the  Customer Gateway.
+         - NOTE: If we need to transfer 100's of TB's of PetaBytes like Data Migration. Choose AWS Direct 
+           Connect. 
+
+============================================================================
+     2.0 Design Networks for Complex Organizations: - AWS DIRECT CONNECT
+============================================================================
+ 
+  - This is used to link an internal network to an AWS Direct Connect location.
+    The Connection is established over a standard ethernet fiber-optic cable.
+  - Once you have a Direct Connect link, you can then create virtual interfaces to access the AWS Services.
+  - Using this interfaces you can access the public services such as Amazon s3. This access is 
+    established via the AWS Backbone network and bypass the network.
+  - NOTE: this AWS DIrect connect is used  if we need Higher bandwith and consistent connections.
+
+
+  - Virtual Interfaces:
+     - Private/Public Interfaces - This can be used to access the Amazon VPC using
+       the private IP address and AWS Public services using the public IP addresses.
+     - Transit virtual Interfaces - This can be used to access one or more Amazon VPC Transit Gateways
+       that are associated with Direct Connect gateways.
+
+
+         
+
 
 
 
