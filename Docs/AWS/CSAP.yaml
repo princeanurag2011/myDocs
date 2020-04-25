@@ -23,6 +23,7 @@ AWS SolArchProfessional:
   - AWS DIRECT CONNECT
   - VPC PEERING
   - NETWORK SECURITY (EP, NACL,SG )
+  - VPC Endpoints
   - AWS TRANSIT GATEWAY
   - NTWRK LB
   - PRVT HOSTED ZONE 
@@ -275,8 +276,171 @@ AWS Organization:
      - Transit virtual Interfaces - This can be used to access one or more Amazon VPC Transit Gateways
        that are associated with Direct Connect gateways.
 
+===============================================================================
+     NOTE: for windows IIS Server - default location for deployment -
+           C:\inetpub\wwwroot\
+===============================================================================
 
-         
+============================================================================
+     2.0 Design Networks for Complex Organizations: - VPC Peering
+============================================================================
+
+ - This is a network connection beween the two VPC's 
+ - Traffic  can be routed across the VPC Peering Connection.
+ - The two VPC's can be in different AWS accounts.
+ - They can also be in different regions.
+
+ Implentation of vpc peering:
+    - One VPC must send req to another vpc for VPC Peering connection.
+    - The destination VPC must accept the VPC peering connection request.
+    - Routes must be added to both the route tables on both vpc's
+    - Also ensure security groups allow Inbound Traffic.
+     connections:
+       - GO to VPC dashborad and create vpc's:
+         vpcA (20.0.0.0/16) 
+         vpcB (10.0.0.0/16)   
+         vpcC (10.0.0.0/16)          
+
+       - GO to VPC dashborad after creating vpc's. :
+          - Then go to peering connections on the left
+          - Create vpc peering connection as below and add the cidr entry in the route tables 
+          of both vpc's:
+
+         vpcA (20.0.0.0/16) <--> vpcB (10.0.0.0/16)   
+         vpcA (20.0.0.0/16) <--> vpcC (10.0.0.0/16)
+
+         vpcA to vpcB works and vpcA to vpcC works.But vpcB to vpcC dosn't work automatically         
+         also can't establish peering connection since both B and C CIDR looks same.
+
+         if we want to establish connection , better to mention the subnet range. (10.0.0.0/24).
+         THen B (10.0.0.0/16) <--> c (10.0.0.0/24) will work.
+
+ Charesterstics of VPC Connection:
+    - The VPC's for whichyou want to implement VPC Peering can't have overalapping CIDR blocks.
+    - you can't extend the peering relationship to that connection if :
+      - A VPN Connection or an AWS Direct connect connection.
+      - An internet connection via internet gateway.
+      - An internet connection in the private subnet via a NAT Device.
+      - A Gateway VPC Endpoint.
+
+      
+==============================================================================================
+     2.0 Design Networks for Complex Organizations: - NETWORK SECURITY (EP, NACL,SG )
+==============================================================================================
+     When we create vpc with CIDR AWS uses 1st 5 ip addresses. ex: 10.0.0.0/24
+       - 10.0.0.0  Network Address
+       - 10.0.0.1  Reserved for AWS VPC Router
+       - 10.0.0.2 Reserved by AWS. The IP address of the DNS server is always n/w base address +2.
+          NOTE: if we have multiple CIDR blocks, then DNS server located on primary CIDR.
+       - 10.0.0.3 Reserved by AWS future use.
+       - 10.0.0.255 Network Broadcast Address. However AWS desnot support n/w broadcast. So it is reserved.
+
+
+     SECURITY GROUPS: STATEFUL:works at Instance level:
+      - can be applied to ELB, EC2, EMR, LAMBDA 
+      - proctects Instances by applying security rules like firewall.
+      - we can configur re rules on security groups for different type of requests like
+        HTTP,HTTPS,UDP,ICMP and port numbers.
+
+      - By default when a new security group is created. It 'denies' all Incoming/Inbound traffic.
+      - By default Outgoing/outbound traffic is allowed.
+      - These are called 'stateful' because if inbound traffic is  allowed outgoing is 
+        automatically alowed.
+
+     NACL: Network Access Control Lists: works at Subnet Level: STATELESS
+       - These works at subnet level.
+       - Manually enable both inbound/outbound traffic IP and ports.
+       - It consists of ordered rules:
+           - Rule number
+           - Protocols
+           - The source of the traffic (CIDR range) and destination (listening port or port range (Inbound Only)
+           - The destination of the traffic (CIDR range) and destination (listening port or port range (Outbound Only)
+       - CHOICE to ALLOW/DENY specific traffic. 
+
+      - default NACL allows all the traffic by default,
+      - Custom NACL denies all the traffic by default.
+
+         - It has rule numbers, and the rule numbers are applicable in the order of
+           100 ,200,300  (ascending order of rule number ) 
+           ex:
+           100  ssh(22) protocol (tcp)  portrange(22)  cidr(22.65.32.1/32)  ALLOW
+           200  HTTP(80) protocol (tcp)  portrange(80)  cidr(22.65.32.1/32)  ALLOW
+           300  ssh(22) protocol (tcp)  portrange(22)  cidr(22.65.32.2/32)  ALLOW           
+           *  All traffic  ALL             ALL           0.0.0.0/0           DENY
+
+         - Each rule number has port number port type and protocol number.
+
+    NOTE: Opening same ports in NACL Inbound and Outbound does not work. We need to use 
+    ephermal port range in the Outbound.
+
+    Outbound NACL should use epehermal Ports range as mentioned below.
+
+    NACL Ephermal Ports: (clients network generates requests with any port no. mentioned in the range )
+      - Many Linux Kernels (Including the Amazon linux Kernel ) use ports (32768-61000)
+      - Requests Originating from Elastic Load balancing use ports (1024-65536)
+      - Windows OS thriugh Windows Server 2003 use ports 1025-5000  
+      - Windows Server 2008 and later versions use ports 49125-65535
+      - A NAT Gateway uses ports 1024-65535.
+   
+==============================================================================================   
+   2.0 Design Networks for Complex Organizations:   - VPC Endpoints
+==============================================================================================
+
+   -  VPC Endpoints 
+        - These endpoints are virtual devices.
+        - These devices are horizontally scaled, redundant and highly available.
+        - There are two types of endpoints:
+              - Interface:
+                  - The interface endpoint is used to connect to other AWS Devices.
+              - Gateway:
+                  - The Gateway endpoint is used to connect to S3 and DynamoDB.
+   Implementation:
+     - Goto VPC dashboard, create VPC with public and private subnet vpc using vpc wizard.
+     - You need to use a NAT Gateway/NAT Instance while creating a VPC
+         - NAT Gateway is managed by AWS and it needs EIP (Elastic IP)
+         - NAT instance is not robust and it can be single point of failure. But charges are less.
+     - If we dont want to use either of the above, then  use them while creating and later we can 
+        remove it in the 'Routes Tables' and NAT Gateway section of VPC.
+
+     - To attach an Endpoint to VPC:
+          - Goto VPC Dashboard ,Click on Endpoint
+          - Click create an endpoint 
+          - Choose the AWS service (for example S3 if we want to)
+          - Select VPC to which we need to attach the endpoint.
+          - Select the subnet (public / private  to which you want to attach endpoint)
+          - Select the access Policy.
+          - Create the endpoint.
+   
+
+==============================================================================================   
+   2.0 Design Networks for Complex Organizations:  - Transit Gateways
+==============================================================================================
+    
+      - We can use Transit gateways instead ,if we have more vpc and VPC Peering connections.
+      - This Trasit Gateway is like a Hub that can be used to connect the VPC n/w together.
+      - We can also have a connection to you on permise network.
+      - There is also a route table defined withing the Transit Gateway.
+      - This route table allows both IPV4 and IPV6 CIDR and targets 
+      - Transit gateways support static and dynamic routing b/w the VPCs and VPN Connection.
+
+      Implementation:
+        -  Goto VPC DashBoard
+        -  Scroll down on left side and look for Transit gateway
+        -  Click on Transit gateway and create Transit gateway.
+        -  Now  Find the Transit gateway attachment below the transit gateway and click on it.
+        -  Select the transit gateway 
+        -  Select the VPC to attach and subnet to attach and click on create ransit gateway attachement
+        -  Repeat above 3 steps  for attaching the another VPC.
+
+        - Select the Server and its Subnet from which you want to connect to other vpc.
+        - Now go to the subnet and select the subnet and select the route table 
+        - Now click on the Routes and edit the routes (add the CIDR of VPC which we want to connect to)
+          and attach the transit gateway attachment.
+        - Repeat the above 3 steps for on the other Server to complete the connectivity setup.
+
+        
+
+        
 
 
 

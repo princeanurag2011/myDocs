@@ -471,6 +471,7 @@ IAM:
            we must update the route table for any subnet that uses these gateways or connections.
 
      SECURITY GROUPS: STATEFUL:works at Instance level:
+      - can be applied to ELB, EC2, EMR, LAMBDA 
       - proctects Instances by applying security rules like firewall.
       - we can configur re rules on security groups for different type of requests like
         HTTP,HTTPS,UDP,ICMP and port numbers.
