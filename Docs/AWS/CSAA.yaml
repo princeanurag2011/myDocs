@@ -808,6 +808,32 @@ Routing Policy:
              - It return the IP of the server upto 8 Healthy servers(selected as random) 
                and doesn't return the ip value of the unhelathy server.
              -  These A records can be asociated with heath checks.
+
+        - Geo-proximity Routing Policy:
+             - Traffic is routed based on the location of the resources and optionally
+               shift from resources in one location to resources in another location.
+             
+             - Traffic originating from one region can be shifted to other nearest region
+               or farthest region based on the resources availability.
+
+             - This proximity can be varied using the bias value. The formula for positive/negative.
+
+                - Biased distance = actual distance * (1-(bias/100))
+                - bias value can be b/w (1-99):
+                     positive bias expands the region and 
+                     negative bias shrinks the region.
+            - To use geo proximity routing , Route53 traffic flow must be used:
+              - It provides visual editor for complex configurations of record sets.
+              - This configuration can be saved as a trfiic policy and then associated with
+                one or more domain names.
+            - 
+
+
+
+
+
+
+
   
 OSI MODEL:
     Open Systems Interconnections

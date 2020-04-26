@@ -438,8 +438,23 @@ AWS Organization:
           and attach the transit gateway attachment.
         - Repeat the above 3 steps for on the other Server to complete the connectivity setup.
 
-        
+==============================================================================================   
+    2.0 Design Networks for Complex Organizations:  - NETWORK LOAD BALANCER
+==============================================================================================
 
+     - Create the target group with protocol 'TCP' and select the VPC in which you have the instances.
+     - This is a Load balancer that works for layer 4 of the OSI Model.
+     - It has capacity to handle millions of requests for second.
+     - You can enable the load balancer to work from different Availability Zones 
+       for added high availability.
+     - You can also assign static address for the Load balancer.
+     - Each instance on the target group can listen on a different port number.
+
+
+
+==============================================================================================
+     2.0 Design Networks for Complex Organizations: - SAML federation
+==============================================================================================
         
 
 
