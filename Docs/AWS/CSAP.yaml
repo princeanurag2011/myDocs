@@ -456,6 +456,59 @@ AWS Organization:
      2.0 Design Networks for Complex Organizations: - SAML federation
 ==============================================================================================
         
+==============================================================================================
+     2.1 Design for new solutions: - AWS directory Service
+==============================================================================================
+    AWS Directory Services Types:     
+     
+        - AWS Managed Microsoft AD
+        - Simple AD
+        - AD Connector
+        - Amazon incognito User Pools.
+
+    - AWS Managed Microsoft AD:
+
+        - This is Microsoft Managed Active directory as a managed service .
+        - This is powered by Microsoft Windows Server 2012 R2 and is highly available.
+        - With AWS Managed Microsoft AD, you can run directory aware workloads in AWS Cloud.
+
+    - Simple AD:
+
+       - This is a standard managed directory that uses Samba 4 Active Directory Compatible 
+         server.
+          - THere are two sizes available, -small for support of 500 Users.
+          - Large which supports upto 5000 Users.
+          - Simple AD provides subset of features that are offered by AWS managed Services. 
+
+    - Active Directory Connector: 
+
+          - This can be used to redirect directory requests to on-premise defined Microsoft 
+             Active Directory.
+
+          - This is useful when companies already have a large deployment of Active Directory 
+             in thier on-premise environment.
+
+          - Here they can use thier existing applications to log onto AWS applications such as
+            Amazon Workspaces, Amazon WorkDocs and Amazon WorkMail.
+
+==============================================================================================
+    2.1 Design for new solutions: - Simple AD
+==============================================================================================
+      
+    GoTo Amazon Directory Service:
+      Choose the directory,
+      Give the Directory Name (DNS Name) , Admin Password. 
+      Choose the vpc and subnets and click on create Directory.
+
+      Create the Role using below policies
+    - Roles:
+        - AMAZONssmDirectoryServiceAccess
+        - AmazonSSMmanagedInstanceCore
+
+     While creating EC2, select the Domain Join Directory (select Domain VPC) and IAM
+     under the Instance configuration section.
+
+
 
 
 
