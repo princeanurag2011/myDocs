@@ -35,7 +35,7 @@ AWS SolArchProfessional:
 2.1 Design for new solutions:
  - AWS directory Service
  - AWS cognito
- - IAM credentials  and Access mgmt roles
+ - IAM credentials and Access mgmt roles
  - encryption in S3,KMS,EBS
  - AWS certificate mgr
  - AWS insector
@@ -508,18 +508,120 @@ AWS Organization:
      While creating EC2, select the Domain Join Directory (select Domain VPC) and IAM
      under the Instance configuration section.
 
+==============================================================================================
+     2.1 Design for new solutions: - IAM credentials and Access mgmt roles
+==============================================================================================
+     - This is a service that provides authentication, authorization and user management  
+       for your web.
+     - Users can sign in with username and password or via a third party application such as 
+       Facebook, Amazon or Google.
+     - You can create either userpools or identity pools.
+
+     User Management:
+
+       - Having userpools provide the following benefits
+            - Automatically provides sign up and sign in services.
+            - You can built in customizable web interface for sign-in users.
+            - You can also use other sign-in  provides such as Facebook, Google, Amazon.
+            - You can also user features such as MFA.
+
+       - To create user pool -> go to the AWS Incognito -> manage userpools
+
+===========================================================================================
+   2.1 Design for new solutions:  - AWS Encryption in S3,KMS,EBS
+===========================================================================================
+  
+   - Encryption in Transit:
+       - VPN with IPSec:
+             To connect from corporate to AWS Resources securely.
+       - using TLS for Network Layer Traffic:
+       - SSL certificates for web applications and cloudfont to encrypt/decrypt data on https protocol:
+       - HTTPS Listeners for your load balancers:
+       - Using SSL to encrypt a connection to a DB Instances:
+       - Using VPC endpoints to keep the data transit flow private to AWS Network:
+
+   - Encryption at Rest:
+       - AWS Default encryption is by default enabled for EBS, S3 and uses AES 256 Encryption.
+       - Client Side Encryptions.
+       - AWS KMS - Key mgmt services
+
+===========================================================================================
+   2.1 Design for new solutions:  - AWS Certificate Manager (ACM)
+===========================================================================================
+
+   - AWS Certificate manager used for creating TLS/SSL based certificates.
+   - These certificates can be used for AWS Based websites or applications.
+   - We can use public certtificates provided by ACM or import our own.
+   - Validy 13 months for ACM certificates.
+   - Each certificate must have one FQDN.
+
+   NOTE: We can add these certificates to Load balancer by selecting HTTPS port and select
+    the certificates gfrom the dropdown menu shown in security (if already generated for domain).
 
 
+===========================================================================================
+   2.1 Design for new solutions:  - AWS Inspector
+===========================================================================================
+
+  - This tool can be used to test the N/w accessibility  of AMAZON EC2 instance.
+  - It can also be used to check the state of the security of the underlaying applications that run on
+    those instances.
+  - This service can be used to scan  applications to check for any vulnerbility and deviations
+    from best practises.
+
+  Implementation:
+     -  select AWS Inspector and cick on get started its is chargable per 100 instances per week
+     -  Choose the assessment setup  for Network Assessment/Host Assessment
+     -  You can select Instances assessments based on region or choose them based on key values
+     -  For network assessments AGENT is optional and for HOST , the AGENT is to be installed in ec2
+     -  N/W Assessment - checks the open ports and connectvity from outside VPC.
+     -  Host Assesment - for applications vulnerebilities
+     - Runs the following packages :
+         - Common Vulnerebilites and Exposure
+         - CIS - operation system security COnfiguration Benchmarks
+         - N/W Rreliability
+         - Security Best Practises.
+     - Select the Duration and  choose recurring assesment schedule weekly.
+     - We an checck the assesment details in findings section on the left side of page and click on it.
+
+===========================================================================================
+   2.1 Design for new solutions:  - AMAZON Guard Duty
+===========================================================================================
+
+     - This is continuous Security Monitoring Services.
+
+     - This service analyses the following data sources:
+           - VPC Flow LOGS
+           - Cloud Trail events
+           - DNS Logs
+
+     - It is used to identify unexpected and potentially unauthorized and malicious
+       activity from within the AWS account.
+
+     - This is done with the help of security intelligence feeds and lists the malicious
+       IP's and domains.
+
+     - Security Monitoring Services:
+        - Ecalation of priviliges
+        - Uses of exposes credentials
+        - communication with malicious IP's and userpools
+        - Detect compromises EC2 instances having malware.
+        - Can also detect unauthorized infrastructure Deployments. 
+        - It is region specific.
+        - you can also invite other aws accounts to use AMAZON Guard Duty.
+        - you can also suspend or disable amaon gaurd duty anytime.
 
 
+===========================================================================================
+   2.1 Design for new solutions:  - AMAZON SHEILD
+===========================================================================================
 
+    -  AWS SHEILD protects againts the DDos(Distributed denial of services) attacks
+    -  It has two plans standard(activate with no additional charge) and advanced (3k $ pm)
 
-
-
-
-
-
-
+===========================================================================================
+   2.1 Design for new solutions:  - Securing against Man in Middle Attacks
+===========================================================================================
 
 
 

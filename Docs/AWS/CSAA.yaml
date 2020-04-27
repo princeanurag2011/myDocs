@@ -393,7 +393,7 @@ IAM:
       - AWS CMK's are stored in default AWS KSM key store, but in a shared env.
       - Also supports custom keys tores backed by AWS cloudHSM Clusters.
            - this cloudHSM is used in the case of:
-                - keys cnan'r stored in shared env.
+                - keys that are stored in shared env.
                 - keys must be backed to multiple env
                 - The HSM that geerates and stores the material that must be certified at 
                    FIPS-140-2 LEVEL3
