@@ -38,7 +38,7 @@ AWS SolArchProfessional:
  - IAM credentials and Access mgmt roles
  - encryption in S3,KMS,EBS
  - AWS certificate mgr
- - AWS insector
+ - AWS inspector
  - AWS Guard Duty
  - AWS Sheild
  - Security against Man-in-middle attacks
@@ -622,19 +622,162 @@ AWS Organization:
 ===========================================================================================
    2.1 Design for new solutions:  - Securing against Man in Middle Attacks
 ===========================================================================================
+   - DNSSEC (Domain Name System Security Extensions) protocol for securing the DNS traffic.
+   - You need to configure DNSSEC for domain registration.
+   - Using ALB with SSL/TLS to prevent from Man in Middle attacks.
+      - we can use ACM to generates SSL and TLS Certificats
+
+===========================================================================================
+   2.1 Design for new solutions:  - Securing against DDos Attacks
+===========================================================================================
+
+   - Using Larger  EC2 instances - There are instances which offer 25 Gigabit N/w interfaces
+      and enhanced networking.
+   - You can use Elastic Load balancer which can automatically scale based on demand.
+
+   - With ALB you can ensure that only well formed web requests are routed to backend 
+     instances.
+
+   - You can use Amazon Cloud front to Distribute your content. It accepts only 
+    well-formed connections.
+
+   - Cloud fornt uses edge locations to deliver responses . This would reduce the load
+     on the origin system.
+
+   - We can also use WAF (Web Application Firewall) to protect against web based attacks.
+   - This WAF tools works with CloudFont and ALB
+   
+===========================================================================================
+   2.1 Design for new solutions:  - EC2 Intrusion Detection and Prevention
+===========================================================================================
+
+   - It can be done by using AntiVirus  or purchase from AWS MArketplaces.
+     Look for Intrusion Detection and Prevention systems
+
+=========================================================================================
+   2.2 Solution Strategy to meet reliability requirements: - Design for Reliability
+=========================================================================================
+
+   - Ensure Application is reliable
+   - Ensure  underlaying infrastructure hosting your application is reliable.
+   - At times you also have to account for reliability of external services that you might be
+     using from you applications.
+
+   Fault Tolerance:
+      - How tolerant is your application or system to faluts.
+      - Does it impact SLA.
+
+   High Availability:
+      - Look at ways to make your system highly available.
+      - In AWS, there are several ways to achieve this.
+      - You can use of Availability zones to spread your load.
+      - make use of Highly available service such as Simple Storage Service and DyanmoDB.
+
+   Disaster Recovery:
+      - Some companies have mission critical applications running on the AWS.
+      - Here they can't afford to have the system down, and would normally need to match the 
+        SLA of 99.99%
+      - So even if the entire region is hosting AWS Services goes down, they 
+        should be ableto recover.
+   
+   Recovery Time Objective:
+      - How long will a company wait for a system to be brought back online after the fault 
+        has occured of if the system has gone down. 
+      
+      - This is a measurement of time. Companies could define that an SLA of just a couple
+        of minutes for mission critical applications.
+
+   Recovery Point Objective:
+      - This is the amount of data loss the company can live with. We should be able to 
+        recover the data within the SLA.
+
+
+=========================================================================================
+   2.2 Solution Strategy to meet reliability requirements: Disaster recovery Platforms
+=========================================================================================
+    
+    - Backup and Restore:
+        -  It takes lot of time to restore and recovery.
+        -  If you are maintaining database on the EC2 instance, It takes even longer.
+   
+    - Pilot Light:
+       - In this strategy, services that are critical are replicated to another environment.
+       - In case of any issue, we can simply switch to another environment.
+       - It incurs aditional cost for having extra env, but, It reduces the RTO.(Recovery Time Objective)
+       - We need to ensure the strategy for data sync is properly maintained. 
+         RPO ( Recovery Point Objective ) depends on the data sync process.
+
+    - Warm Standby:
+       - In this strategy, all services are replicated to another environment.
+       - In case of any issue, we can simply switch to another environment.
+       - It incurs aditional cost for having extra env, but, It reduces the RTO.(Recovery Time Objective)
+       - We need to ensure the strategy for data sync is properly maintained. 
+         RPO ( Recovery Point Objective ) depends on the data sync process.
+
+
+=========================================================================================
+   2.2 Solution Strategy to meet reliability requirements: Auto scaling Groups
+=========================================================================================
+
+   Auto Scaling:
+    - Configuration:
+        - The launch configuration contains AMI,instance type, key pair, sg, 
+          block device mapping
+        - configuration can't be modified once created.
+        - One launch config can be used by many ASG's. But one ASG can have one configuration only.
+        - Scale the no. of instances automatically based on the criteria.
+
+        NOTE: For scaling groups
+           - you can also perform a scheduled scaling.
+           - you can also perform scaling based on metrics.          
+
+
+    - ASG: features
+       - Scaling Options:
+           - Maintain current instance level all the times.
+           - Manual Scaling.
+           - Scaling based on the schedule.
+           - Scaling based on the demand.
+    - Multiple Scaling Policies:
+         - ASG can have more than one scaling policy attached to it. Also we can 
+           combine the sacling policy
+
+    - To test the autoscaling groups: scaling based on %CPU utilization
+         - sudo apt-get install -y stress
+           stress --cpu 100
 
 
 
+=========================================================================================
+   2.2 Solution Strategy to meet reliability requirements: Network Redundancy
+=========================================================================================
+
+    - we can have one VPN gateway and multiple Customer gateways with VPN/AWS Direct Connect
+      to ensure redundancy. If one customer Gateway is down, then other one can be used.      
 
 
+=========================================================================================
+   2.2 Solution Strategy to meet reliability requirements: - AWS lambda and SQS
+=========================================================================================
+
+    - You can have SQS Trigger for Lambda function.
+    - Message sent through SQS queue can be automatically processed by LAMBDA
+    - AWS LAMBDA can connect through both standard queues and FIFO queues.
+    - AWS LAMBDA can read messages in a batch and multiple batches at a time.
+
+    benefits of using SQS qith LAMBDA:
+      - When configuring visibility timeout for the queue ensure the timeout is atleast
+        6 times the timeout configured for the function.
+
+      - If a message fails to be processed multiple times, you can make AMAZON SQS send the 
+        messages to the dead-letter queue.
+
+      - You can also configure Cloud Watch alarms to notify you when the errors occur.
 
 
-
-
-
-
-
-
+=========================================================================================
+   2.2 Solution Strategy to meet reliability requirements: - AWS lambda and SQS
+=========================================================================================
 
 
 
