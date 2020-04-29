@@ -828,12 +828,117 @@ AWS Organization:
           - For compliance to standards such as PCI and also implement encryption.
 
 =========================================================================================
-   2.3 Solution to meet performance Objectives: - Amazon Machine Learning tools
-=========================================================================================
-
-=========================================================================================
    2.3 Solution to meet performance Objectives: - Amazon Data Analytics
 =========================================================================================
+  
+   AMAZON EMR: Managed Hadoop Cluster
+      - This is a managed platform that can create cluster to run the big data framework
+         such as Apache Hadoop , Apache spark.
+
+      - You can use these clusters to analyse vast amount of data 
+      - This is ideal for business intellegence workloads
+      - Data, both i/o can be stored in Amazon s3
+      - You can use Amazon cloud Watch to monitor performance of cluster.
+
+    Implementation: 
+        - EMR: 
+           - Cluster name:
+           - select software applications:
+                -  Core Hadoop, Hadoop with Ganglia Hive, Hue, Mahout, PIG and TEZ
+                -  HBase with Ganglia, Hadoop , Hive, Hue, Pheonix, and zoo keeper.
+                -  Presto with Hadoop HDFS and Hive, Metastore.
+                -  Spark on Hadoop, YARN with Ganglia and zeppelin.
+           - Hardware configuration:
+               - Instance type m5.xlarge
+               - Number of instances (min. 2  (1 master and 1 node))
+               - Security and access:
+                   - select a key pair.
+                   - permission , you can use IAM Roles:
+                        default roles are:
+                           - EMR DEFAULT Role.
+                           - EMR EC2-DEFAULT ROLE.
+               - create the cluster
+
+            -  Once the cluster is up:
+                - click on add steps and select the step type as hive from dropdown (if hive)
+                  - Give the script s3 location
+                  - file location if stored in s3 give the bukcet and file path
+                  - give the output s3 bucket location
+                  - click on add job, once the job is completed  , check the output in output
+                    bucket given above while creating
+
+
+   AMAZON CloudSearch:
+     - This is a managed service that can be used for search solution for an
+        application or website.
+
+     - Here you can search large collection of data.
+       The data can be in the form of webpages or blog pots or document files.
+
+     - Amazon Cloud search can be used to index and search both structured data and plain 
+       text.
+
+     - You can do boolean search  or range search or full text search.
+
+
+   AMAZON Glue:
+
+     - This is fully managed ETL (Extract transform and Load) service.
+     - You can use this tool to move data reliably b/w various data sources.
+     - You can also categorize data, clean it and enrich it.
+     - AWS GLue is completely serverless service.
+     - It also ha repository called as AWS Data Glue Catalog.
+     - It also consists of ETL engine that can be used to generate Python or Scala Code.
+
+
+   AMAZON QucikSight:
+
+     - This service can be used to build Visualizations and perform adhoc analysis and get
+       insights from your data.
+     - It can work with variety of data sources.
+     - You can prepare data before it is visualized.
+     - You can create different types of visualizations for data.
+
+
+
+
+=========================================================================================
+   2.3 Solution to meet performance Objectives: - Amazon Machine Learning tools
+=========================================================================================
+   AMAZON SageMaker:
+      - This is fully managed machine learning service
+      - can be used by dta scietits and developers
+      - This service can be used to build and train machine learning models and can be 
+        deployed to production based env.
+      - Here you also have access to jupyter notebooks taht can be used to explore data 
+        sources
+      - This service also has common machine learning algorithms that can be used 
+        against large data sets.
+
+   AMAZON Rekognition:
+     - This is a image recognistion service. This service is based on the deep learning
+       technology.
+     - This can be used to detect objects in the images
+     - This can be used to detects attribute of face , i.e if eyes are open.
+     - This can also used to detect similar faces in the collecion and
+       and detect explicit content.
+
+   AMAZON COmprehend:
+      - This service can be used extract insights about the content of the documents
+      - This can be used to process any text based document of format utf-8
+      - This can also dtect keyphrases, languages , snetiments and other elements within the 
+        document.
+
+   AMAZON MAchine learning services:
+      - CLoud based service that can be used by developer.
+      - Developers can use visualize tools and wizards to create machine learning models.
+      -  With this service you  can prepare your data and create machine learning model 
+      out of the data.
+
+      - AN also can be used to genrate predictions using machine learning models.
+
+      
+
 
 =========================================================================================
    2.3 Solution to meet performance Objectives: - Amazon Athena
