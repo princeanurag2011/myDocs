@@ -937,32 +937,131 @@ AWS Organization:
 
       - AN also can be used to genrate predictions using machine learning models.
 
-      
+
 
 
 =========================================================================================
    2.3 Solution to meet performance Objectives: - Amazon Athena
 =========================================================================================
 
+ - An interactive   Query service that make it easy to analyse the data from s3 buckets.
+     - Athena directly queries S3.
+     - Athena can query structured and unstructured data.
+     
+     USE CASE:
+         - very useful when we have large chunk of data in the form of files. (Upload the files to bcuket)
+         - Just in case of cloud trails upload the log file to s3 bucket and we can start quering the data.
+ 
+     Limitations:                             
+       - Athena doesnot support different storage classses within the bucket,
+       - doesnot query previous versions,
+       - doesnot support requestor pays buckets,
+       - if data is encrypted it must be stored in the same region.
 =========================================================================================
    2.3 Solution to meet performance Objectives: - Amazon Workspaces
 =========================================================================================
+
+  - This is a service to create virtual Microsoft windows or linux desktops for users
+  - Users can access their virtual desktop right from theier browsers.
+  - For windows based applications yuo can bring your own applications or licenses.
+
+   Implementation:
+    - goto amazon workspaces
+    - create directory 
+    - create vpc range
+    - create users with email address
+    - launch workspaces (may take upto 20min.)
+    - connect to virtual workspaces using the details sent through email.
+
+    Make sure to delete both workspace and directory for remiovig workspaces.
 
 
 =========================================================================================
    2.3 Solution to meet performance Objectives: - Amazon App Stream
 =========================================================================================
+  
+   - This is fully managed application streaming services.
+   - This service can be used to proivde users with access to desktop applications from anywhere.
+   - No maintaince is required for underalying infrastrucuture.
+   - Exisitng desktop applcaition can be added using this services and can be streamed
+     to users via app stream 2.0 client or browsers.
 
+   implementation:
+    - create a stack first and then create a fleet with with an image and no. of 
+    instances and create a fleet.
+    - goto stack and associate the fleet with the stack by clickin gon the actions.
+    - then add the uers and get the url and use that url to access the desktop.
 
 =========================================================================================
    2.3 Solution to meet performance Objectives: - AWS Kinesis Data Stream
 =========================================================================================
+  
+   - This is a service that is used to collect and process the large streeam of data
+     records on realtime.
 
+   - You can use this service to build systems that can  send and consume data in realtime.
+
+   - You can have continuous stream of data inflow into amazon kinesis data stream
+     data could include applcation logs, social media, web clickstream data.
+
+   - you can then have consumers that can take this data and process them in real time.
+
+
+   LOG DATA -> AWS BATCH -> This runs on a schedule. Not an effective means of being 
+                            able to analyse data in real time.
+
+   LOG DATA -> AMAZON kinesis Data Stream -> AWS LAMBDA -> DB store (ex - AMAZON Dynamo DB)
+
+   features:
+   - AMAZON kinesis has the ability to ingest large amounts of data in realtime.
+   - This is not persisting data . the max. retntion period for data is 7 days.
+   - to publish or consume data , you have to develope your own applications. 
+
+   - there are four types:
+           - DATA STREAMS:
+                - create shards 1mb/sec write (1000 rec/sec) and read 2mb/sec.
+                - later we can push data this data stream and invoke lambda functions.
+                  or own applications if we have.
+                - and push the data to cloud watch.
+
+                EX: sample command to push data to kinesis streams.
+
+                aws kinesis put-record --stream-name <stream Name>  --partition-key 1 \
+                --data "this is test data"
+
+                NOTE: if data is inserted we get sequence no. and shard id.
+           - DATA Firehouse:
+           - DATA Analytics:
+           - Video Streams:
 
 =========================================================================================
    2.3 Solution to meet performance Objectives:  - kinesis Data Firehouse
 =========================================================================================
 
+ AMAZON kinesis Data Firehouse:
+     - This is fully managed service that can deliver real time streaming data to the 
+        Amazon S3 , AMAZON redshift,  Amazon elastic Search and Splunk.
+
+ 
+LOG DATA -> AMAZON kinesis Data Stream -> AMAZON kinesis Data Firehouse -> 
+            AWS LAMBDA -> DB store (ex - AMAZON Simple Storage service)
+
+          Implementation:
+             - create delivery stream 
+              - select a source (s3 or datastream if already create as above etc.,)
+              - choose invoke trigger if required (not mandatory):
+                  - to transform source records or convert record format.
+              - select the destination:
+                  - Amazon S3, 
+                  - AMAZON redshift,
+                  - Amazon elastic Search
+                  - Splunk.
+              - You can setup buffer size(1-128mb) and interval (60-900seconds)
+              - you can also enable compresion, encryption and error logging 
+              - create the delivery stream
+
+
+ 
 =========================================================================================
    2.3 Solution to meet performance Objectives:  - Instance Types
 =========================================================================================
