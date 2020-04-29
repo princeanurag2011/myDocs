@@ -776,9 +776,18 @@ AWS Organization:
 
 
 =========================================================================================
-   2.2 Solution Strategy to meet reliability requirements: - AWS lambda and SQS
+   2.2 Solution Strategy to meet reliability requirements: - S3- Cross region replications
 =========================================================================================
 
+    - Replications allow s copying of objects across Amazon s3  Buckets.
+    - The objects can be copied across different AWS Regions or within the same region.
+
+    - Replications are required for 'Compliance' . meaning standadrds and  rules.
+      Sometime due to organization standards data might be required to be replicated 
+      across multiple locations. This could be uswed for backup purpose.
+
+    - 'Latency' if users are located in other regions, you can replicates and bring objects 
+       closer to the users of that region.
 
 
 
