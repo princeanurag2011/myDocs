@@ -71,7 +71,7 @@ AWS SolArchProfessional:
 
 3.Migration Planning:
  - Data Transfer methods
- - Data Migration Services
+ - Database Migration Services
  - Migrating Workloads uses cases
 
 4. Cost Control:
@@ -1066,11 +1066,242 @@ LOG DATA -> AMAZON kinesis Data Stream -> AMAZON kinesis Data Firehouse ->
    2.3 Solution to meet performance Objectives:  - Instance Types
 =========================================================================================
 
+   Instanes Types:
+        - General Purpose: 
+            - These provide balance of compute, memory and networking
+            - Some instance support tupto 25Gbps of network bandwidth
+            -> t,m   
+            -> a1, t2, t3, m3, m4, m5 
+            -> low-traffic-websites,web-applications 
+            -> small and mid range db's
+        - compute optimized: 
+           - Ideal for those applications that need High performance
+           - Good for batch processing workloads, high performance computing, media transcoding
+          and gaming servers.
+            -> c    
+            -> c3,c4, c5      
+            -> high performance frntend fleet of web servers and also for video encoding
+        - memory optimized : 
+             - ideal for those that need to proocess large datasets     
+            -> x,r   
+            -> r3,r4,r5,x1         
+            -> high performance databases, distributed mem caches, realtime big data analytics.
+        - storage optimized: 
+            - ideal for those applications that require high sequential read and 
+              write access to large datasets on local storage.
+            -> i,d   
+            -> i2,d2       
+            -> data warehousing , log or data-processing applications
+        - accelerated computing : ideal for those applications that need harware processing
+            -> p,g,f -> p2,p3,g2,g3,g4
+            -> 3d applications streaming , machine learning or deep learning or High performance
+               computing
+
 =========================================================================================
    2.3 Solution to meet performance Objectives:  - API gateway AWS Lambda
 =========================================================================================
 
+   API Gateways: serverless technology
+       - This service is used for creating, publishing, maintaining, monitoring and 
+         securing both REST and WebSockets API.
+       - API Gateways is capable of handling 100's of thousands of concurrent API calls.
+       - It has feature such as :
+          - traffic mgmt 
+          - acces control
+          - monitoring
+          - api version mgmt
+       -  using API Gateway you can access the workloads that are running on the 
+          EC2 instance, Lambda or any other web application.
+   LAMBDA:
+     - This is a serverless computing
+     - This is where you can run your code on AWS.
+     - It runs code on HA infrastructe and it is manged byaws.
+     - costs can be reduced by running in LAMBDA instead of ec2 instance.
+     - Max. Executing time 15min. and max. memory assignment -3GB
 
+   Implementation:
+      - goto LAMBDA Service:
+      - create a function name <functioname>
+      - choose the runtime
+      - choose execution role - lambda will create an execution role
+        name <functioname> with permissions to upload logs to Amazon Cloudwatch Logs.
+      - create a function and add the function logic
+      - goto API Gateway:
+      - select REST API /web socket
+      -  Click on build -> create an api and give a name. and create.
+      - now got to the resource and create a method(GET,POST, PUT,DELETE etc.,)
+      - now click on the method (ex - get):
+           - now choose thintegration type;
+                - lambda function:  
+                    select the exisitng lambda funtion and click save.
+
+                - http
+                - mock
+                - mock service
+                - vpc link
+     -  now you can test the method and we can get the responses
+     - we can even deploy that api  - > click on actions -> create a stage -> and 
+       click on deploy , here we can find the invoke url and we can use that.
 =========================================================================================
    2.3 Solution to meet performance Objectives:  - Labs AWS Batch
 =========================================================================================
+   - this is a service that allows you to run the batch computing workloads on AWS.
+   - here we can get large set of scompute resourecs for processing your workloads
+   - here we can submit jobs which can be:
+        - shell script        
+        - linux executable
+        -  or docker container images
+
+   - implentation:
+       - define a job
+       - select the job runtime
+       - select container image and   command to executable
+       - select compute , memory, network, subnet, job attempts, roles etc.,
+       -  you can see the executed jobs on the dashboard by clicking jobs
+
+
+=========================================================================================
+        3.Migration Planning: - Data Transfer methods
+=========================================================================================
+       
+        AWS SNOWBALL:
+            - This is a physical storage device , can be used to transfer large amounts
+              of data between s3 and on-premise data centre.
+            - upto 80TB of data can be transferred. if we have limited bandwidth we can 
+              use this
+            - if we have < 10TB , Then snowball is not economical.
+            - data is encrypted on the device.
+        AWS SNOBALL EDGE:
+            - This is similar to snowball , but it has on-board storage and compute power as well.
+            - along with data transfer you can perform edge computing workloads
+            - It has 100 TB of storage.
+            - Network adapters transfer speed upto 100 GB/second
+        AWS SNOWMOBILE:
+            - You can use this to transfer 100 PB of data.
+            - This would normally take years to transfer through 1GBPS connections :D
+              but with this service it can upto a few weeks.
+        AWS S3 Transfer acceleration:
+            - This is useful when you want to transfer files from s3 ian remote region.
+            - Here files will be transferred to a closest edge location and
+             from there ddata is transferred through the AWS optimized network.
+            - This is ideal for GB or TB of data on regular basis. or if you have 
+            centralized bucket where your user needs to upload the data.
+
+
+=========================================================================================
+        3.Migration Planning:  - Database Migration Services
+=========================================================================================
+
+    - This is service that helps in migrating:
+       - relational databases.
+       - data warehousing
+       - NoSQL DB and other data stores as well.
+
+    - You can use AWS Cloud or onpremise data stores as your source or destination
+    - if you need to change databases engines, you can use AWS Schema donversion tool
+      to convert the schema to target DB platform.
+    - There is also support for following as source:
+       - Oracle
+       - Microsoft sql server
+       - MySQL
+       - PostGRESQL
+       - MariaDB       
+       - SAP ASE
+       - MongoDB
+       - Amazon Aurora.
+    - There is also support for following as Destination:
+       - Oracle
+       - Microsoft sql server
+       - MySQL
+       - PostGRESQL
+       - AMAZON redshift
+       - s3
+       - DyanmoDB
+
+
+    AWS DMS ->   Source EP <--> Replication instance <--> target EP
+    Source DB <--> [AWS DMS] <--> Target DB
+
+    Majority of data is tansferred using SNOWBALL or SNWBALLEDGE from on-premise to cloud 
+    or vice versa i.e initial chunk of data , remaining data can be transfered through 
+    DMS  (AWS DATA Migration Service)
+
+    using EP(Endpoints) we can transfer data from one cloud to another cloud as well.
+
+    Implementation:
+       - Goto AWS DATA MIGRATION Service
+       - Create a replication instance 'dms.xlarge' for example and vpc etc.,
+       - Give source EP and give target EP details and test connectivy from both source and 
+          target sides.
+       - create a task to trnasfer the data.
+
+
+    
+=========================================================================================
+        3.Migration Planning:  - Migrating Workloads uses cases
+=========================================================================================
+ example 1:
+    - a compny wants to migrate workloads(.net and cassandra) from AZURE to AWS. 
+     conditions:
+        - no administrtion overheads
+        - no code changes
+     solution:
+       DO's:
+          - moving .net to elastic bean stalk
+          - moving cassandra to DynamoDB
+          - you can use databse migration utility to migrate database
+            also you can use AWS schema conversion tool to migrate schema b/w the db engines.
+       Dont's:
+          - Moving to ec2 is not recommended as it involve administarion overheads.
+
+example-2:
+   - a COMPANY HAS LARGE SET OF DOCUMETNS that needs to be migrated to AWS.
+   condtions:
+      - They need datastore to be highly available and scalable
+      - data must be encrypted at rest and in transit.
+      - company wants to ensure that they manage encryption keys.
+    solution:
+       Do's:
+          - AMAZON s3 can be used to store documents
+          - AWS KMS can be used for encryption.
+       DOnt's:
+         - Moving to ec2 instance with EBS not recommended
+         - Amazon Dynamodb cant be used , it s not for storing documents.
+
+  example-3:
+     - A company has on-premise DB of 10TB size.
+     - db engine PostGRESQL
+     - company has 50MB internet connection link.
+     - The company dattransfer securely and reliably and cut iver must be down in aweek.
+     NOTE: DB is large and internet bandwidth is not adequate
+
+     solution:
+       Do's:
+         - use snowball to upload to s3
+         - import data from s3 to red
+         - use AWS Data migration service for delta changes.
+      Dont's:
+         - using  AWS Data migration service alone to trnasfer data is not recommended
+           since it has limited bandwidth.
+
+
+
+    
+=========================================================================================
+        4. Cost Control:  - AWS cost Explorer
+=========================================================================================
+
+=========================================================================================
+        4. Cost Control:  - Cost Consideration
+=========================================================================================
+
+=========================================================================================
+        4. Cost Control:   - EC2 Cost optimization
+=========================================================================================
+
+=========================================================================================
+        4. Cost Control:   - S3 Intelligent tiering/storage classes
+=========================================================================================
+ 
+
+
