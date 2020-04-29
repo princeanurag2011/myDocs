@@ -59,6 +59,7 @@ AWS SolArchProfessional:
  - Cloud Front with S3
  - Data Analytics
  - Amazon Machine Learning tools
+ - Amazon Data Analytics
  - Amazon Athena
  - Amazon Workspaces
  - Amazon App stream 
@@ -789,9 +790,83 @@ AWS Organization:
     - 'Latency' if users are located in other regions, you can replicates and bring objects 
        closer to the users of that region.
 
+=========================================================================================
+   2.2 Solution Strategy to meet reliability requirements: - Dynamo DB
+=========================================================================================
+
+=========================================================================================
+   2.3 Solution to meet performance Objectives: - Cloud Front with S3
+=========================================================================================
+
+   - Cloud front decreases the Latency by transfering the static content of the webserver
+     or s3 bucket to nearest edge locations
+   -  
+
+=========================================================================================
+   2.3 Solution to meet performance Objectives: - ElastiCache
+=========================================================================================
+  
+  - This is ideal for heavy read applications to improve througput.
+  - Ideal for socail n/w site, gaming, medai sharing
+  - This cache is used to store results of database queries and intensive computational 
+    calculations 
+  - This service can do all the heavy lifting in setting up the cache.
+
+  - It would provision the underlayiong infrastructure and also install all of 
+    the required software as well.
+
+    Different Cache engines:
+      - Memchached:
+          - If your are looking for simple object caching, consider using Memchached.
+          - If there is a requirement to run large cache nodes, consider using Memcached.
+
+      - Redis: used for below:
+          - for complex data types, bit arrays, hashes
+          - for implementing sorting or ranking of datasets for gaming applications
+          - for High availability of cache store with herlp of multiple zone along with 
+            failover 
+          - For compliance to standards such as PCI and also implement encryption.
+
+=========================================================================================
+   2.3 Solution to meet performance Objectives: - Amazon Machine Learning tools
+=========================================================================================
+
+=========================================================================================
+   2.3 Solution to meet performance Objectives: - Amazon Data Analytics
+=========================================================================================
+
+=========================================================================================
+   2.3 Solution to meet performance Objectives: - Amazon Athena
+=========================================================================================
+
+=========================================================================================
+   2.3 Solution to meet performance Objectives: - Amazon Workspaces
+=========================================================================================
 
 
+=========================================================================================
+   2.3 Solution to meet performance Objectives: - Amazon App Stream
+=========================================================================================
 
 
+=========================================================================================
+   2.3 Solution to meet performance Objectives: - AWS Kinesis Data Stream
+=========================================================================================
 
 
+=========================================================================================
+   2.3 Solution to meet performance Objectives:  - kinesis Data Firehouse
+=========================================================================================
+
+=========================================================================================
+   2.3 Solution to meet performance Objectives:  - Instance Types
+=========================================================================================
+
+=========================================================================================
+   2.3 Solution to meet performance Objectives:  - API gateway AWS Lambda
+=========================================================================================
+
+
+=========================================================================================
+   2.3 Solution to meet performance Objectives:  - Labs AWS Batch
+=========================================================================================

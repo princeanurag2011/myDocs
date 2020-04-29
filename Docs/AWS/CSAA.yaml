@@ -1279,7 +1279,9 @@ ELB AND AutoScaling:
                another previous replication.
         - Without version ID, deelte markers are replicated.
         - With version id, delte markers are not replicated. deletingon source doesn't delete  on destination.
-      
+      IMPLEMENTATION:
+          - CLICK on bucket and click on manage and click on add rules.
+
       S3 Analytics,Metrics,Inventory:
          - Analytics takes 24 hrs to generate report - (15-30days) analysis: we can get the statastical
           data to improve life cycle policies. Also, we can download the CSV file.
