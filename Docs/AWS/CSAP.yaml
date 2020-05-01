@@ -1300,8 +1300,96 @@ example-2:
 =========================================================================================
 
 =========================================================================================
-        4. Cost Control:   - S3 Intelligent tiering/storage classes
+        4. Cost Control:   - S3 Intelligent tiering/storage classes7
 =========================================================================================
  
+
+=========================================================================================
+       5. Continuous Improvement for Existing Solutions: - Elastic beanstalk
+=========================================================================================
+
+
+- No need to worry about the infrastructure, 
+ you can quickly deploy and manage your applicaiton.
+
+     - Elastic Beanstalk supports applicaitons developed in:
+            - java
+            - go
+            - .NET
+            - nodejs
+            - php
+            - python
+            - PHP
+            - Ruby
+            - dOCKER 
+            - mULTI CONTAONER DOCKER
+            - gLASS fiSH
+            - tOMCAT
+
+      - Configuring Blue green deployments:
+           - This service also has the feature know as BLUE/GREEN Deployments
+           - This service also has feature known as Swap environment URL's
+           - In Elastic Bean Stalk you can have two environments.
+           - When we use the SWAP Environment feature, the CNAMEs of the two environments
+            are swapped which would cause traffic to be redirected to the new version.
+
+=========================================================================================
+       5. Continuous Improvement for Existing Solutions: - Elastic CONTAINER SERVICE
+=========================================================================================
+
+   - Here you can run the docker based applications.
+   - Create a Service using container images and task def file.
+   - once created click on service and sclick on tasks check for the public IP
+   - Access the url.
+
+=========================================================================================
+       5. Continuous Improvement for Existing Solutions: - AWS Ops Works
+=========================================================================================
+
+
+
+=========================================================================================
+       5. Continuous Improvement for Existing Solutions: - Improving Network Performance
+=========================================================================================
+
+=========================================================================================
+       5. Continuous Improvement for Existing Solutions: - Compute HA
+=========================================================================================
+
+=========================================================================================
+       5. Continuous Improvement for Existing Solutions: - EBS HA
+=========================================================================================
+
+=========================================================================================
+       5. Continuous Improvement for Existing Solutions: - AWS Storage Gateway
+=========================================================================================
+
+=========================================================================================
+       5. Continuous Improvement for Existing Solutions: - EFS
+=========================================================================================
+
+=========================================================================================
+       5. Continuous Improvement for Existing Solutions:  - Serverless Application Model
+=========================================================================================
+
+=========================================================================================
+       5. Continuous Improvement for Existing Solutions:  - Network Devices HA
+=========================================================================================
+
+=========================================================================================
+       5. Continuous Improvement for Existing Solutions:  - AWS Tools
+=========================================================================================
+
+=========================================================================================
+       5. Continuous Improvement for Existing Solutions:  - Improving Performance of 
+                                                                Applications
+=========================================================================================
+
+   - Amazon Performance Insights can be used to analyse database load
+   - It can aslo be used to troubleshoot database load .
+   - You can also get performance metrics for diferent SQL Statements.
+
+
+
 
 
