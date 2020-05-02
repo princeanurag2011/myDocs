@@ -1,3 +1,13 @@
+Jenkins-Jobs-Types:
+  - Maven integration 
+  - Freestyle project
+  - maven project
+  - Pipeline
+  - Multibranch Pipeline
+    Ivy project
+    Folder Github Organization
+    Multi-configuration Project
+
 JENKINS:
    - CONFIGURE SYSTEM: 
          - contains jenkins home directory - /var/lib/jenkins  -default location
