@@ -306,6 +306,9 @@ docker container run -d --name mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=True mysql
 #To see the metadata of mysql image.. here check the volumes and mount data
 docker container inspect mysql
 
+#To copy files from local machine to docker image:
+ docker cp <filepath> <imageName>:<filepath>
+
 #To see the volume inforamtion like where data is being stored.
 docker volume ls
 
