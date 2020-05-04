@@ -33,5 +33,7 @@ JENKINS:
         - We can setup JDK, Maven, GIT version for all the projects here 
    
 
-         
+#To schedule a job at particular time 
+Select a job > Use build triggers > and click on schedule > enter the format of cron. for cron format check the link below.
+https://crontab.guru/
                 
