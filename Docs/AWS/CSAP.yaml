@@ -1352,10 +1352,27 @@ example-2:
        5. Continuous Improvement for Existing Solutions: - Improving Network Performance
 =========================================================================================
 
+  Enhanced Networking:
+    
+   - This is a feature that can be used for EC2 instance to provide higher bandwidth,
+     higher packet per second performance.
+   - It can also be used to provide lower instance latencies.
+   - There are instance types that can support upto 100Gbps (m5dn.24xlarge 96vcpu,384gb) 
+     via Enhanced Networking.
+  
+  Placement Groups:
+
+   - When you want to place the instances together this feature should be used.
+   - There might be requirement wherein you have an application that is making use
+     of multiple EC2.
+   - You can get higher thorighput and lower latency by using placement groups.
+
 =========================================================================================
        5. Continuous Improvement for Existing Solutions: - Compute HA
 =========================================================================================
+   
 
+    
 =========================================================================================
        5. Continuous Improvement for Existing Solutions: - EBS HA
 =========================================================================================
@@ -1384,9 +1401,35 @@ example-2:
        5. Continuous Improvement for Existing Solutions:  - Improving Performance of 
                                                                 Applications
 =========================================================================================
+   
+   AWS X-RAY:
+      - here you cn get detailed perforamnce trace for your applicaitons requests
+      - This is a service that you can use to see the performance of your applications.
+      - You can use AWS x-ray SDK along with your applications.
+      - You can use x-ray with aws lambda
 
-   - Amazon Performance Insights can be used to analyse database load
-   - It can aslo be used to troubleshoot database load .
+  Use Right Instance and volume Type:
+      - Use compute optimized instances types.
+      - Use provisioned IOPS SSD for your volumes to improve performance.
+      - Use AWS CloudWatch metrics to monitor your compute and volume storage.
+      
+
+
+
+   RDS:
+
+   -'Performance Insights' can be used to analyse database load
+
+   - Performance Insights:
+
+       Performance Insights is a database performance dashboard designed to help customers 
+    quickly assess performance on their relational database workloads and guide customers 
+    as to when and where to take action. Performance Insights collects detailed database 
+    performance data through light weight mechanisms and presents it in an intuitive 
+    graphical interface.
+
+   - It can aslo be used to troubleshoot database load.
+
    - You can also get performance metrics for diferent SQL Statements.
 
 
