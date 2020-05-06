@@ -1561,7 +1561,7 @@ ELB AND AutoScaling:
   - RTO - Recovery TIme Objective:
     - Max. downtime pemitted to recover and function normal.
     - measured in hours or days.
-    - RTO of 1 hr means . it should recover in 1 hour.
+    - RTO of 1 hr means. it should recover in 1 hour.
     
 
  AMAZON Redshift: DATA WARE HOUSING
@@ -1581,6 +1581,17 @@ ELB AND AutoScaling:
     - WLM config enables to create separate queues for long and short running queries.
       since long running queries takes more time to complete.
     - By default 1 queues has concurrency level 5  plus 1 predefined queues 
+
+  features:
+      - It has enhanced vpc routing , the dat can be transferred via VPC and unload traffic.      
+      - With above feature , we can use fetures of vpc like SG,NACL, VPC EP etc.,
+      - You can make reserved node offerings for AMAZON RedShift Cluster Nodes if 
+        instances are running for a prolonged period of time.
+      - Snapshots features can be used for disaster recover also snapshots can be copied 
+        to different regions.
+      - Automated snapshot is retained till the retention period.
+      - Manual snapshot can be retained for a longer time.
+      - There wil be additional charges for the snapshots.
 
 
 SQL vs NoSQL DB:
@@ -1613,3 +1624,24 @@ SQL vs NoSQL DB:
    - In-memory cache: reduces response time from milliseconds to microseconds  without app changes.
    - Provides fast access to local data by replicating tables across Multi AWS regions.
    - Based on PostgreSQL , most exisitng client applications work with only minimal changes.
+
+   NOTE:
+     - The tables are schema less in nature.
+     - data looks like JSON data  with entries and attributes.
+
+   Best practises:
+     - ensure attributes used in queries form the partition key.
+     - Make use of global secondary indexes for performing queries on other attributes.
+     - Make sure the attributes used as the partition key has good range of values, so 
+     that data can be evenly distributed aross the partitions.
+
+ Amazon Aurora:
+    - Fully manged RDS serivce from AMAZON
+    - Throughput is 5 Times faster than MYSQL and 3 times faster than PostgreSQL.
+    - CLuster contains primarary dab which supports R/W activites
+    - Each cluster can have upto 15 replicas
+    - Switching ti replicas happens when primary db fails.
+    - Storage automatically grows based on demand.
+    - We can manually scale by modifying undelaying DB instance class.
+    - AutoScaling can also be enabled to meet the demand.
+
