@@ -1518,12 +1518,23 @@ ELB AND AutoScaling:
  - Minor version upgrades are carried during the maintanence window
  - After creation DB , we can connect to it using the Endpoint URL and port no. 
 
- RDS Multi AZ:
-  - master and standby configuration
-  - HIgh availability
-  - Synchronous replication
-  - durin updates standby promtes to  primary
+ RDS Multi AZ: 
+  - master and standby configuration.
+  - High availability: 
+       - When you enable Multi AZ, RDS service will automatically provision 
+         replica in different Availability Zone.
+       - 
+
+  - Synchronous replication: data is synchronously transferred to standby replica.
+  - during updates standby promtes to  primary.
   - DB endpoint swtiches from primary to standy during recovery.
+  - Multi AZ for oracle, POstGreSQL, MySQL and MariaDB is carried out using Amazon Failover
+    technology.
+
+  - for SQL Server database instances, The concept of SQL Server Database Mirroring is used.
+  NOTE: to enable Multi AZ , got to modify ooption and enable multi AZ in RDS (If RDS is already
+   provisoned and Multi AZ not enabled.)
+
 
  RDS Read Replicas:
   - Read replicas creates readonly instance from the snapshot.
@@ -1533,6 +1544,13 @@ ELB AND AutoScaling:
   - provides enchanced performance for read heavy workloads.
   - Cross region replication is available. Multi AZ.
   - best suited for running business queries instead of running them on primary DB.
+  - Read Replicas currently supports MariaDB,MYSQL,Oracle,PostgreSQL.
+
+  NOTE:
+     - Automatic backups must be enabled for database to enable Read Replicas.
+     - For MySQL Automated Backups are only supported on 5.6 or later.
+
+     - TO create Read replicas: CLick on Action and click on create read replicas.
 
  RPO vs RTO:
   - RPO - Recovery Point Objective:

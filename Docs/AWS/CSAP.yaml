@@ -717,8 +717,16 @@ AWS Organization:
 
 
 =========================================================================================
-   2.2 Solution Strategy to meet reliability requirements: Auto scaling Groups
+   2.2 Solution Strategy to meet reliability requirements: Autoscaling Groups
 =========================================================================================
+   Components of ASG:
+     - Launch configuration
+     - ASG: Collection of EC2 Instances.
+     - Scaling Options:
+          - minimum no. of instances
+          - desired no. of instances
+          - Max. no. of instances
+
 
    Auto Scaling:
     - Configuration:
@@ -1300,7 +1308,7 @@ example-2:
 =========================================================================================
 
 =========================================================================================
-        4. Cost Control:   - S3 Intelligent tiering/storage classes7
+        4. Cost Control:   - S3 Intelligent tiering/storage classes
 =========================================================================================
  
 
@@ -1370,20 +1378,78 @@ example-2:
 =========================================================================================
        5. Continuous Improvement for Existing Solutions: - Compute HA
 =========================================================================================
-   
+     - using Muliple Availability Zones.
+     - using the Load balancer.
+     - using Autoscaling Groups.
 
     
 =========================================================================================
        5. Continuous Improvement for Existing Solutions: - EBS HA
 =========================================================================================
+   - An EBS Volume is created in an Availability ZONE
+   - Data is replicated within the zone itself to prevent data loss.   
+   - There is also 'Delete on termination flag', if this is not enabled, EBS persists
+   even after the EC2 is terminated.
+   - You can backup data for EBS by creating snapshots
+   - You can also copy the data to another region for disaster recovery.
+
+     - Standard RAID configuration an be used for EBS Volumes (done on software layer)
+        RAID 0  - This is used when I/O Performance is more important than fault Tolerance
+                - This is ideal when EC2 instances are hosting databases
+                - If single volume is lost all data is lost.
+        RAID 1  - This is used when falut tolerance is more important.
+                - Since data is written to multiple volumes at a time.
+                - More bandwith from EC2 to EBS is required.
 
 =========================================================================================
        5. Continuous Improvement for Existing Solutions: - AWS Storage Gateway
 =========================================================================================
+   AWS Storage Gateway:
+      - This is service used to connect from on-premise to Cloud based storage devices.
+      - This is a cost effetive option for companies that need to extend their on premise
+      storage.
+      - Instead of buying extra on-premise storage we can use cloud service.
+      - Different Types:
+          - File gateway:
+              - This gateway supports a file interface to the Amazon Simple storage service.
+              - Here you can retrieve objects into Amazon s3 using the standard file
+                Protocols such as Network FIle systems and Server Message Block.
+              - Here an applicance need to be deployed into your on-premise environment,
+              either on VMWare environment or Hyper V
+              - You can mount a file system volume on to S3
+          - Volume Gateway:
+              - This gateway supports the creation and usage of volumes that can be
+                mounted as Internet small computer system Interface (iSCSI)
+              - Cached Volumes:
+                 - Here the data is stored in S3. At the same time , a copy of frequently 
+                   accessed data is stored locally.
+              - Stored Volumes:
+                 - Here all the data is stored locally. 
+                 - A copy of data is stored as point-in-time-snapshot to amazon s3.
+           - Tape Gateway:
+                - This gateway supportd the ability to store the data effectievely in 
+                  GLACIER and Deep Archive.
+                - here company can make use of virtual tape infrastructure
+                - it removes the burden of having to maintain the tape infrastructure
 
+  
 =========================================================================================
        5. Continuous Improvement for Existing Solutions: - EFS
 =========================================================================================
+ 
+create EFS and follow the steps below to attch the efs to ec2
+    NOTE: https://github.com/aws/efs-utils
+    To build and install a Debian package:
+$ sudo apt-get update
+$ sudo apt-get -y install git binutils
+$ git clone https://github.com/aws/efs-utils
+$ cd efs-utils
+$ ./build-deb.sh
+$ sudo apt-get -y install ./build/amazon-efs-utils*deb
+  #To mount the file system:
+  sudo mkdir efs-mount-point/
+ sudo mount -t efs <DNSoffilesystem> efs-mount-point/
+
 
 =========================================================================================
        5. Continuous Improvement for Existing Solutions:  - Serverless Application Model
@@ -1393,9 +1459,40 @@ example-2:
        5. Continuous Improvement for Existing Solutions:  - Network Devices HA
 =========================================================================================
 
+   - With NAT Instances, you need to maintain the HA of the instances.
+   - The NAT GAteway itself is a Highly Avilable and scalable service.
+   - You can spin up a NAT Gateway in each availability zone for more resilient architecture.
+
+
 =========================================================================================
        5. Continuous Improvement for Existing Solutions:  - AWS Tools
 =========================================================================================
+   
+   - Amazon Connect:
+       - Cloud based contact center solution
+       - Here it is easy to setup a contact centre, add agents and start interacting with 
+         customers
+       - This service also provides metrics and real time reports that can be used to optimized
+         contact routing.
+       - Pay only for waht you use.
+       - You can create a flow that allow you define entire customer service.
+
+   - Amazon Chime:
+      - This is a communication service
+      - This can be used to conduct online meetings, video conferencing and Chats.
+      - Content will be shared both insied and outside of the organization.
+      - This is fully managed service.
+
+   - Amazon Workmail:
+      - Business email with calendar support
+      - Support for exisitng mobile email clients and desktop 
+      - Users can use microsoft outlook to access their email, contacts and calender.
+
+   - Amazon WorkDocs:
+      - fully managed Storage sharing service
+      - Here files are stored in Cloud in a safe and secure manner.
+      - Here you can collabrate with other members of organization by sharing files.
+
 
 =========================================================================================
        5. Continuous Improvement for Existing Solutions:  - Improving Performance of 
@@ -1413,8 +1510,6 @@ example-2:
       - Use provisioned IOPS SSD for your volumes to improve performance.
       - Use AWS CloudWatch metrics to monitor your compute and volume storage.
       
-
-
 
    RDS:
 
