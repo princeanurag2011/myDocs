@@ -1,0 +1,16 @@
+AWS LAMBDA and API Tool
+
+features:
+ - Here infrastrcuture is managed by the AWS and HA and scales based on demand.
+ - You need to just depoy your code.
+ - You can run the code whenever you want. 
+ - You only get charged for the time the code is run.
+Limitataions:
+  - Max. amount of memory that can be allocated to th function is 3008MB
+  - Max. time the function can run is  15 min.
+  USE CASES:
+    - Scripts which need to run 
+    - Short Processing Jobs
+  DONT's:
+    - Not used for Web applications   or long running Jobs.
+    - 
