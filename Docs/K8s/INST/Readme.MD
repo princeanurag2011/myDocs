@@ -6,12 +6,14 @@
  ```
   apt-get update && apt-get upgrade -y  
   apt-get install -y apt-transport-https  
-  curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -  
-  cat <<EOF >/etc/apt/sources.list.d/kubernetes.list  
+  curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+
+  cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
   deb http://apt.kubernetes.io/ kubernetes-xenial main
-  EOF  
-  apt install -y docker.io  
+  EOF
+
   apt-get update
+  apt install -y docker.io
   service docker start
   sudo systemctl enable docker.service
  ```
