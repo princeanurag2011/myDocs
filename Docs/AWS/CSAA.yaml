@@ -1423,8 +1423,13 @@ ELB AND AutoScaling:
                   AWS  ELASTIC BEAN STALK
  ========================================================================================================   
    
+     - It is PaaS offering to quickly deploy and manage applications. It is a FREE service and pay
+       only for underlaying infrastructure.
+     - Targets web applications and technologies used in web applications.
+     - Leverages deployment wizards and automation via AWS Cloud Formation.
      - No need to worry about the infrastructure , you can quickly  deploy and manage your applicaiton
      - Elastic Beanstalk supports applicaitons developed in:
+            Programming:
             - java
             - go
             - .NET
@@ -1433,11 +1438,12 @@ ELB AND AutoScaling:
             - python
             - PHP
             - Ruby
-            - dOCKER 
-            - mULTI CONTAONER DOCKER
-            - gLASS fiSH
-            - tOMCAT
-            - 
+            Containers:
+            - DOCKER - Single/multiple Containers
+            - Pre configured Glassfish(JAVA), GO, Python 3
+            Web containers/servers:
+            - GLASS fiSH
+            - TOMCAT      
       - As well as differernt platform confugurations for each language on familiar services such as:
           - apache 
           - nginx
@@ -1446,6 +1452,26 @@ ELB AND AutoScaling:
        - can also perform deployment tasks, such as changing the size of your fleet of Amazon
          EC2 INSTANCE,  MONITORING YOUR APPLICATION DERECTLY FROM THE ELASTIC WEBINTERFACE
            
+     - Deployment Types:
+          - Web Application or Worker Application:
+          - Single Instance (Auto Scaling group with one instance):
+          - Scalable web application:
+             - One ELB (default to Classic)
+             - One Autoscaling group (Uses AWS CLoud Watch to scale) 
+             - One or more EC2 INSTANCES for the application
+          - Scalable Worker Applications (For long running tasks via queues):
+           - One Autoscaling group (use AWS Cloudwatch to scale)
+           - One or more EC2 instances for the application with a daemon to pull 
+             messages from AWS SQS and post to HTTP Worker.
+           - NOT supported for .NET on Windows
+   
+        DOMAIN NAME:
+          - environment a sub-domain of elastic Beanstalk  [region].elasticbeanstalk.com
+             - CNAME pointing to the ELB
+             - ex: myapp.us-west-2.elasticbeanstalk.com
+          - Route53 for custom domain via hosted Zone 
+             - purchase from Route53 oe external provider.
+             - ex: example.com
    
    
  
