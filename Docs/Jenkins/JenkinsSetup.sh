@@ -12,6 +12,10 @@
 # When prompted, enter the number for Java 8
    sudo /usr/sbin/alternatives --config java;
    sudo /usr/sbin/alternatives --config javac;
+   
+#for ubuntu
+ sudo update-alternatives --config java
+ sudo update-alternatives --config javac
 #-----------------------------------------------------------------------------------------
 # 2.	MAVEN setup
 # Use the following commands
