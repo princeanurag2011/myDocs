@@ -80,7 +80,8 @@ docker pull <image-Name>
 #run docker container in detached mode.
 
 #To run docker container in detached mode - in this mode docker runs in the background
-#and return back to the console.
+#and return back to the console. 
+#docker run -d -p <hostPort>:<containerPort> -name webserver <containerName>
  docker run -d -p 80:80 --name webserver nginx # -d or --detach 
  #or
  docker run -d -p 8080:80 --rm --name apacheweb httpd:latest 
