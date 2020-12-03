@@ -24,7 +24,14 @@
 ### 3. To make EC2 instance as a Master (run this command only on Master)
  ##### note: these commands should be run only on masters
   ` kubeadm init `
-
+#### note: if we want to change the api-server ip and port number then use the following commands
+` kubeadm init --apiserver-advertise-address="192.168.56.20" --apiserver-cert-extra-sans="192.168.56.20"  --node-name k8s-master --pod-network-cidr=192.168.0.0/16 `
+ ##### NOTE:
+  `
+   --apiserver-advertise-address  for apiserver ip 
+   --pod-network-cidr    for pod n/w
+   
+  `
 ### 4. To start using your cluster, you need to run following commands as a regular user
  #### This below is auto-generated from step 3:
   ```
