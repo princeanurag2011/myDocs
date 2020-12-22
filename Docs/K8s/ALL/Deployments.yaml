@@ -97,6 +97,10 @@
 # To check the no. of replica sets created
  kubectl get rs <replicaset-name> -o wide
 
+# To restart the deployments 
+kubectl rollout restart deployment <deployment-name>
+#ex:  kubectl rollout restart deployment webapp
+
 # To check the history i.e REVISION NO. and CHANGE CAUSE of roll out deployments
  kubectl rollout history deploy <deployment-name>
  
