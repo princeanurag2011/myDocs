@@ -61,8 +61,12 @@
              cat -n file.txt    
          - To read a file with top 10 lines:
              head file.txt
+             #to display first 5 lines
+              head file.txt -n 5
          - To read a file with last 10 lines:
              tail file.txt
+             #to display last 5 lines
+              tail file.txt -n 5
        - To create a folder:
            mkdir mydata/
          - To create a folder inside a folder :
