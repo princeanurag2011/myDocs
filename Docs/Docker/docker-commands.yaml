@@ -109,11 +109,20 @@ docker attach <container-id>
  docker stop <container id> # ex: docker stop 8as7d897s97sa7d7da98
 #note: container id looks like hashcode as shown in above example
 
+#To pause the running container 
+docker container pause <container-id>
+
+#To unpause the running container 
+docker container unpause <container-id>
+
 #TO delete multiple containers at a time ...  
  docker rm <container-id> <container-id> <container-id>
  
 #To stop all containers at a time.
  docker stop $(docker ps -q)
+
+#To remove all the stopped containers at a time
+docker container prune
 
 #TO delete docker container
 #stop the container , then use following command
