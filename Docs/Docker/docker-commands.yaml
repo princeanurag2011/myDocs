@@ -232,7 +232,7 @@ docker exec <containerid> cat /etc/hosts
  #check the meatadata it removes the previously attached n/w in network section.
 
 
-#To see the image layers
+#To see the image layers and also to see the Dockerfile lines used to create the docker image.
  docker history <image-name>
  
 #To see the image meatadata
