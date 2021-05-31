@@ -170,6 +170,10 @@ docker run -d -p 8080:80 --name webserver httpd
 
 #To see docker container stats.. (show details of all running ocntainer cpu mem utilization , block i/o network i/o)
  docker stats
+ 
+#To see the docker systems information like images, containers , volumes etc.,
+docker system df
+
 ============to enter into running docker container ==========================
 #TO execute commands inside docker container to see hosts inside it
 docker exec <containerid> cat /etc/hosts
