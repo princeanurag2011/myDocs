@@ -147,6 +147,9 @@ docker container prune
 
 #To see all process running in linux system
  ps aux 
+ 
+#To see all events i.e., when container started or stopped etc.,
+ docker events
 
 #To RUN MYSQL 
 docker run -d -p 3306:3306 --name mysqlDB -e MYSQL_RANDOM_ROOT_PASSWORD=yes mysql
