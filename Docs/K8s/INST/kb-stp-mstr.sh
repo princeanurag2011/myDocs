@@ -42,7 +42,7 @@ sudo systemctl enable docker.service;
 echo "=================================================================";
 echo "Installing Kube Master.. 9/9"
 echo "=================================================================";
-sudo kubeadm init --pod-network-cidr=10.244.0.0/16;
+sudo kubeadm init --pod-network-cidr=192.168.0.0/16;
 echo "=================================================================";
 echo "Creating a directory for kube configuration for current user!!";
 echo "=================================================================";
@@ -60,8 +60,10 @@ echo "https://kubernetes.io/docs/concepts/cluster-administration/addons/";
 echo "=================================================================";
 echo "Applying https://docs.projectcalico.org/v3.11/manifests/calico.yaml";
 echo "=================================================================";
-sudo wget https://docs.projectcalico.org/v3.11/manifests/calico.yaml
-sudo kubectl apply -f calico.yaml;
+sudo wget https://projectcalico.docs.tigera.io/manifests/tigera-operator.yaml;
+sudo wget https://projectcalico.docs.tigera.io/manifests/custom-resources.yaml;
+sudo kubectl apply -f tigera-operator.yaml;
+sudo kubectl apply -f custom-resources.yaml;
 echo "=================================================================";
 echo " congrats!! Installing kube Master - successfully 10/10  ";
 echo "=================================================================";
