@@ -23,7 +23,9 @@
   
 ### 3. To make EC2 instance as a Master (run this command only on Master)
  ##### note: these commands should be run only on masters
-  ` kubeadm init `
+  ` sudo kubeadm init`
+  ##### note :  [for calico network use below cidr]
+  ` sudo kubeadm init --pod-network-cidr=192.168.0.0/16 `
 #### note: if we want to change the api-server ip and port number then use the following commands
 ` kubeadm init --apiserver-advertise-address="192.168.56.20" --apiserver-cert-extra-sans="192.168.56.20"  --node-name k8s-master --pod-network-cidr=192.168.0.0/16 `
  ##### NOTE:
