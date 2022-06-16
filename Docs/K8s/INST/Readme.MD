@@ -58,8 +58,11 @@
   ```
 - 3. To setup core dns (run only on master)
  ```
-  kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
-  kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
+  kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml [NOT WORKING]
+  kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml [NOT WORKING]
+  USE BELOW:
+  kubectl create -f https://projectcalico.docs.tigera.io/manifests/tigera-operator.yaml
+  kubectl create -f https://projectcalico.docs.tigera.io/manifests/custom-resources.yaml
  ```
 - note: old versions
  ```
