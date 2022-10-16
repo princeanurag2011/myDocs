@@ -16,7 +16,7 @@ sudo apt-get remove docker docker-engine docker.io containerd runc
 sudo yum install docker -y
 
 #To install docker on ubuntu os
-sudo apt install docker -y
+sudo apt install docker.io -y
 
 
 #To install latest version of docker using script
