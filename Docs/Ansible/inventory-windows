@@ -1,0 +1,10 @@
+[windows]
+#ipaddress
+10.0.0.10
+
+[windows:vars]
+
+ansible_user=
+ansible_password=
+ansible_connection=winrm
+ansible_winrm_server_cert_validation=ignore
