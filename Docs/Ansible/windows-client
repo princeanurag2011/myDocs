@@ -1,0 +1,20 @@
+##Run the following on Linux machine to setup ansible 
+#!/bin/bash
+sudo apt update -y;
+sudo apt upgrade -y;
+sudo apt-add-repository ppa:ansible/ansible
+sudo apt update -y;
+sudo apt install ansible -y;
+
+
+#Run the following in windows client to enable windows client detection through ansible
+#These below commands will setup WinRM  protocols required for Windows clients and allows the rules in Firewall. 
+
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force
+
+# from powershell:
+Invoke-Expression ((New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1'))
+
+winrm quickconfig
+
+winrm enumerate winrm/config/Listener
