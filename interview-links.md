@@ -61,9 +61,6 @@ https://www.simplilearn.com/tutorials/git-tutorial/git-interview-questions
 
 https://www.edureka.co/blog/interview-questions/git-interview-questions/
 
-GitOps: https://www.youtube.com/watch?v=f5EpcWp0THw
-
-GitOps: https://climbtheladder.com/gitops-interview-questions/
 
 #### Maven
 https://www.edureka.co/blog/interview-questions/maven-interview-questions/
@@ -112,6 +109,9 @@ https://www.guru99.com/elasticsearch-interview-questions.html
 #### Terraform
 https://k21academy.com/terraform-iac/terraform-interview-questions/
 
+GitOps: https://www.youtube.com/watch?v=f5EpcWp0THw
+
+GitOps: https://climbtheladder.com/gitops-interview-questions/
 ## Projects
 
 #### Devops Projects
